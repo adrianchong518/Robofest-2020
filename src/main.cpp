@@ -8,6 +8,8 @@
 #include <StepperRail.h>
 #include <GY53.h>
 #include <JY901.h>
+#include <hd44780.h>
+#include <hd44780ioClass/hd44780_I2Cexp.h>
 
 #include "Constants.h"
 #include "Motor.h"
@@ -35,9 +37,12 @@ PID hitterPID(HITTER_PID_KP, HITTER_PID_KI, HITTER_PID_KD, HITTER_PID_MIN,
 
 GY53 irDistance(&SERIAL_IR_DISTANCE, SERIAL_IR_DISTANCE_BAUDRATE);
 
-// TODO Add LCD
+hd44780_I2Cexp lcd(I2C_LCD_ADDR);
 
 void setup() {
+  // Disable Interrupts
+  noInterrupts();
+
   // Serial
   Serial.begin(115200);
 
@@ -74,6 +79,15 @@ void setup() {
   measureServo.attach(PIN_MEASURE_SERVO);
 
   // TODO PID Control
+
+  // LCD
+  int lcdBeginStatus = lcd.begin(LCD_NUM_COLS, LCD_NUM_ROWS);
+  if (lcdBeginStatus) {
+    hd44780::fatalError(-lcdBeginStatus);
+  }
+
+  // Reenable Interrupts
+  interrupts();
 }
 
 void loop() {}
