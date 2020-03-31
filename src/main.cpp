@@ -59,17 +59,30 @@ void setup() {
   SERIAL_GYROSCOPE.begin(9600);
 
   // Encoder
+  pinMode(PIN_ENCODER_SEL, OUTPUT);
+  pinMode(PIN_HITTER_ENCODER_OE, OUTPUT);
+  pinMode(PIN_HITTER_ENCODER_RST, OUTPUT);
+  pinMode(PIN_MEASURE_ENCODER_OE, OUTPUT);
+  pinMode(PIN_MEASURE_ENCODER_RST, OUTPUT);
+
+  // Generate clock output
   pinMode(PIN_ENCODER_CLK, OUTPUT);
   TCCR2A = bit(WGM21) | bit(COM2A0);
   TCCR2B = bit(CS20);
   OCR2A = 0;
 
+  // Set up PORT
   DDR_ENCODER_BUS = 0x00;
   PORT_ENCODER_BUS = 0x00;
 
-  // TODO Rail
+  // Rail
+  rail.setStepLimitEnabled(true);
+  rail.setStepLimitMM(RAIL_LOWER_LIMIT_MM, RAIL_UPPER_LIMIT_MM);
 
-  // TODO Turn Table
+  // Turn Table
+  turnTable.setPulseWidth(TURN_PULSE_WIDTH);
+  turnTable.setStepLimitEnabled(true);
+  turnTable.setStepLimitDeg(TURN_LOWER_LIMIT_DEG, TURN_UPPER_LIMIT_DEG);
 
   // Servos
   guideLeft.attach(PIN_GUIDE_LEFT);
@@ -83,8 +96,14 @@ void setup() {
   // LCD
   int lcdBeginStatus = lcd.begin(LCD_NUM_COLS, LCD_NUM_ROWS);
   if (lcdBeginStatus) {
-    hd44780::fatalError(-lcdBeginStatus);
+    hd44780::fatalError(lcdBeginStatus);
   }
+
+  // Buzzer
+  pinMode(PIN_BUZZER, OUTPUT);
+
+  // Start button
+  pinMode(PIN_START_BUTTON, INPUT_PULLUP);
 
   // Reenable Interrupts
   interrupts();
