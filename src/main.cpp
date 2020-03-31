@@ -39,6 +39,28 @@ GY53 irDistance(&SERIAL_IR_DISTANCE, SERIAL_IR_DISTANCE_BAUDRATE);
 
 hd44780_I2Cexp lcd(I2C_LCD_ADDR);
 
+// Encoder IC
+uint16_t readEncoderLocation(uint8_t pin_encoderOE) {
+  uint16_t location;
+
+  digitalWrite(pin_encoderOE, LOW);
+
+  digitalWrite(PIN_ENCODER_SEL, LOW);
+  location = PIN_ENCODER_BUS << 8;
+  digitalWrite(PIN_ENCODER_SEL, HIGH);
+  location |= PIN_ENCODER_BUS;
+
+  digitalWrite(pin_encoderOE, HIGH);
+
+  return location;
+}
+
+void resetEncoderLocation(uint8_t pin_encoderRST) {
+  digitalWrite(pin_encoderRST, LOW);
+  delay(1);
+  digitalWrite(pin_encoderRST, HIGH);
+}
+
 void setup() {
   // Disable Interrupts
   noInterrupts();
@@ -60,10 +82,19 @@ void setup() {
 
   // Encoder
   pinMode(PIN_ENCODER_SEL, OUTPUT);
+  digitalWrite(PIN_ENCODER_SEL, LOW);
+
   pinMode(PIN_HITTER_ENCODER_OE, OUTPUT);
+  digitalWrite(PIN_HITTER_ENCODER_OE, HIGH);
+
   pinMode(PIN_HITTER_ENCODER_RST, OUTPUT);
+  digitalWrite(PIN_HITTER_ENCODER_RST, HIGH);
+
   pinMode(PIN_MEASURE_ENCODER_OE, OUTPUT);
+  digitalWrite(PIN_MEASURE_ENCODER_OE, HIGH);
+
   pinMode(PIN_MEASURE_ENCODER_RST, OUTPUT);
+  digitalWrite(PIN_MEASURE_ENCODER_RST, HIGH);
 
   // Generate clock output
   pinMode(PIN_ENCODER_CLK, OUTPUT);
