@@ -108,8 +108,6 @@ void setup() {
   PORT_ENCODER_BUS = 0x00;
 
   // Rail
-  rail.setStepLimitEnabled(true);
-  rail.setStepLimitMM(RAIL_LOWER_LIMIT_MM, RAIL_UPPER_LIMIT_MM);
 
   // Turn Table
   turnTable.setPulseWidth(TURN_PULSE_WIDTH);

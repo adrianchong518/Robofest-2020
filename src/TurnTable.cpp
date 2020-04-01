@@ -2,11 +2,13 @@
 
 TurnTable::TurnTable(const uint8_t pin_cw, const uint8_t pin_ccw,
                      const uint8_t pin_homeSensor, const int sensorThreshold,
-                     const double degPerStep)
+                     const double stepPerDeg)
     : Stepper(pin_cw, pin_ccw, CW_CCW_PULSE),
       m_pin_homeSensor(pin_homeSensor),
       m_sensorThreshold(sensorThreshold),
-      m_degPerStep(degPerStep) {}
+      m_stepPerDeg(stepPerDeg) {
+  pinMode(m_pin_homeSensor, INPUT);
+}
 
 TurnTable::~TurnTable() {}
 
@@ -15,21 +17,21 @@ void TurnTable::home() {
   setPulseWidth(m_maxPulseWidth);
 
   while (analogRead(m_pin_homeSensor) <= m_sensorThreshold) {
-    genPulse(1)
+    genPulse(1);
   }
 
   setHomePosition();
   setPulseWidth(prevPulseWidth);
 }
 
-double TurnTable::getLocationDeg() { return getLocation() * m_degPerStep; }
+double TurnTable::getLocationDeg() { return getLocation() / m_stepPerDeg; }
 
 void TurnTable::setStepLimitDeg(const double stepLowerLimitDeg,
                                 const double stepUpperLimitDeg) {
-  setStepLimit(stepLowerLimitDeg / m_degPerStep,
-               stepUpperLimitDeg / m_degPerStep);
+  setStepLimit(stepLowerLimitDeg * m_stepPerDeg,
+               stepUpperLimitDeg * m_stepPerDeg);
 }
 
 TurnTable::CODES TurnTable::setTargetDeg(const double targetDeg) {
-  return setTarget(targetDeg / m_degPerStep);
+  return setTarget(targetDeg * m_stepPerDeg);
 }

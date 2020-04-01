@@ -10,12 +10,12 @@ class Rail : public Stepper {
   uint8_t m_pin_leftLimitSwitch;
   uint8_t m_pin_rightLimitSwitch;
 
-  double m_mmPerStep;
+  double m_stepPerMM;
 
  public:
   Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
        const uint8_t pin_leftLimitSwitch, const uint8_t pin_rightLimitSwitch,
-       const double mmPerStep);
+       const double stepPerMM);
   ~Rail();
 
   void update();

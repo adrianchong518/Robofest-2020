@@ -10,12 +10,12 @@ class TurnTable : public Stepper {
   uint8_t m_pin_homeSensor;
 
   int m_sensorThreshold;
-  double m_degPerStep;
+  double m_stepPerDeg;
 
  public:
   TurnTable(const uint8_t pin_cw, const uint8_t pin_ccw,
             const uint8_t pin_homeSensor, const int sensorThreshold,
-            const double degPerStep);
+            const double stepPerDeg);
   ~TurnTable();
 
   void home();

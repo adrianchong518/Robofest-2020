@@ -1,20 +1,16 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#pragma region Pin Definitions
+
 #define PIN_RAIL_PUL 45
 #define PIN_RAIL_DIR 46
 #define PIN_RAIL_HOME_L 47
 #define PIN_RAIL_HOME_R A0
-#define RAIL_LOWER_LIMIT_MM 0
-#define RAIL_UPPER_LIMIT_MM 200
 
 #define PIN_TURN_CW 48
 #define PIN_TURN_CCW 49
 #define PIN_TURN_HOME A11
-#define TURN_HOME_THRESHOLD 700
-#define TURN_PULSE_WIDTH 5
-#define TURN_LOWER_LIMIT_DEG -90
-#define TURN_UPPER_LIMIT_DEG 90
 
 #define PIN_IR_FL A12
 #define PIN_IR_FR A10
@@ -32,12 +28,6 @@
 #define PIN_HITTER_MOTOR_INA 50
 #define PIN_HITTER_MOTOR_INB 51
 #define PIN_HITTER_MOTOR_PWM 4
-
-#define HITTER_PID_KP 1
-#define HITTER_PID_KI 0
-#define HITTER_PID_KD 0
-#define HITTER_PID_MIN -255
-#define HITTER_PID_MAX 255
 
 #define PIN_WHEEL_FL_INA 24
 #define PIN_WHEEL_FL_INB 25
@@ -75,11 +65,50 @@
 #define SERIAL_IR_DISTANCE_BAUDRATE 115200
 
 #define I2C_LCD_ADDR 0x27
-#define LCD_NUM_COLS 16
-#define LCD_NUM_ROWS 2
 
 #define PIN_BUZZER 13
 
 #define PIN_START_BUTTON A1
+#pragma endregion
+
+#pragma region Parameters
+
+#define RAIL_STEP_PER_MM 6.25
+
+#define TURN_STEP_PER_DEG 2.77
+#define TURN_HOME_THRESHOLD 800
+#define TURN_PULSE_WIDTH 2
+#define TURN_LOWER_LIMIT_DEG -30
+#define TURN_UPPER_LIMIT_DEG 30
+
+#define HITTER_PID_KP 1  // TODO Need Testing
+#define HITTER_PID_KI 0  // TODO Need Testing
+#define HITTER_PID_KD 0  // TODO Need Testing
+#define HITTER_PID_MIN -255
+#define HITTER_PID_MAX 255
+
+#define GUIDE_LEFT_RETRACTED_POS 80
+#define GUIDE_LEFT_EXTENDED_POS 50
+
+#define GUIDE_RIGHT_RETRACTED_POS 85
+#define GUIDE_RIGHT_EXTENDED_POS 115
+
+#define HOLDER_LEFT_RETRACTED_POS 120
+#define HOLDER_LEFT_EXTENDED_POS 60
+
+#define HOLDER_RIGHT_RETRACTED_POS 70
+#define HOLDER_RIGHT_EXTENDED_POS 130
+
+#define MEASURE_RETRACTED_POS 135
+#define MEASURE_EXTENDED_POS 90
+
+#define HITTER_ENCODER_STEP_PER_DEG 16.66
+
+#define MEASURE_ENCODER_STEP_PER_MM 91.76
+
+#define LCD_NUM_COLS 16
+#define LCD_NUM_ROWS 2
+
+#pragma endregion
 
 #endif
