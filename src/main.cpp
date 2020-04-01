@@ -4,8 +4,6 @@
 #include <Servo.h>
 
 #include <PID.h>
-#include <StepperDegree.h>
-#include <StepperRail.h>
 #include <GY53.h>
 #include <JY901.h>
 #include <hd44780.h>
@@ -13,10 +11,13 @@
 
 #include "Constants.h"
 #include "Motor.h"
+#include "TurnTable.h"
+#include "Rail.h"
 
-StepperRail rail(PIN_RAIL_PUL, PIN_RAIL_DIR, PIN_RAIL_HOME_R, 1);
-StepperDegree turnTable(PIN_TURN_CW, PIN_TURN_CCW, PIN_TURN_HOME,
-                        TURN_HOME_THRESHOLD, 1);
+Rail rail(PIN_RAIL_PUL, PIN_RAIL_DIR, PIN_RAIL_HOME_L, PIN_RAIL_HOME_R,
+          RAIL_STEP_PER_MM);
+TurnTable turnTable(PIN_TURN_CW, PIN_TURN_CCW, PIN_TURN_HOME,
+                    TURN_HOME_THRESHOLD, TURN_STEP_PER_DEG);
 
 Servo guideLeft;
 Servo guideRight;
