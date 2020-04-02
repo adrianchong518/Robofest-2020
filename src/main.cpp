@@ -62,10 +62,7 @@ void resetEncoderLocation(uint8_t pin_encoderRST) {
   digitalWrite(pin_encoderRST, HIGH);
 }
 
-void setup() {
-  // Disable Interrupts
-  noInterrupts();
-
+void initialisation() {
   // Serial
   Serial.begin(115200);
 
@@ -107,8 +104,6 @@ void setup() {
   DDR_ENCODER_BUS = 0x00;
   PORT_ENCODER_BUS = 0x00;
 
-  // Rail
-
   // Turn Table
   turnTable.setPulseWidth(TURN_PULSE_WIDTH);
   turnTable.setStepLimitEnabled(true);
@@ -134,9 +129,33 @@ void setup() {
 
   // Start button
   pinMode(PIN_START_BUTTON, INPUT_PULLUP);
+}
+
+void defaultPosition() {
+  // Servo
+  guideLeft.write(GUIDE_LEFT_RETRACTED_POS);
+  guideRight.write(GUIDE_RIGHT_RETRACTED_POS);
+  holderLeft.write(HOLDER_LEFT_RETRACTED_POS);
+  holderRight.write(HOLDER_RIGHT_RETRACTED_POS);
+  measureServo.write(MEASURE_RETRACTED_POS);
+
+  // Rail
+  rail.home();
+
+  // Turn Table
+  turnTable.home();
+}
+
+void setup() {
+  // Disable Interrupts
+  noInterrupts();
+
+  initialisation();
 
   // Reenable Interrupts
   interrupts();
+
+  defaultPosition();
 }
 
 void loop() {}
