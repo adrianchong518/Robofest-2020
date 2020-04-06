@@ -13,6 +13,7 @@
 #include "Motor.h"
 #include "TurnTable.h"
 #include "Rail.h"
+#include "Mecanum.h"
 
 Rail rail(PIN_RAIL_PUL, PIN_RAIL_DIR, PIN_RAIL_HOME_L, PIN_RAIL_HOME_R,
           RAIL_STEP_PER_MM);
@@ -27,10 +28,12 @@ Servo measureServo;
 
 Motor hitterMotor(PIN_HITTER_MOTOR_INA, PIN_HITTER_MOTOR_INB,
                   PIN_HITTER_MOTOR_PWM);
+
 Motor wheelFL(PIN_WHEEL_FL_INA, PIN_WHEEL_FL_INB, PIN_WHEEL_FL_PWM);
 Motor wheelFR(PIN_WHEEL_FR_INA, PIN_WHEEL_FR_INB, PIN_WHEEL_FR_PWM);
 Motor wheelBL(PIN_WHEEL_BL_INA, PIN_WHEEL_BL_INB, PIN_WHEEL_BL_PWM);
 Motor wheelBR(PIN_WHEEL_BR_INA, PIN_WHEEL_BR_INB, PIN_WHEEL_BR_PWM);
+Mecanum mecanum(&wheelFL, &wheelFR, &wheelBL, &wheelBR);
 
 PID hitterPID(HITTER_PID_KP, HITTER_PID_KI, HITTER_PID_KD, HITTER_PID_MIN,
               HITTER_PID_MAX);

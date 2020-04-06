@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#pragma region Pin Definitions
+// Pin Definitions
 
 #define PIN_RAIL_PUL 45
 #define PIN_RAIL_DIR 46
@@ -69,9 +69,8 @@
 #define PIN_BUZZER 13
 
 #define PIN_START_BUTTON A1
-#pragma endregion
 
-#pragma region Parameters
+// Parameters
 
 #define RAIL_STEP_PER_MM 6.25
 
@@ -86,6 +85,13 @@
 #define HITTER_PID_KD 0  // TODO Need Testing
 #define HITTER_PID_MIN -255
 #define HITTER_PID_MAX 255
+
+#define MECANUM_ROT_PID_KP 1  // TODO Need Testing
+#define MECANUM_ROT_PID_KI 0  // TODO Need Testing
+#define MECANUM_ROT_PID_KD 0  // TODO Need Testing
+
+#define MECANUM_ROT_DIFF_MIN -510  // -255*2
+#define MECANUM_ROT_DIFF_MAX 510   // 255*2
 
 #define GUIDE_LEFT_RETRACTED_POS 80
 #define GUIDE_LEFT_EXTENDED_POS 50
@@ -108,7 +114,5 @@
 
 #define LCD_NUM_COLS 16
 #define LCD_NUM_ROWS 2
-
-#pragma endregion
 
 #endif
