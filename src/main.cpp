@@ -37,7 +37,6 @@ Mecanum mecanum(&wheelFL, &wheelFR, &wheelBL, &wheelBR);
 
 PID hitterPID(HITTER_PID_KP, HITTER_PID_KI, HITTER_PID_KD, HITTER_PID_MIN,
               HITTER_PID_MAX);
-// TODO Add movement PID control
 
 GY53 irDistance(&SERIAL_IR_DISTANCE, SERIAL_IR_DISTANCE_BAUDRATE);
 
@@ -119,7 +118,12 @@ void initialisation() {
   holderRight.attach(PIN_HOLDER_RIGHT);
   measureServo.attach(PIN_MEASURE_SERVO);
 
-  // TODO PID Control
+  // Hitter PID
+  hitterPID.setTargetLimitEnabled(true);
+  hitterPID.setTargetLimit(HITTER_TARGET_DEG_MIN * HITTER_ENCODER_STEP_PER_DEG,
+                           HITTER_TARGET_DEG_MAX * HITTER_ENCODER_STEP_PER_DEG);
+  hitterPID.setAllowedError(HITTER_DEG_ALLOWED_ERROR *
+                            HITTER_ENCODER_STEP_PER_DEG);
 
   // LCD
   int lcdBeginStatus = lcd.begin(LCD_NUM_COLS, LCD_NUM_ROWS);
