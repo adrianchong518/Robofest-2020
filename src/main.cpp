@@ -135,6 +135,8 @@ void initialisation() {
   pinMode(PIN_START_BUTTON, INPUT_PULLUP);
 }
 
+void calibration() { mecanum.findRotationOffset(); }
+
 void defaultPosition() {
   // Servo
   guideLeft.write(GUIDE_LEFT_RETRACTED_POS);
@@ -158,6 +160,8 @@ void setup() {
 
   // Reenable Interrupts
   interrupts();
+
+  calibration();
 
   defaultPosition();
 }

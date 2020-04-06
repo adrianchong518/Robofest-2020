@@ -21,10 +21,32 @@ void Mecanum::update() {
     JY901.CopeSerialData(SERIAL_GYROSCOPE.read());
   }
 
-  m_rotation = (double)JY901.stcAngle.Angle[2];
+  m_rotation = (double)JY901.stcAngle.Angle[2] - m_rotationOffset;
   int rotationSpeedDiff = round(m_rotationPID.calculatePID(m_rotation));
   setRotationSpeedDiff(rotationSpeedDiff);
   setMotorsSpeeds();
+}
+
+void Mecanum::findRotationOffset() {
+  double rotationalOffset = 0;
+
+  unsigned long prevReadingTime = 0;
+  int numReadings = 0;
+  while (numReadings < 10) {
+    while (SERIAL_GYROSCOPE.available()) {
+      JY901.CopeSerialData(SERIAL_GYROSCOPE.read());
+    }
+
+    unsigned long currTime = millis();
+    if (currTime - prevReadingTime >= 10) {
+      prevReadingTime = currTime;
+
+      rotationalOffset = (double)JY901.stcAngle.Angle[2] / 10.0;
+      numReadings++;
+    }
+  }
+
+  m_rotationOffset = rotationalOffset;
 }
 
 void Mecanum::setSpeed(const unsigned int speed) { m_speed = speed; }

@@ -2,6 +2,7 @@
 #define MECANUM_H
 
 #include <PID.h>
+#include <JY901.h>
 
 #include "Motor.h"
 #include "Constants.h"
@@ -19,6 +20,7 @@ class Mecanum {
   double m_direction;
   double m_rotation;
   int m_rotationalSpeedDiff;
+  double m_rotationOffset;
 
  public:
   Mecanum(Motor* const wheelFL, Motor* const wheelFR, Motor* const wheelBL,
@@ -26,6 +28,8 @@ class Mecanum {
   ~Mecanum();
 
   void update();
+
+  void findRotationOffset();
 
   void setSpeed(const unsigned int speed);
 
