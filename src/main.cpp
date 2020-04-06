@@ -77,9 +77,6 @@ void initialisation() {
   // Laser Photoresistor
   pinMode(PIN_LASER_PHOTORESISTOR, INPUT);
 
-  // Gyroscope
-  SERIAL_GYROSCOPE.begin(9600);
-
   // Encoder
   pinMode(PIN_ENCODER_SEL, OUTPUT);
   digitalWrite(PIN_ENCODER_SEL, LOW);

@@ -25,11 +25,13 @@ class Mecanum {
           Motor* const wheelBR);
   ~Mecanum();
 
-  void update(const double rotation);
+  void update();
 
   void setSpeed(const unsigned int speed);
 
   void setDirection(const double direction);
+
+  double getRotation();
 
   void setRotationSpeedDiff(const int rotationSpeedDiff);
 

@@ -10,13 +10,18 @@ Mecanum::Mecanum(Motor* const wheelFL, Motor* const wheelFR,
                     MECANUM_ROT_DIFF_MIN, MECANUM_ROT_DIFF_MAX) {
   m_rotationPID.setTargetLimitEnabled(true);
   m_rotationPID.setTargetLimit(-180, 180);
+
+  SERIAL_GYROSCOPE.begin(SERIAL_GYROSCOPE_BAUDRATE);
 }
 
 Mecanum::~Mecanum() {}
 
-void Mecanum::update(const double rotation) {
-  m_rotation = rotation;
+void Mecanum::update() {
+  while (SERIAL_GYROSCOPE.available) {
+    JY901.CopeSerialData(SERIAL_GYROSCOPE.read());
+  }
 
+  m_rotation = (double)JY901.stcAngle.Angle[2];
   int rotationSpeedDiff = round(m_rotationPID.calculatePID(m_rotation));
   setRotationSpeedDiff(rotationSpeedDiff);
   setMotorsSpeeds();
@@ -35,6 +40,8 @@ void Mecanum::setDirection(const double direction) {
     m_direction += 360;
   }
 }
+
+double Mecanum::getRotation() { return m_rotation; }
 
 void Mecanum::setRotationSpeedDiff(const int rotationSpeedDiff) {
   m_rotationalSpeedDiff =
