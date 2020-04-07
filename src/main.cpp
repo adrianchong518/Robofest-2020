@@ -5,7 +5,6 @@
 
 #include <PID.h>
 #include <GY53.h>
-#include <JY901.h>
 #include <hd44780.h>
 #include <hd44780ioClass/hd44780_I2Cexp.h>
 
@@ -41,6 +40,9 @@ PID hitterPID(HITTER_PID_KP, HITTER_PID_KI, HITTER_PID_KD, HITTER_PID_MIN,
 GY53 irDistance(&SERIAL_IR_DISTANCE, SERIAL_IR_DISTANCE_BAUDRATE);
 
 hd44780_I2Cexp lcd(I2C_LCD_ADDR);
+
+int16_t hitterEncoderLocation = 0;
+int16_t measureEncoderLocation = 0;
 
 // Encoder IC
 int16_t readEncoderLocation(uint8_t pin_encoderOE) {
@@ -138,18 +140,22 @@ void initialisation() {
 void calibration() { mecanum.findRotationOffset(); }
 
 void defaultPosition() {
-  // Servo
-  guideLeft.write(GUIDE_LEFT_RETRACTED_POS);
-  guideRight.write(GUIDE_RIGHT_RETRACTED_POS);
-  holderLeft.write(HOLDER_LEFT_RETRACTED_POS);
-  holderRight.write(HOLDER_RIGHT_RETRACTED_POS);
-  measureServo.write(MEASURE_RETRACTED_POS);
+  // Encoder
+  resetEncoderLocation(PIN_HITTER_ENCODER_RST);
+  resetEncoderLocation(PIN_MEASURE_ENCODER_RST);
 
   // Rail
   rail.home();
 
   // Turn Table
   turnTable.home();
+
+  // Servo
+  guideLeft.write(GUIDE_LEFT_RETRACTED_POS);
+  guideRight.write(GUIDE_RIGHT_RETRACTED_POS);
+  holderLeft.write(HOLDER_LEFT_RETRACTED_POS);
+  holderRight.write(HOLDER_RIGHT_RETRACTED_POS);
+  measureServo.write(MEASURE_RETRACTED_POS);
 }
 
 void setup() {
@@ -166,4 +172,20 @@ void setup() {
   defaultPosition();
 }
 
-void loop() {}
+void controlLoop() {
+  // Encoder
+  hitterEncoderLocation = readEncoderLocation(PIN_HITTER_ENCODER_OE);
+  measureEncoderLocation = readEncoderLocation(PIN_MEASURE_ENCODER_OE);
+
+  // Rail
+  rail.update();
+
+  // Turn Table
+  turnTable.update();
+
+  // Hitter
+  int speed = hitterPID.calculatePID(hitterEncoderLocation);
+  hitterMotor.setSpeed(speed);
+}
+
+void loop() { controlLoop(); }
