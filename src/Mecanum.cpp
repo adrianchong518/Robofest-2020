@@ -17,7 +17,7 @@ Mecanum::Mecanum(Motor* const wheelFL, Motor* const wheelFR,
 Mecanum::~Mecanum() {}
 
 void Mecanum::update() {
-  while (SERIAL_GYROSCOPE.available) {
+  while (SERIAL_GYROSCOPE.available()) {
     JY901.CopeSerialData(SERIAL_GYROSCOPE.read());
   }
 
