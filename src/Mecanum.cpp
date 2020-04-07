@@ -82,15 +82,21 @@ bool Mecanum::isRotationTargetReached() {
 
 void Mecanum::setMotorsSpeeds() {
   // TODO Calculate motor speeds
-  int wheelFLSpeed;
+  double scaledSpeed = m_speed * (255 - m_rotationalSpeedDiff / 2.0) / 255.0;
+  double theta = m_direction - m_rotation;
+
+  double p1 = scaledSpeed * sin(PI / 4 + theta);
+  double p2 = scaledSpeed * sin(PI / 4 - theta);
+
+  int wheelFLSpeed = round(-p1 + m_rotationalSpeedDiff / 2.0);
   m_wheelFL->setSpeed(wheelFLSpeed);
 
-  int wheelFRSpeed;
+  int wheelFRSpeed = round(p2 + m_rotationalSpeedDiff / 2.0);
   m_wheelFR->setSpeed(wheelFRSpeed);
 
-  int wheelBLSpeed;
+  int wheelBLSpeed = round(-p2 - m_rotationalSpeedDiff / 2.0);
   m_wheelBL->setSpeed(wheelBLSpeed);
 
-  int wheelBRSpeed;
+  int wheelBRSpeed = round(p1 - m_rotationalSpeedDiff / 2.0);
   m_wheelBR->setSpeed(wheelBRSpeed);
 }
