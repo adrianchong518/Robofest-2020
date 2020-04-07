@@ -43,8 +43,8 @@ GY53 irDistance(&SERIAL_IR_DISTANCE, SERIAL_IR_DISTANCE_BAUDRATE);
 hd44780_I2Cexp lcd(I2C_LCD_ADDR);
 
 // Encoder IC
-uint16_t readEncoderLocation(uint8_t pin_encoderOE) {
-  uint16_t location;
+int16_t readEncoderLocation(uint8_t pin_encoderOE) {
+  int16_t location;
 
   digitalWrite(pin_encoderOE, LOW);
 
