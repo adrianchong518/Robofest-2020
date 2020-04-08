@@ -19,7 +19,7 @@ class Mecanum {
   unsigned int m_speed;
   double m_direction;
   double m_rotation;
-  int m_rotationalSpeedDiff;
+  int m_rotationSpeedDiff;
   double m_rotationOffset;
 
  public:

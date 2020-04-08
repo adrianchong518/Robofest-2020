@@ -66,7 +66,7 @@ void Mecanum::setDirection(const double direction) {
 double Mecanum::getRotation() { return m_rotation; }
 
 void Mecanum::setRotationSpeedDiff(const int rotationSpeedDiff) {
-  m_rotationalSpeedDiff =
+  m_rotationSpeedDiff =
       constrain(rotationSpeedDiff, MECANUM_ROT_DIFF_MIN, MECANUM_ROT_DIFF_MAX);
 }
 
@@ -82,21 +82,21 @@ bool Mecanum::isRotationTargetReached() {
 
 void Mecanum::setMotorsSpeeds() {
   // TODO Calculate motor speeds
-  double scaledSpeed = m_speed * (255 - m_rotationalSpeedDiff / 2.0) / 255.0;
+  double scaledSpeed = m_speed * (255 - m_rotationSpeedDiff / 2.0) / 255.0;
   double theta = m_direction - m_rotation;
 
   double p1 = scaledSpeed * sin(PI / 4 + theta);
   double p2 = scaledSpeed * sin(PI / 4 - theta);
 
-  int wheelFLSpeed = round(-p1 + m_rotationalSpeedDiff / 2.0);
+  int wheelFLSpeed = round(-p1 + m_rotationSpeedDiff / 2.0);
   m_wheelFL->setSpeed(wheelFLSpeed);
 
-  int wheelFRSpeed = round(p2 + m_rotationalSpeedDiff / 2.0);
+  int wheelFRSpeed = round(p2 + m_rotationSpeedDiff / 2.0);
   m_wheelFR->setSpeed(wheelFRSpeed);
 
-  int wheelBLSpeed = round(-p2 - m_rotationalSpeedDiff / 2.0);
+  int wheelBLSpeed = round(-p2 - m_rotationSpeedDiff / 2.0);
   m_wheelBL->setSpeed(wheelBLSpeed);
 
-  int wheelBRSpeed = round(p1 - m_rotationalSpeedDiff / 2.0);
+  int wheelBRSpeed = round(p1 - m_rotationSpeedDiff / 2.0);
   m_wheelBR->setSpeed(wheelBRSpeed);
 }
