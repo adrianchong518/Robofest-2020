@@ -133,8 +133,9 @@ void initialisation() {
   // Buzzer
   pinMode(PIN_BUZZER, OUTPUT);
 
-  // Start button
-  pinMode(PIN_START_BUTTON, INPUT_PULLUP);
+  // Buttons & DIP Switches
+  DDR_SW_BTN = 0x00;
+  PORT_SW_BTN = 0x00;
 }
 
 void calibration() { mecanum.findRotationOffset(); }
