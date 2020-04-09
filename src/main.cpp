@@ -168,9 +168,16 @@ void setup() {
   // Reenable Interrupts
   interrupts();
 
+  while (bitRead(PIN_SW_BTN, BIT_START_BUTTON) == 1)
+    ;
   calibration();
 
+  while (bitRead(PIN_SW_BTN, BIT_START_BUTTON) == 1)
+    ;
   defaultPosition();
+
+  while (bitRead(PIN_SW_BTN, BIT_START_BUTTON) == 1)
+    ;
 }
 
 void controlLoop() {

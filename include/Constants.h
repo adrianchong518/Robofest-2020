@@ -73,11 +73,11 @@
 #define DDR_SW_BTN DDRF
 #define PIN_SW_BTN PINF
 
-#define MASK_DIP_SW 0x0F
-#define BIT_START_BUTTON A0
-#define BIT_BUTTON_1 A1
-#define BIT_BUTTON_2 A2
-#define BIT_BUTTON_3 A3
+#define BITS_DIP_SW 4  // 4 - 7
+#define BIT_START_BUTTON 0
+#define BIT_BUTTON_1 1
+#define BIT_BUTTON_2 2
+#define BIT_BUTTON_3 3
 
 // Parameters
 
