@@ -14,6 +14,12 @@
 #include "Rail.h"
 #include "Mecanum.h"
 
+#if DEBUG == 1
+#define LOG(x) Serial.println("[DEBUG] " + String(x))
+#else
+#define LOG(x)
+#endif
+
 Rail rail(PIN_RAIL_PUL, PIN_RAIL_DIR, PIN_RAIL_HOME_L, PIN_RAIL_HOME_R,
           RAIL_STEP_PER_MM);
 TurnTable turnTable(PIN_TURN_CW, PIN_TURN_CCW, PIN_TURN_HOME,
@@ -163,21 +169,28 @@ void setup() {
   // Disable Interrupts
   noInterrupts();
 
+  LOG("Initialisation Start...");
   initialisation();
+  LOG("Complete");
 
   // Reenable Interrupts
   interrupts();
 
   while (bitRead(PIN_SW_BTN, BIT_START_BUTTON) == 1)
     ;
+  LOG("Calibration Start...");
   calibration();
+  LOG("Complete");
 
   while (bitRead(PIN_SW_BTN, BIT_START_BUTTON) == 1)
     ;
+  LOG("Setting to default positions...");
   defaultPosition();
+  LOG("Complete");
 
   while (bitRead(PIN_SW_BTN, BIT_START_BUTTON) == 1)
     ;
+  LOG("Main loop starts...");
 }
 
 void controlLoop() {
