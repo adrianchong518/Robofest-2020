@@ -4,3 +4,6 @@
 .vscode
 
 circuit
+
+.ccls
+.clang_complete
