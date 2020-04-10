@@ -176,19 +176,19 @@ void setup() {
   // Reenable Interrupts
   interrupts();
 
-  while (bitRead(PIN_SW_BTN, BIT_START_BUTTON) == 1)
+  while (digitalRead(PIN_START_BUTTON))
     ;
   LOG("Calibration Start...");
   calibration();
   LOG("Complete");
 
-  while (bitRead(PIN_SW_BTN, BIT_START_BUTTON) == 1)
+  while (digitalRead(PIN_START_BUTTON))
     ;
   LOG("Setting to default positions...");
   defaultPosition();
   LOG("Complete");
 
-  while (bitRead(PIN_SW_BTN, BIT_START_BUTTON) == 1)
+  while (digitalRead(PIN_START_BUTTON))
     ;
   LOG("Main loop starts...");
 }

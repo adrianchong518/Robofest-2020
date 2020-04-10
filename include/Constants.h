@@ -74,10 +74,10 @@
 #define PIN_SW_BTN PINF
 
 #define BITS_DIP_SW 4  // 4 - 7
-#define BIT_START_BUTTON 0
-#define BIT_BUTTON_1 1
-#define BIT_BUTTON_2 2
-#define BIT_BUTTON_3 3
+#define PIN_START_BUTTON A0
+#define PIN_BUTTON_1 A1
+#define PIN_BUTTON_2 A2
+#define PIN_BUTTON_3 A3
 
 // Parameters
 
