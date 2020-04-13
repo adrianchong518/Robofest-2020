@@ -6,4 +6,5 @@
 circuit
 
 .ccls
+.ccls-cache
 .clang_complete
