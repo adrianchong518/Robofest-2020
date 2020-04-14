@@ -50,6 +50,12 @@ hd44780_I2Cexp lcd(I2C_LCD_ADDR);
 int16_t hitterEncoderLocation = 0;
 int16_t measureEncoderLocation = 0;
 
+bool isGuideLeftExtented = false;
+bool isGuideRightExtented = false;
+bool isHolderLeftExtented = false;
+bool isHolderRightExtented = false;
+bool isMeasureServoExtented = false;
+
 // Encoder IC
 int16_t readEncoderLocation(uint8_t pin_encoderOE) {
   int16_t location;
@@ -70,6 +76,52 @@ void resetEncoderLocation(uint8_t pin_encoderRST) {
   digitalWrite(pin_encoderRST, LOW);
   delay(1);
   digitalWrite(pin_encoderRST, HIGH);
+}
+
+// Servos
+void toggleGuideLeft() {
+  if (isGuideLeftExtented) {
+    guideLeft.write(GUIDE_LEFT_RETRACTED_POS);
+  } else {
+    guideLeft.write(GUIDE_LEFT_EXTENDED_POS);
+  }
+  isGuideLeftExtented = !isGuideLeftExtented;
+}
+
+void toggleGuideRight() {
+  if (isGuideRightExtented) {
+    guideRight.write(GUIDE_RIGHT_RETRACTED_POS);
+  } else {
+    guideRight.write(GUIDE_RIGHT_EXTENDED_POS);
+  }
+  isGuideRightExtented = !isGuideRightExtented;
+}
+
+void toggleHolderLeft() {
+  if (isHolderLeftExtented) {
+    holderLeft.write(HOLDER_LEFT_RETRACTED_POS);
+  } else {
+    holderLeft.write(HOLDER_LEFT_EXTENDED_POS);
+  }
+  isHolderLeftExtented = !isHolderLeftExtented;
+}
+
+void toggleHolderRight() {
+  if (isHolderRightExtented) {
+    holderRight.write(HOLDER_RIGHT_RETRACTED_POS);
+  } else {
+    holderRight.write(HOLDER_RIGHT_EXTENDED_POS);
+  }
+  isHolderRightExtented = !isHolderRightExtented;
+}
+
+void toggleMeasureServo() {
+  if (isMeasureServoExtented) {
+    measureServo.write(MEASURE_EXTENDED_POS);
+  } else {
+    measureServo.write(MEASURE_RETRACTED_POS);
+  }
+  isMeasureServoExtented = !isMeasureServoExtented;
 }
 
 void initialisation() {
