@@ -1,12 +1,11 @@
-#include "Rail.h"
+#include "hardware/Rail.h"
 
 Rail::Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
            const uint8_t pin_leftLimitSwitch,
            const uint8_t pin_rightLimitSwitch, const double stepPerMM)
     : Stepper(pin_pulse, pin_dir, Stepper::PULSE_DIR),
       m_pin_leftLimitSwitch(pin_leftLimitSwitch),
-      m_pin_rightLimitSwitch(pin_rightLimitSwitch),
-      m_stepPerMM(stepPerMM) {
+      m_pin_rightLimitSwitch(pin_rightLimitSwitch), m_stepPerMM(stepPerMM) {
   pinMode(m_pin_leftLimitSwitch, INPUT_PULLUP);
   pinMode(m_pin_rightLimitSwitch, INPUT_PULLUP);
 

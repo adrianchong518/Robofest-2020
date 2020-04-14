@@ -1,12 +1,10 @@
-#include "TurnTable.h"
+#include "hardware/TurnTable.h"
 
 TurnTable::TurnTable(const uint8_t pin_cw, const uint8_t pin_ccw,
                      const uint8_t pin_homeSensor, const int sensorThreshold,
                      const double stepPerDeg)
-    : Stepper(pin_cw, pin_ccw, CW_CCW_PULSE),
-      m_pin_homeSensor(pin_homeSensor),
-      m_sensorThreshold(sensorThreshold),
-      m_stepPerDeg(stepPerDeg) {
+    : Stepper(pin_cw, pin_ccw, CW_CCW_PULSE), m_pin_homeSensor(pin_homeSensor),
+      m_sensorThreshold(sensorThreshold), m_stepPerDeg(stepPerDeg) {
   pinMode(m_pin_homeSensor, INPUT);
 }
 

@@ -9,10 +9,10 @@
 #include <hd44780ioClass/hd44780_I2Cexp.h>
 
 #include "Constants.h"
-#include "Mecanum.h"
-#include "Motor.h"
-#include "Rail.h"
-#include "TurnTable.h"
+#include "hardware/Mecanum.h"
+#include "hardware/Motor.h"
+#include "hardware/Rail.h"
+#include "hardware/TurnTable.h"
 
 #if DEBUG == 1
 #define LOG(x) Serial.println("[DEBUG] " + String(x))

@@ -1,4 +1,4 @@
-#include "Motor.h"
+#include "hardware/Motor.h"
 
 Motor::Motor(const uint8_t pin_inA, const uint8_t pin_inB,
              const uint8_t pin_PWM)

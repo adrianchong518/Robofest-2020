@@ -1,18 +1,18 @@
 #ifndef MECANUM_H
 #define MECANUM_H
 
-#include <PID.h>
 #include <JY901.h>
+#include <PID.h>
 
-#include "Motor.h"
 #include "Constants.h"
+#include "hardware/Motor.h"
 
 class Mecanum {
- private:
-  Motor* const m_wheelFL;
-  Motor* const m_wheelFR;
-  Motor* const m_wheelBL;
-  Motor* const m_wheelBR;
+private:
+  Motor *const m_wheelFL;
+  Motor *const m_wheelFR;
+  Motor *const m_wheelBL;
+  Motor *const m_wheelBR;
 
   PID m_rotationPID;
 
@@ -22,9 +22,9 @@ class Mecanum {
   int m_rotationSpeedDiff;
   double m_rotationOffset;
 
- public:
-  Mecanum(Motor* const wheelFL, Motor* const wheelFR, Motor* const wheelBL,
-          Motor* const wheelBR);
+public:
+  Mecanum(Motor *const wheelFL, Motor *const wheelFR, Motor *const wheelBL,
+          Motor *const wheelBR);
   ~Mecanum();
 
   void update();
@@ -47,4 +47,4 @@ class Mecanum {
   void setMotorsSpeeds();
 };
 
-#endif  // MECANUM_H
+#endif // MECANUM_H

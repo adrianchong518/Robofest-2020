@@ -1,10 +1,8 @@
-#include "Mecanum.h"
+#include "hardware/Mecanum.h"
 
-Mecanum::Mecanum(Motor* const wheelFL, Motor* const wheelFR,
-                 Motor* const wheelBL, Motor* const wheelBR)
-    : m_wheelFL(wheelFL),
-      m_wheelFR(wheelFR),
-      m_wheelBL(wheelBL),
+Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
+                 Motor *const wheelBL, Motor *const wheelBR)
+    : m_wheelFL(wheelFL), m_wheelFR(wheelFR), m_wheelBL(wheelBL),
       m_wheelBR(wheelBR),
       m_rotationPID(MECANUM_ROT_PID_KP, MECANUM_ROT_PID_KI, MECANUM_ROT_PID_KD,
                     MECANUM_ROT_DIFF_MIN, MECANUM_ROT_DIFF_MAX) {
@@ -81,7 +79,6 @@ bool Mecanum::isRotationTargetReached() {
 }
 
 void Mecanum::setMotorsSpeeds() {
-  // TODO Calculate motor speeds
   double scaledSpeed = m_speed * (255 - m_rotationSpeedDiff / 2.0) / 255.0;
   double theta = m_direction - m_rotation;
 

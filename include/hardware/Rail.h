@@ -6,13 +6,13 @@
 #include <Stepper.h>
 
 class Rail : public Stepper {
- private:
+private:
   uint8_t m_pin_leftLimitSwitch;
   uint8_t m_pin_rightLimitSwitch;
 
   double m_stepPerMM;
 
- public:
+public:
   Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
        const uint8_t pin_leftLimitSwitch, const uint8_t pin_rightLimitSwitch,
        const double stepPerMM);
@@ -30,4 +30,4 @@ class Rail : public Stepper {
   CODES setTargetMM(const double targetMM);
 };
 
-#endif  // TURN_TABLE_H
+#endif // TURN_TABLE_H
