@@ -1,9 +1,10 @@
-#ifndef STEPPER_DEGREE_H
-#define STEPPER_DEGREE_H
+#ifndef HARDWARE_TURN_TABLE_H
+#define HARDWARE_TURN_TABLE_H
 
 #include <Arduino.h>
-
 #include <Stepper.h>
+
+namespace hardware {
 
 class TurnTable : public Stepper {
  private:
@@ -28,4 +29,6 @@ class TurnTable : public Stepper {
   CODES setTargetDeg(const double targetDeg);
 };
 
-#endif  // STEPPER_DEGREE_H
+}  // namespace hardware
+
+#endif  // HARDWARE_TURN_TABLE_H

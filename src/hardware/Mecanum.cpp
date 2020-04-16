@@ -1,8 +1,10 @@
 #include "hardware/Mecanum.h"
 
-Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
-                 Motor *const wheelBL, Motor *const wheelBR)
-    : m_wheelFL(wheelFL), m_wheelFR(wheelFR), m_wheelBL(wheelBL),
+hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
+                           Motor *const wheelBL, Motor *const wheelBR)
+    : m_wheelFL(wheelFL),
+      m_wheelFR(wheelFR),
+      m_wheelBL(wheelBL),
       m_wheelBR(wheelBR),
       m_rotationPID(MECANUM_ROT_PID_KP, MECANUM_ROT_PID_KI, MECANUM_ROT_PID_KD,
                     MECANUM_ROT_DIFF_MIN, MECANUM_ROT_DIFF_MAX) {
@@ -12,9 +14,9 @@ Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
   SERIAL_GYROSCOPE.begin(SERIAL_GYROSCOPE_BAUDRATE);
 }
 
-Mecanum::~Mecanum() {}
+hardware::Mecanum::~Mecanum() {}
 
-void Mecanum::update() {
+void hardware::Mecanum::update() {
   while (SERIAL_GYROSCOPE.available()) {
     JY901.CopeSerialData(SERIAL_GYROSCOPE.read());
   }
@@ -25,7 +27,7 @@ void Mecanum::update() {
   setMotorsSpeeds();
 }
 
-void Mecanum::findRotationOffset() {
+void hardware::Mecanum::findRotationOffset() {
   double rotationalOffset = 0;
 
   unsigned long prevReadingTime = 0;
@@ -47,9 +49,9 @@ void Mecanum::findRotationOffset() {
   m_rotationOffset = rotationalOffset;
 }
 
-void Mecanum::setSpeed(const unsigned int speed) { m_speed = speed; }
+void hardware::Mecanum::setSpeed(const unsigned int speed) { m_speed = speed; }
 
-void Mecanum::setDirection(const double direction) {
+void hardware::Mecanum::setDirection(const double direction) {
   m_direction = direction;
 
   while (m_direction > 180) {
@@ -61,24 +63,26 @@ void Mecanum::setDirection(const double direction) {
   }
 }
 
-double Mecanum::getRotation() { return m_rotation; }
+double hardware::Mecanum::getRotation() { return m_rotation; }
 
-void Mecanum::setRotationSpeedDiff(const int rotationSpeedDiff) {
+void hardware::Mecanum::setRotationSpeedDiff(const int rotationSpeedDiff) {
   m_rotationSpeedDiff =
       constrain(rotationSpeedDiff, MECANUM_ROT_DIFF_MIN, MECANUM_ROT_DIFF_MAX);
 }
 
-double Mecanum::getRotationTarget() { return m_rotationPID.getTarget(); }
+double hardware::Mecanum::getRotationTarget() {
+  return m_rotationPID.getTarget();
+}
 
-void Mecanum::setRotationTarget(const double rotationTarget) {
+void hardware::Mecanum::setRotationTarget(const double rotationTarget) {
   m_rotationPID.setTarget(rotationTarget);
 }
 
-bool Mecanum::isRotationTargetReached() {
+bool hardware::Mecanum::isRotationTargetReached() {
   return m_rotationPID.isTargetReached();
 }
 
-void Mecanum::setMotorsSpeeds() {
+void hardware::Mecanum::setMotorsSpeeds() {
   double scaledSpeed = m_speed * (255 - m_rotationSpeedDiff / 2.0) / 255.0;
   double theta = m_direction - m_rotation;
 

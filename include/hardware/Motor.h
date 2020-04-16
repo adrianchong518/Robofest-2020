@@ -1,7 +1,9 @@
-#ifndef MOTOR_H
-#define MOTOR_H
+#ifndef HARDWARE_MOTOR_H
+#define HARDWARE_MOTOR_H
 
 #include <Arduino.h>
+
+namespace hardware {
 
 class Motor {
  private:
@@ -15,5 +17,7 @@ class Motor {
 
   void setSpeed(const int speed);
 };
+
+}  // namespace hardware
 
 #endif

@@ -1,18 +1,19 @@
-#ifndef TURN_TABLE_H
-#define TURN_TABLE_H
+#ifndef HARDWARE_RAIL_H
+#define HARDWARE_RAIL_H
 
 #include <Arduino.h>
-
 #include <Stepper.h>
 
+namespace hardware {
+
 class Rail : public Stepper {
-private:
+ private:
   uint8_t m_pin_leftLimitSwitch;
   uint8_t m_pin_rightLimitSwitch;
 
   double m_stepPerMM;
 
-public:
+ public:
   Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
        const uint8_t pin_leftLimitSwitch, const uint8_t pin_rightLimitSwitch,
        const double stepPerMM);
@@ -30,4 +31,6 @@ public:
   CODES setTargetMM(const double targetMM);
 };
 
-#endif // TURN_TABLE_H
+}  // namespace hardware
+
+#endif  // HARDWARE_RAIL_H

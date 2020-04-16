@@ -1,11 +1,12 @@
 #include "hardware/Rail.h"
 
-Rail::Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
-           const uint8_t pin_leftLimitSwitch,
-           const uint8_t pin_rightLimitSwitch, const double stepPerMM)
+hardware::Rail::Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
+                     const uint8_t pin_leftLimitSwitch,
+                     const uint8_t pin_rightLimitSwitch, const double stepPerMM)
     : Stepper(pin_pulse, pin_dir, Stepper::PULSE_DIR),
       m_pin_leftLimitSwitch(pin_leftLimitSwitch),
-      m_pin_rightLimitSwitch(pin_rightLimitSwitch), m_stepPerMM(stepPerMM) {
+      m_pin_rightLimitSwitch(pin_rightLimitSwitch),
+      m_stepPerMM(stepPerMM) {
   pinMode(m_pin_leftLimitSwitch, INPUT_PULLUP);
   pinMode(m_pin_rightLimitSwitch, INPUT_PULLUP);
 
@@ -13,9 +14,9 @@ Rail::Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
   setStepLimitMM(0, 100000000);
 }
 
-Rail::~Rail() {}
+hardware::Rail::~Rail() {}
 
-void Rail::update() {
+void hardware::Rail::update() {
   m_isTargetReached = m_location == m_target;
   if (!m_isTargetReached) {
     int dir = m_target - m_location > 0 ? 1 : -1;
@@ -47,7 +48,7 @@ void Rail::update() {
     setPulseWidth(PULSE_WIDTH);
   }
 }
-void Rail::home() {
+void hardware::Rail::home() {
   unsigned int prevPulseWidth = m_pulseWidth;
   setPulseWidth(m_maxPulseWidth);
 
@@ -58,13 +59,13 @@ void Rail::home() {
   setPulseWidth(prevPulseWidth);
   setHomePosition();
 }
-double Rail::getLocationMM() { return getLocation() / m_stepPerMM; }
+double hardware::Rail::getLocationMM() { return getLocation() / m_stepPerMM; }
 
-void Rail::setStepLimitMM(const double stepLowerLimitMM,
-                          const double stepUpperLimitMM) {
+void hardware::Rail::setStepLimitMM(const double stepLowerLimitMM,
+                                    const double stepUpperLimitMM) {
   setStepLimit(stepLowerLimitMM * m_stepPerMM, stepUpperLimitMM * m_stepPerMM);
 }
 
-Stepper::CODES Rail::setTargetMM(const double targetMM) {
+Stepper::CODES hardware::Rail::setTargetMM(const double targetMM) {
   return setTarget(targetMM * m_stepPerMM);
 }
