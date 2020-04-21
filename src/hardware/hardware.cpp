@@ -65,8 +65,8 @@ void hardware::init() {
   pinMode(PIN_BUZZER, OUTPUT);
 
   // Buttons & DIP Switches
-  DDR_SW_BTN = 0x00;
-  PORT_SW_BTN = 0x00;
+  DDR_SW_BTN = 0x00 | (DDR_SW_BTN & 0x01);
+  PORT_SW_BTN = 0x00 | (PORT_SW_BTN & 0x01);
 }
 
 void hardware::calibrate() { mecanum.findRotationOffset(); }

@@ -15,7 +15,7 @@
 #define PIN_IR_FL A12
 #define PIN_IR_FR A10
 #define PIN_IR_BL A14
-#define PIN_IR_BR A15
+#define PIN_IR_BR A8
 
 #define PIN_GUIDE_LEFT 27
 #define PIN_GUIDE_RIGHT 12
@@ -73,8 +73,7 @@
 #define DDR_SW_BTN DDRF
 #define PIN_SW_BTN PINF
 
-#define BITS_DIP_SW 4 // 4 - 7
-#define PIN_START_BUTTON A0
+#define BITS_DIP_SW 4  // 4 - 7
 #define PIN_BUTTON_1 A1
 #define PIN_BUTTON_2 A2
 #define PIN_BUTTON_3 A3
@@ -89,22 +88,22 @@
 #define TURN_LOWER_LIMIT_DEG -30
 #define TURN_UPPER_LIMIT_DEG 30
 
-#define HITTER_PID_KP 1 // TODO Need Testing
-#define HITTER_PID_KI 0 // TODO Need Testing
-#define HITTER_PID_KD 0 // TODO Need Testing
+#define HITTER_PID_KP 1  // TODO Need Testing
+#define HITTER_PID_KI 0  // TODO Need Testing
+#define HITTER_PID_KD 0  // TODO Need Testing
 #define HITTER_PID_MIN -255
 #define HITTER_PID_MAX 255
 
-#define HITTER_TARGET_DEG_MIN 0 // TODO Need Data
-#define HITTER_TARGET_DEG_MAX 0 // TODO Need Data
+#define HITTER_TARGET_DEG_MIN 0  // TODO Need Data
+#define HITTER_TARGET_DEG_MAX 0  // TODO Need Data
 #define HITTER_DEG_ALLOWED_ERROR 1
 
-#define MECANUM_ROT_PID_KP 1 // TODO Need Testing
-#define MECANUM_ROT_PID_KI 0 // TODO Need Testing
-#define MECANUM_ROT_PID_KD 0 // TODO Need Testing
+#define MECANUM_ROT_PID_KP 1  // TODO Need Testing
+#define MECANUM_ROT_PID_KI 0  // TODO Need Testing
+#define MECANUM_ROT_PID_KD 0  // TODO Need Testing
 
-#define MECANUM_ROT_DIFF_MIN -510 // -255*2
-#define MECANUM_ROT_DIFF_MAX 510  // 255*2
+#define MECANUM_ROT_DIFF_MIN -510  // -255*2
+#define MECANUM_ROT_DIFF_MAX 510   // 255*2
 
 #define GUIDE_LEFT_RETRACTED_POS 80
 #define GUIDE_LEFT_EXTENDED_POS 50

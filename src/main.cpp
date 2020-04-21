@@ -20,20 +20,20 @@ void setup() {
   interrupts();
 
   // Hardware Calibration
-  while (digitalRead(PIN_START_BUTTON))
+  while (digitalRead(PIN_BUTTON_1))
     ;
   LOG("Calibration Start...");
   hardware::calibrate();
   LOG("Complete");
 
   // Setting hardware default position (home)
-  while (digitalRead(PIN_START_BUTTON))
+  while (digitalRead(PIN_BUTTON_1))
     ;
   LOG("Setting to default positions...");
   hardware::defaultPosition();
   LOG("Complete");
 
-  while (digitalRead(PIN_START_BUTTON))
+  while (digitalRead(PIN_BUTTON_1))
     ;
   LOG("Main loop starts...");
 }
