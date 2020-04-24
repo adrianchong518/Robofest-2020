@@ -75,3 +75,5 @@ void hardware::loop() {
   ballHitter.update(hardware::encoders::hitterEncoderLocation);
   hardware::encoders::loop();
 }
+
+byte hardware::readDIPSwitches() { return ~PIN_SW_BTN >> BITS_DIP_SW; }

@@ -41,6 +41,8 @@ void defaultPosition();
 
 void loop();
 
+byte readDIPSwitches();
+
 }  // namespace hardware
 
 #endif  // HARDWARE_HARDWARE_H

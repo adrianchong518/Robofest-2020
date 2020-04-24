@@ -2,8 +2,11 @@
 #include <PID.h>
 
 #include "constants.h"
+#include "control/manual.h"
 #include "hardware/hardware.h"
 #include "utils.h"
+
+byte operationMode;
 
 void setup() {
   Serial.begin(115200);
@@ -33,9 +36,16 @@ void setup() {
   hardware::defaultPosition();
   LOG("Complete");
 
+  operationMode = hardware::readDIPSwitches();
   while (digitalRead(PIN_BUTTON_1))
     ;
   LOG("Main loop starts...");
 }
 
-void loop() { hardware::loop(); }
+void loop() {
+  hardware::loop();
+  if (bitRead(operationMode, 0)) {
+    control::manual::loop();
+  } else {
+  }
+}
