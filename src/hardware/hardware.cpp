@@ -9,6 +9,7 @@ hardware::TurnTable hardware::turnTable(PIN_TURN_CW, PIN_TURN_CCW,
 hardware::Motor hardware::hitterMotor(PIN_HITTER_MOTOR_INA,
                                       PIN_HITTER_MOTOR_INB,
                                       PIN_HITTER_MOTOR_PWM);
+hardware::BallHitter hardware::ballHitter(&hitterMotor);
 
 hardware::Motor hardware::wheelFL(PIN_WHEEL_FL_INA, PIN_WHEEL_FL_INB,
                                   PIN_WHEEL_FL_PWM);
@@ -19,9 +20,6 @@ hardware::Motor hardware::wheelBL(PIN_WHEEL_BL_INA, PIN_WHEEL_BL_INB,
 hardware::Motor hardware::wheelBR(PIN_WHEEL_BR_INA, PIN_WHEEL_BR_INB,
                                   PIN_WHEEL_BR_PWM);
 hardware::Mecanum hardware::mecanum(&wheelFL, &wheelFR, &wheelBL, &wheelBR);
-
-PID hardware::hitterPID(HITTER_PID_KP, HITTER_PID_KI, HITTER_PID_KD,
-                        HITTER_PID_MIN, HITTER_PID_MAX);
 
 GY53 hardware::irDistance(&SERIAL_IR_DISTANCE, SERIAL_IR_DISTANCE_BAUDRATE);
 
@@ -47,13 +45,6 @@ void hardware::init() {
 
   // Servos
   hardware::servos::init();
-
-  // Hitter PID
-  hitterPID.setTargetLimitEnabled(true);
-  hitterPID.setTargetLimit(HITTER_TARGET_DEG_MIN * HITTER_ENCODER_STEP_PER_DEG,
-                           HITTER_TARGET_DEG_MAX * HITTER_ENCODER_STEP_PER_DEG);
-  hitterPID.setAllowedError(HITTER_DEG_ALLOWED_ERROR *
-                            HITTER_ENCODER_STEP_PER_DEG);
 
   // LCD
   int lcdBeginStatus = lcd.begin(LCD_NUM_COLS, LCD_NUM_ROWS);
@@ -81,5 +72,6 @@ void hardware::defaultPosition() {
 void hardware::loop() {
   rail.update();
   turnTable.update();
+  ballHitter.update(hardware::encoders::hitterEncoderLocation);
   hardware::encoders::loop();
 }

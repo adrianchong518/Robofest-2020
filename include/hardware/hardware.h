@@ -7,6 +7,7 @@
 #include <hd44780ioClass/hd44780_I2Cexp.h>
 
 #include "constants.h"
+#include "hardware/BallHitter.h"
 #include "hardware/Mecanum.h"
 #include "hardware/Motor.h"
 #include "hardware/Rail.h"
@@ -20,14 +21,13 @@ extern Rail rail;
 extern TurnTable turnTable;
 
 extern Motor hitterMotor;
+extern BallHitter ballHitter;
 
 extern Motor wheelFL;
 extern Motor wheelFR;
 extern Motor wheelBL;
 extern Motor wheelBR;
 extern Mecanum mecanum;
-
-extern PID hitterPID;
 
 extern GY53 irDistance;
 

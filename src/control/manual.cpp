@@ -23,14 +23,11 @@ void control::manual::parseInput() {
   }
 
   if (input.startsWith("r ")) {
-    double target = input.substring(2).toDouble();
-    rail(target);
+    rail(input.substring(2).toDouble());
   } else if (input.startsWith("tt ")) {
-    double target = input.substring(3).toDouble();
-    turnTable(target);
+    turnTable(input.substring(3).toDouble());
   } else if (input.startsWith("bh ")) {
-    double target = input.substring(3).toDouble();
-    ballHitter(target);
+    ballHitter(input.substring(3));
   } else if (input.startsWith("hl")) {
     hardware::servos::setGuideLeft(!hardware::servos::isGuideLeftExtented);
   } else if (input.startsWith("hr")) {
@@ -82,6 +79,42 @@ void control::manual::turnTable(double target) {
   }
 }
 
-void control::manual::ballHitter(double target) {
-  PID::CODES returnCode = hardware::hitterPID.setTarget(target);
+void control::manual::ballHitter(String command) {
+  if (command.startsWith("set ")) {
+    double target = command.substring(4).toDouble();
+    PID::CODES returnCode = hardware::ballHitter.setTarget(target);
+
+    switch (returnCode) {
+      case PID::NO_ERROR:
+        Serial.println("Ball Hitter Target (" + String(target) + ") Set");
+        break;
+
+      case PID::ERROR_TARGET_EXCEEDS_LIMIT:
+        Serial.println("Ball Hitter Target (" + String(target) +
+                       ") Exceeds Limit");
+        break;
+
+      default:
+        break;
+    }
+  } else if (command.startsWith("hit ")) {
+    double highPos = command.substring(4, command.indexOf(' ', 4)).toDouble();
+    double lowPos = command.substring(command.indexOf(' ', 4)).toDouble();
+    PID::CODES returnCode = hardware::ballHitter.hit(highPos, lowPos);
+
+    switch (returnCode) {
+      case PID::NO_ERROR:
+        Serial.println("Ball Hitter Hit Targets (" + String(highPos) + "," +
+                       String(lowPos) + ") Set");
+        break;
+
+      case PID::ERROR_TARGET_EXCEEDS_LIMIT:
+        Serial.println("Ball Hitter Hit Targets (" + String(highPos) + "," +
+                       String(lowPos) + ") Exceeds Limit");
+        break;
+
+      default:
+        break;
+    }
+  }
 }

@@ -13,7 +13,7 @@ void parseInput();
 
 void rail(double target);
 void turnTable(double target);
-void ballHitter(double target);
+void ballHitter(String command);
 
 }  // namespace manual
 }  // namespace control
