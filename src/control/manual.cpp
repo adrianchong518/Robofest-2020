@@ -39,6 +39,15 @@ void control::manual::parseInput() {
   } else if (input.startsWith("ms")) {
     hardware::servos::setMeasureServo(
         !hardware::servos::isMeasureServoExtented);
+  } else if (input.startsWith("ir ")) {
+    irSensors(input.substring(3));
+  } else if (input.startsWith("lr")) {
+    Serial.println("Laser Photoresistor: " +
+                   String(analogRead(PIN_LASER_PHOTORESISTOR)));
+  } else if (input.startsWith("lcd ")) {
+    lcd(input.substring(4));
+  } else {
+    Serial.println("Invalid command: " + input);
   }
 }
 
@@ -75,6 +84,7 @@ void control::manual::turnTable(double target) {
       break;
 
     default:
+      Serial.println("Unknown Error");
       break;
   }
 }
@@ -95,6 +105,7 @@ void control::manual::ballHitter(String command) {
         break;
 
       default:
+        Serial.println("Unknown Error");
         break;
     }
   } else if (command.startsWith("hit ")) {
@@ -116,5 +127,31 @@ void control::manual::ballHitter(String command) {
       default:
         break;
     }
+  } else {
+    Serial.println("Invalid command: " + input);
+  }
+}
+
+void control::manual::irSensors(String command) {
+  if (command == "fl") {
+    Serial.println("IR Sensor FL: " + String(analogRead(PIN_IR_FL)));
+  } else if (command == "fr") {
+    Serial.println("IR Sensor FR: " + String(analogRead(PIN_IR_FR)));
+  } else if (command == "bl") {
+    Serial.println("IR Sensor BL: " + String(analogRead(PIN_IR_BL)));
+  } else if (command == "br") {
+    Serial.println("IR Sensor BR: " + String(analogRead(PIN_IR_BR)));
+  } else {
+    Serial.println("Invalid command: " + input);
+  }
+}
+
+void control::manual::lcd(String command) {
+  if (command.startsWith("println ")) {
+    hardware::lcd.print(command.substring(8) + '\n');
+  } else if (command == "clr") {
+    hardware::lcd.clear();
+  } else {
+    Serial.println("Invalid command: " + input);
   }
 }

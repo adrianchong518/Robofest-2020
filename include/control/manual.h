@@ -15,6 +15,9 @@ void rail(double target);
 void turnTable(double target);
 void ballHitter(String command);
 
+void irSensors(String command);
+void lcd(String command);
+
 }  // namespace manual
 }  // namespace control
 
