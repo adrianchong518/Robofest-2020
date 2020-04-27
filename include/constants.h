@@ -15,7 +15,7 @@
 #define PIN_IR_FL A12
 #define PIN_IR_FR A10
 #define PIN_IR_BL A14
-#define PIN_IR_BR A8
+#define PIN_IR_BR A9
 
 #define PIN_GUIDE_LEFT 27
 #define PIN_GUIDE_RIGHT 12
