@@ -8,20 +8,20 @@
 #define PIN_RAIL_HOME_L 47
 #define PIN_RAIL_HOME_R A0
 
-#define PIN_TURN_CW 48
-#define PIN_TURN_CCW 49
+#define PIN_TURN_CW 52
+#define PIN_TURN_CCW 53
 #define PIN_TURN_HOME A11
 
 #define PIN_IR_FL A12
-#define PIN_IR_FR A10
+#define PIN_IR_FR A8
 #define PIN_IR_BL A14
 #define PIN_IR_BR A9
 
 #define PIN_GUIDE_LEFT 27
 #define PIN_GUIDE_RIGHT 12
 
-#define PIN_HOLDER_LEFT 52
-#define PIN_HOLDER_RIGHT 53
+#define PIN_HOLDER_LEFT 48
+#define PIN_HOLDER_RIGHT 49
 
 #define PIN_MEASURE_SERVO 26
 
