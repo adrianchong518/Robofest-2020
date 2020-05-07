@@ -42,8 +42,8 @@ void control::manual::parseInput() {
   } else if (input.startsWith("ir ")) {
     irSensors(input.substring(3));
   } else if (input.startsWith("lr")) {
-    Serial.println("Laser Photoresistor: " +
-                   String(analogRead(PIN_LASER_PHOTORESISTOR)));
+  } else if (input.startsWith("ird ")) {
+    irDistanceSensor(input.substring(4));
   } else if (input.startsWith("lcd ")) {
     lcd(input.substring(4));
   } else {
@@ -89,7 +89,7 @@ void control::manual::turnTable(double target) {
   }
 }
 
-void control::manual::ballHitter(String command) {
+void control::manual::ballHitter(const String &command) {
   if (command.startsWith("set ")) {
     double target = command.substring(4).toDouble();
     PID::CODES returnCode = hardware::ballHitter.setTarget(target);
@@ -132,21 +132,84 @@ void control::manual::ballHitter(String command) {
   }
 }
 
-void control::manual::irSensors(String command) {
-  if (command == "fl") {
-    Serial.println("IR Sensor FL: " + String(analogRead(PIN_IR_FL)));
-  } else if (command == "fr") {
-    Serial.println("IR Sensor FR: " + String(analogRead(PIN_IR_FR)));
-  } else if (command == "bl") {
-    Serial.println("IR Sensor BL: " + String(analogRead(PIN_IR_BL)));
-  } else if (command == "br") {
-    Serial.println("IR Sensor BR: " + String(analogRead(PIN_IR_BR)));
+void control::manual::irSensors(const String &command) {
+  if (command.startsWith("fl ")) {
+    if (command.substring(3).startsWith("r")) {
+      Serial.println("IR Sensor FL: " + String(analogRead(PIN_IR_FL)) + " | " +
+                     hardware::sensors::isBlackDetectedFL() + "(" +
+                     hardware::sensors::irFLThreshold + ")");
+    } else if (command.substring(3).startsWith("ts ")) {
+      hardware::sensors::irFLThreshold = command.substring(6).toInt();
+      Serial.println("IR Sensor FL Threshold Set (" +
+                     String(hardware::sensors::irFLThreshold) + ")");
+    }
+  } else if (command.startsWith("fr ")) {
+    if (command.substring(3).startsWith("r")) {
+      Serial.println("IR Sensor FR: " + String(analogRead(PIN_IR_FR)) + " | " +
+                     hardware::sensors::isBlackDetectedFR() + "(" +
+                     hardware::sensors::irFRThreshold + ")");
+    } else if (command.substring(3).startsWith("ts ")) {
+      hardware::sensors::irFRThreshold = command.substring(6).toInt();
+      Serial.println("IR Sensor FR Threshold Set (" +
+                     String(hardware::sensors::irFRThreshold) + ")");
+    }
+  } else if (command.startsWith("bl ")) {
+    if (command.substring(3).startsWith("r")) {
+      Serial.println("IR Sensor BL: " + String(analogRead(PIN_IR_BL)) + " | " +
+                     hardware::sensors::isBlackDetectedBL() + "(" +
+                     hardware::sensors::irBLThreshold + ")");
+    } else if (command.substring(3).startsWith("ts ")) {
+      hardware::sensors::irBLThreshold = command.substring(6).toInt();
+      Serial.println("IR Sensor BL Threshold Set (" +
+                     String(hardware::sensors::irBLThreshold) + ")");
+    }
+  } else if (command.startsWith("br ")) {
+    if (command.substring(3).startsWith("r")) {
+      Serial.println("IR Sensor BR: " + String(analogRead(PIN_IR_BR)) + " | " +
+                     hardware::sensors::isBlackDetectedBR() + "(" +
+                     hardware::sensors::irBRThreshold + ")");
+    } else if (command.substring(3).startsWith("ts ")) {
+      hardware::sensors::irBRThreshold = command.substring(6).toInt();
+      Serial.println("IR Sensor BR Threshold Set (" +
+                     String(hardware::sensors::irBRThreshold) + ")");
+    }
   } else {
     Serial.println("Invalid command: " + input);
   }
 }
 
-void control::manual::lcd(String command) {
+void control::manual::laserPhotoresistor(const String &command) {
+  if (command.startsWith("r")) {
+    Serial.println(
+        "Laser Photoresistor: " + String(analogRead(PIN_LASER_PHOTORESISTOR)) +
+        " | " + String(hardware::sensors::isLaserBlocked()) + "(" +
+        String(hardware::sensors::laserPOTThreshold) + ")");
+  } else if (command.startsWith("ts ")) {
+    hardware::sensors::laserPOTThreshold = command.substring(3).toInt();
+    Serial.println("Laser Photoresistor Threshold Set (" +
+                   String(hardware::sensors::laserPOTThreshold) + ")");
+  } else {
+    Serial.println("Invalid command: " + input);
+  }
+}
+
+void control::manual::irDistanceSensor(const String &command) {
+  if (command.startsWith("dr")) {
+    Serial.println("IR Distance Sensor: " +
+                   String(hardware::sensors::irDistance.getDistance()));
+  } else if (command.startsWith("mr")) {
+    Serial.println("IR Distance Sensor Mode :" +
+                   String(hardware::sensors::irDistance.getMode()));
+  } else if (command.startsWith("ms ")) {
+    hardware::sensors::irDistance.setMode((byte)command.substring(3).toInt());
+    Serial.println("IR Distance Sensor Mode Set (" + command.substring(3) +
+                   ")");
+  } else {
+    Serial.println("Invalid command: " + input);
+  }
+}
+
+void control::manual::lcd(const String &command) {
   if (command.startsWith("println ")) {
     hardware::lcd.print(command.substring(8) + '\n');
   } else if (command == "clr") {
