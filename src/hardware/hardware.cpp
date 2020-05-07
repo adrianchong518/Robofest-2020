@@ -1,5 +1,7 @@
 #include "hardware/hardware.h"
 
+#include "constants.h"
+
 hardware::Rail hardware::rail(PIN_RAIL_PUL, PIN_RAIL_DIR, PIN_RAIL_HOME_L,
                               PIN_RAIL_HOME_R, RAIL_STEP_PER_MM);
 hardware::TurnTable hardware::turnTable(PIN_TURN_CW, PIN_TURN_CCW,
@@ -21,19 +23,11 @@ hardware::Motor hardware::wheelBR(PIN_WHEEL_BR_INA, PIN_WHEEL_BR_INB,
                                   PIN_WHEEL_BR_PWM);
 hardware::Mecanum hardware::mecanum(&wheelFL, &wheelFR, &wheelBL, &wheelBR);
 
-GY53 hardware::irDistance(&SERIAL_IR_DISTANCE, SERIAL_IR_DISTANCE_BAUDRATE);
-
 hd44780_I2Cexp hardware::lcd(I2C_LCD_ADDR);
 
 void hardware::init() {
-  // IR Sensors
-  pinMode(PIN_IR_FL, INPUT);
-  pinMode(PIN_IR_FR, INPUT);
-  pinMode(PIN_IR_BL, INPUT);
-  pinMode(PIN_IR_BR, INPUT);
-
-  // Laser Photoresistor
-  pinMode(PIN_LASER_PHOTORESISTOR, INPUT);
+  // Sensors
+  hardware::sensors::init();
 
   // Encoder
   hardware::encoders::init();
@@ -60,7 +54,13 @@ void hardware::init() {
   PORT_SW_BTN = 0x00 | (PORT_SW_BTN & 0x01);
 }
 
-void hardware::calibrate() { mecanum.findRotationOffset(); }
+void hardware::calibrate() {
+  // Sensors
+  hardware::sensors::calibrate();
+
+  // Mecanum (Gyroscope)
+  mecanum.findRotationOffset();
+}
 
 void hardware::defaultPosition() {
   rail.home();
@@ -74,6 +74,7 @@ void hardware::loop() {
   turnTable.update();
   ballHitter.update(hardware::encoders::hitterEncoderLocation);
   hardware::encoders::loop();
+  hardware::sensors::loop();
 }
 
 byte hardware::readDIPSwitches() { return ~PIN_SW_BTN >> BITS_DIP_SW; }
