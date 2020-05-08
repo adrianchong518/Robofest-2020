@@ -133,46 +133,25 @@ void control::manual::ballHitter(const String &command) {
 }
 
 void control::manual::irSensors(const String &command) {
-  if (command.startsWith("fl ")) {
-    if (command.substring(3).startsWith("r")) {
-      Serial.println("IR Sensor FL: " + String(analogRead(PIN_IR_FL)) + " | " +
-                     hardware::sensors::isBlackDetectedFL() + "(" +
-                     hardware::sensors::irFLThreshold + ")");
-    } else if (command.substring(3).startsWith("ts ")) {
-      hardware::sensors::irFLThreshold = command.substring(6).toInt();
-      Serial.println("IR Sensor FL Threshold Set (" +
-                     String(hardware::sensors::irFLThreshold) + ")");
-    }
-  } else if (command.startsWith("fr ")) {
-    if (command.substring(3).startsWith("r")) {
-      Serial.println("IR Sensor FR: " + String(analogRead(PIN_IR_FR)) + " | " +
-                     hardware::sensors::isBlackDetectedFR() + "(" +
-                     hardware::sensors::irFRThreshold + ")");
-    } else if (command.substring(3).startsWith("ts ")) {
-      hardware::sensors::irFRThreshold = command.substring(6).toInt();
-      Serial.println("IR Sensor FR Threshold Set (" +
-                     String(hardware::sensors::irFRThreshold) + ")");
-    }
-  } else if (command.startsWith("bl ")) {
-    if (command.substring(3).startsWith("r")) {
-      Serial.println("IR Sensor BL: " + String(analogRead(PIN_IR_BL)) + " | " +
-                     hardware::sensors::isBlackDetectedBL() + "(" +
-                     hardware::sensors::irBLThreshold + ")");
-    } else if (command.substring(3).startsWith("ts ")) {
-      hardware::sensors::irBLThreshold = command.substring(6).toInt();
-      Serial.println("IR Sensor BL Threshold Set (" +
-                     String(hardware::sensors::irBLThreshold) + ")");
-    }
-  } else if (command.startsWith("br ")) {
-    if (command.substring(3).startsWith("r")) {
-      Serial.println("IR Sensor BR: " + String(analogRead(PIN_IR_BR)) + " | " +
-                     hardware::sensors::isBlackDetectedBR() + "(" +
-                     hardware::sensors::irBRThreshold + ")");
-    } else if (command.substring(3).startsWith("ts ")) {
-      hardware::sensors::irBRThreshold = command.substring(6).toInt();
-      Serial.println("IR Sensor BR Threshold Set (" +
-                     String(hardware::sensors::irBRThreshold) + ")");
-    }
+  if (command.startsWith("fl")) {
+    Serial.println("IR Sensor FL: " + String(analogRead(PIN_IR_FL)) + " | " +
+                   String(hardware::sensors::isBlackDetected(PIN_IR_FL)));
+  } else if (command.startsWith("fr")) {
+    Serial.println("IR Sensor FR: " + String(analogRead(PIN_IR_FR)) + " | " +
+                   String(hardware::sensors::isBlackDetected(PIN_IR_FR)));
+  } else if (command.startsWith("bl")) {
+    Serial.println("IR Sensor BL: " + String(analogRead(PIN_IR_BL)) + " | " +
+                   String(hardware::sensors::isBlackDetected(PIN_IR_BL)));
+  } else if (command.startsWith("br")) {
+    Serial.println("IR Sensor BR: " + String(analogRead(PIN_IR_BR)) + " | " +
+                   String(hardware::sensors::isBlackDetected(PIN_IR_BR)));
+  } else if (command.startsWith("tr")) {
+    Serial.println("IR Sensor Threshold: " +
+                   String(hardware::sensors::irThreshold));
+  } else if (command.startsWith("ts ")) {
+    hardware::sensors::irThreshold = command.substring(3).toInt();
+    Serial.println("IR Sensors Threshold Set (" +
+                   String(hardware::sensors::irThreshold) + ")");
   } else {
     Serial.println("Invalid command: " + input);
   }

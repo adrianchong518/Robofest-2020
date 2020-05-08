@@ -8,11 +8,7 @@ namespace sensors {
 
 extern GY53 irDistance;
 
-extern int irFLThreshold;
-extern int irFRThreshold;
-extern int irBLThreshold;
-extern int irBRThreshold;
-
+extern int irThreshold;
 extern int laserPOTThreshold;
 
 void init();
@@ -21,10 +17,7 @@ void calibrate();
 
 void loop();
 
-bool isBlackDetectedFL();
-bool isBlackDetectedFR();
-bool isBlackDetectedBL();
-bool isBlackDetectedBR();
+bool isBlackDetected(const uint8_t pin_ir);
 
 bool isLaserBlocked();
 
