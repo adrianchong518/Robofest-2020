@@ -15,6 +15,8 @@ void rail(double target);
 void turnTable(double target);
 void ballHitter(const String &command);
 
+void measureDistance(const String &command);
+
 void irSensors(const String &command);
 void laserPhotoresistor(const String &command);
 void irDistanceSensor(const String &command);

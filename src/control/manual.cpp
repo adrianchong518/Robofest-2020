@@ -36,12 +36,12 @@ void control::manual::parseInput() {
     hardware::servos::setHolderLeft(!hardware::servos::isHolderLeftExtented);
   } else if (input.startsWith("gr")) {
     hardware::servos::setHolderRight(!hardware::servos::isHolderRightExtented);
-  } else if (input.startsWith("ms")) {
-    hardware::servos::setMeasureServo(
-        !hardware::servos::isMeasureServoExtented);
+  } else if (input.startsWith("md ")) {
+    measureDistance(input.substring(3));
   } else if (input.startsWith("ir ")) {
     irSensors(input.substring(3));
-  } else if (input.startsWith("lr")) {
+  } else if (input.startsWith("lr ")) {
+    laserPhotoresistor(input.substring(3));
   } else if (input.startsWith("ird ")) {
     irDistanceSensor(input.substring(4));
   } else if (input.startsWith("lcd ")) {
@@ -127,6 +127,29 @@ void control::manual::ballHitter(const String &command) {
       default:
         break;
     }
+  } else if (command.startsWith("dr")) {
+    Serial.println("Ball Hitter Encoder Reading: " +
+                   String(hardware::encoders::hitterEncoderLocation /
+                          (double)HITTER_ENCODER_STEP_PER_DEG));
+  } else if (command.startsWith("rt")) {
+    hardware::encoders::resetLocation(PIN_HITTER_ENCODER_RST);
+    Serial.println("Ball Hitter Encoder Reset");
+  } else {
+    Serial.println("Invalid command: " + input);
+  }
+}
+
+void control::manual::measureDistance(const String &command) {
+  if (command.startsWith("s")) {
+    hardware::servos::setMeasureServo(
+        !hardware::servos::isMeasureServoExtented);
+  } else if (command.startsWith("dr")) {
+    Serial.println("Measuring Encoder Reading: " +
+                   String(hardware::encoders::measureEncoderLocation /
+                          (double)MEASURE_ENCODER_STEP_PER_MM));
+  } else if (command.startsWith("rst")) {
+    hardware::encoders::resetLocation(PIN_MEASURE_ENCODER_RST);
+    Serial.println("Measure Encoder Reset");
   } else {
     Serial.println("Invalid command: " + input);
   }
