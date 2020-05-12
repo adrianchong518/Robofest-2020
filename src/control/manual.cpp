@@ -212,9 +212,11 @@ void control::manual::irDistanceSensor(const String &command) {
 }
 
 void control::manual::lcd(const String &command) {
-  if (command.startsWith("println ")) {
-    hardware::lcd.print(command.substring(8) + '\n');
-  } else if (command == "clr") {
+  if (command.startsWith("print ")) {
+    hardware::lcd.print(command.substring(8));
+  } else if (command.startsWith("nl")) {
+    hardware::lcd.setCursor(0, 1);
+  } else if (command.startsWith("clr")) {
     hardware::lcd.clear();
   } else {
     Serial.println("Invalid command: " + input);

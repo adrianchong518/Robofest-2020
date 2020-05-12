@@ -11,34 +11,49 @@ byte operationMode;
 void setup() {
   Serial.begin(115200);
 
-  // Disable Interrupts
-  noInterrupts();
-
   // Hardware Initialisation
   LOG("Initialisation Start...");
   hardware::init();
   LOG("Complete");
 
-  // Reenable Interrupts
-  interrupts();
+  // Read operation mode
+  operationMode = hardware::readDIPSwitches();
+  hardware::lcd.print("Mode:" +
+                      String(bitRead(operationMode, 0) ? "Manual" : "Auto"));
+  hardware::lcd.setCursor(0, 1);
+  hardware::lcd.print("Init...     Done");
 
   // Hardware Calibration
   while (digitalRead(PIN_BUTTON_1))
     ;
+  hardware::lcd.setCursor(0, 1);
+  hardware::lcd.print("Calibrate...    ");
   LOG("Calibration Start...");
+
   hardware::calibrate();
+
   LOG("Complete");
+  hardware::lcd.setCursor(12, 1);
+  hardware::lcd.print("Done");
 
   // Setting hardware default position (home)
   while (digitalRead(PIN_BUTTON_1))
     ;
+  hardware::lcd.setCursor(0, 1);
+  hardware::lcd.print("Homing...       ");
   LOG("Setting to default positions...");
-  hardware::defaultPosition();
-  LOG("Complete");
 
-  operationMode = hardware::readDIPSwitches();
+  hardware::defaultPosition();
+
+  LOG("Complete");
+  hardware::lcd.setCursor(12, 1);
+  hardware::lcd.print("Done");
+
+  // Start main loop
   while (digitalRead(PIN_BUTTON_1))
     ;
+  hardware::lcd.setCursor(0, 1);
+  hardware::lcd.print("Loop Running... ");
   LOG("Main loop starts...");
 }
 
