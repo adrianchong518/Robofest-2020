@@ -14,6 +14,7 @@ void parseInput();
 void rail(double target);
 void turnTable(double target);
 void ballHitter(const String &command);
+void mecanum(const String &command);
 
 void measureDistance(const String &command);
 

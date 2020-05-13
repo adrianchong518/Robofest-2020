@@ -28,6 +28,8 @@ void control::manual::parseInput() {
     turnTable(input.substring(3).toDouble());
   } else if (input.startsWith("bh ")) {
     ballHitter(input.substring(3));
+  } else if (input.startsWith("m ")) {
+    ballHitter(input.substring(2));
   } else if (input.startsWith("hl")) {
     hardware::servos::setGuideLeft(!hardware::servos::isGuideLeftExtented);
   } else if (input.startsWith("hr")) {
@@ -134,6 +136,24 @@ void control::manual::ballHitter(const String &command) {
   } else if (command.startsWith("rt")) {
     hardware::encoders::resetLocation(PIN_HITTER_ENCODER_RST);
     Serial.println("Ball Hitter Encoder Reset");
+  } else {
+    Serial.println("Invalid command: " + input);
+  }
+}
+
+void control::manual::mecanum(const String &command) {
+  if (command.startsWith("s ")) {
+    unsigned int speed = command.substring(2).toInt();
+    hardware::mecanum.setSpeed(speed);
+    Serial.println("Mecanum Speed (" + String(speed) + ") Set");
+  } else if (command.startsWith("d ")) {
+    double direction = command.substring(2).toDouble();
+    hardware::mecanum.setDirection(direction);
+    Serial.println("Mecanum Direction (" + String(direction) + ") Set");
+  } else if (command.startsWith("r ")) {
+    double rotation = command.substring(2).toDouble();
+    hardware::mecanum.setRotationTarget(rotation);
+    Serial.println("Mecanum Rotation Target (" + String(rotation) + ") Set");
   } else {
     Serial.println("Invalid command: " + input);
   }
