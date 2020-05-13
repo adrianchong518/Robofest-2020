@@ -21,7 +21,7 @@ class Rail : public Stepper {
 
   void update();
 
-  void home();
+  void home(const unsigned long pulseWidth);
 
   double getLocationMM();
 

@@ -19,7 +19,7 @@ class TurnTable : public Stepper {
             const double stepPerDeg);
   ~TurnTable();
 
-  void home();
+  void home(const unsigned long pulseWidth);
 
   double getLocationDeg();
 

@@ -23,7 +23,7 @@ hardware::Motor hardware::wheelBR(PIN_WHEEL_BR_INA, PIN_WHEEL_BR_INB,
                                   PIN_WHEEL_BR_PWM);
 hardware::Mecanum hardware::mecanum(&wheelFL, &wheelFR, &wheelBL, &wheelBR);
 
-hd44780_I2Cexp hardware::lcd(I2C_LCD_ADDR);
+hd44780_I2Cexp hardware::lcd;  //(I2C_LCD_ADDR);
 
 void hardware::init() {
   // Sensors
@@ -31,6 +31,9 @@ void hardware::init() {
 
   // Encoder
   hardware::encoders::init();
+
+  // Rail
+  rail.setPulseWidth(RAIL_PULSE_WIDTH);
 
   // Turn Table
   turnTable.setPulseWidth(TURN_PULSE_WIDTH);
@@ -63,8 +66,14 @@ void hardware::calibrate() {
 }
 
 void hardware::defaultPosition() {
-  rail.home();
-  turnTable.home();
+  turnTable.home(TURN_PULSE_WIDTH);
+  turnTable.setTargetDeg(30);
+  while (!turnTable.isTargetReached()) {
+    turnTable.update();
+  }
+
+  rail.home(RAIL_PULSE_WIDTH);
+
   hardware::servos::defaultPosition();
   hardware::encoders::defaultPosition();
 }

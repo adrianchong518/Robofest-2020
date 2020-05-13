@@ -48,9 +48,10 @@ void hardware::Rail::update() {
     setPulseWidth(PULSE_WIDTH);
   }
 }
-void hardware::Rail::home() {
+
+void hardware::Rail::home(const unsigned long pulseWidth) {
   unsigned int prevPulseWidth = m_pulseWidth;
-  setPulseWidth(m_maxPulseWidth);
+  setPulseWidth(pulseWidth);
 
   while (digitalRead(m_pin_rightLimitSwitch) == HIGH) {
     genPulse(-1);
@@ -59,6 +60,7 @@ void hardware::Rail::home() {
   setPulseWidth(prevPulseWidth);
   setHomePosition();
 }
+
 double hardware::Rail::getLocationMM() { return getLocation() / m_stepPerMM; }
 
 void hardware::Rail::setStepLimitMM(const double stepLowerLimitMM,

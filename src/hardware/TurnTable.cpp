@@ -13,9 +13,9 @@ hardware::TurnTable::TurnTable(const uint8_t pin_cw, const uint8_t pin_ccw,
 
 hardware::TurnTable::~TurnTable() {}
 
-void hardware::TurnTable::home() {
+void hardware::TurnTable::home(const unsigned long pulseWidth) {
   unsigned int prevPulseWidth = m_pulseWidth;
-  setPulseWidth(m_maxPulseWidth);
+  setPulseWidth(pulseWidth);
 
   while (analogRead(m_pin_homeSensor) <= m_sensorThreshold) {
     genPulse(1);
