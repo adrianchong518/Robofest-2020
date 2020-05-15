@@ -1,9 +1,9 @@
 .DS_Store
 
 .pio
-.vscode
 
 circuit
+lib
 
 .ccls
 .ccls-cache
