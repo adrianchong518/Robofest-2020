@@ -34,8 +34,8 @@
 #define PIN_WHEEL_FL_PWM 2
 
 #define PIN_WHEEL_FR_INA 11
-#define PIN_WHEEL_FR_INB 8
-#define PIN_WHEEL_FR_PWM 9
+#define PIN_WHEEL_FR_INB 9
+#define PIN_WHEEL_FR_PWM 8
 
 #define PIN_WHEEL_BL_INA 22
 #define PIN_WHEEL_BL_INB 23

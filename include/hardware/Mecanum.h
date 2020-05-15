@@ -10,6 +10,9 @@
 namespace hardware {
 
 class Mecanum {
+ public:
+  bool m_isGyroEnabled = true;
+
  private:
   Motor *const m_wheelFL;
   Motor *const m_wheelFR;
@@ -23,6 +26,11 @@ class Mecanum {
   double m_rotation;
   int m_rotationSpeedDiff;
   double m_rotationOffset;
+
+  int m_wheelFLSpeed = 0;
+  int m_wheelFRSpeed = 0;
+  int m_wheelBLSpeed = 0;
+  int m_wheelBRSpeed = 0;
 
  public:
   Mecanum(Motor *const wheelFL, Motor *const wheelFR, Motor *const wheelBL,
@@ -42,11 +50,16 @@ class Mecanum {
   void setRotationSpeedDiff(const int rotationSpeedDiff);
 
   double getRotationTarget();
-  void setRotationTarget(const double rotationTarget);
+  void setRotationTarget(double rotationTarget);
 
   bool isRotationTargetReached();
 
+  void getMotorsSpeeds(int &wheelFLSpeed, int &wheelFRSpeed, int &wheelBLSpeed,
+                       int &wheelBRSpeed);
   void setMotorsSpeeds();
+
+  bool isGyroEnabled();
+  void setIsGyroEnabled(bool isGyroEnabled);
 };
 
 }  // namespace hardware

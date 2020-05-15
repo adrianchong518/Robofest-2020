@@ -82,6 +82,7 @@ void hardware::loop() {
   rail.update();
   turnTable.update();
   ballHitter.update(hardware::encoders::hitterEncoderLocation);
+  mecanum.update();
   hardware::encoders::loop();
   hardware::sensors::loop();
 }

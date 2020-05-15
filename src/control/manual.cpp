@@ -29,7 +29,7 @@ void control::manual::parseInput() {
   } else if (input.startsWith("bh ")) {
     ballHitter(input.substring(3));
   } else if (input.startsWith("m ")) {
-    ballHitter(input.substring(2));
+    mecanum(input.substring(2));
   } else if (input.startsWith("hl")) {
     hardware::servos::setGuideLeft(!hardware::servos::isGuideLeftExtented);
   } else if (input.startsWith("hr")) {
@@ -133,7 +133,7 @@ void control::manual::ballHitter(const String &command) {
     Serial.println("Ball Hitter Encoder Reading: " +
                    String(hardware::encoders::hitterEncoderLocation /
                           (double)HITTER_ENCODER_STEP_PER_DEG));
-  } else if (command.startsWith("rt")) {
+  } else if (command.startsWith("rst")) {
     hardware::encoders::resetLocation(PIN_HITTER_ENCODER_RST);
     Serial.println("Ball Hitter Encoder Reset");
   } else {
@@ -148,12 +148,24 @@ void control::manual::mecanum(const String &command) {
     Serial.println("Mecanum Speed (" + String(speed) + ") Set");
   } else if (command.startsWith("d ")) {
     double direction = command.substring(2).toDouble();
-    hardware::mecanum.setDirection(direction);
+    hardware::mecanum.setDirection(radians(direction));
     Serial.println("Mecanum Direction (" + String(direction) + ") Set");
   } else if (command.startsWith("r ")) {
     double rotation = command.substring(2).toDouble();
-    hardware::mecanum.setRotationTarget(rotation);
+    hardware::mecanum.setRotationTarget(radians(rotation));
     Serial.println("Mecanum Rotation Target (" + String(rotation) + ") Set");
+  } else if (command.startsWith("ms")) {
+    int wheelFLSpeed, wheelFRSpeed, wheelBLSpeed, wheelBRSpeed;
+    hardware::mecanum.getMotorsSpeeds(wheelFLSpeed, wheelFRSpeed, wheelBLSpeed,
+                                      wheelBRSpeed);
+    Serial.println("Mecanum Wheels Speeds: " + String(wheelFLSpeed) + " | " +
+                   String(wheelFRSpeed) + " | " + String(wheelBLSpeed) + " | " +
+                   String(wheelBRSpeed));
+  } else if (command.startsWith("gt")) {
+    hardware::mecanum.m_isGyroEnabled = !hardware::mecanum.m_isGyroEnabled;
+    Serial.println(
+        "Meacanum Gyroscope " +
+        String(hardware::mecanum.m_isGyroEnabled ? "Enabled" : "Disabled"));
   } else {
     Serial.println("Invalid command: " + input);
   }
