@@ -18,6 +18,7 @@ void setup() {
 
   // Read operation mode
   operationMode = hardware::readDIPSwitches();
+  LOG("Operatoin Mode: " + String(operationMode, BIN));
   hardware::lcd.print("Mode:" +
                       String(bitRead(operationMode, 0) ? "Manual" : "Auto"));
   hardware::lcd.setCursor(0, 1);
@@ -43,11 +44,17 @@ void setup() {
   hardware::lcd.print("Homing...       ");
   LOG("Setting to default positions...");
 
-  hardware::defaultPosition();
+  if (bitRead(operationMode, 1)) {
+    hardware::defaultPosition();
 
-  LOG("Complete");
-  hardware::lcd.setCursor(12, 1);
-  hardware::lcd.print("Done");
+    LOG("Complete");
+    hardware::lcd.setCursor(12, 1);
+    hardware::lcd.print("Done");
+  } else {
+    LOG("Skipped");
+    hardware::lcd.setCursor(9, 1);
+    hardware::lcd.print("Skipped");
+  }
 
   // Start main loop
   while (digitalRead(PIN_BUTTON_1))
