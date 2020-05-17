@@ -11,6 +11,8 @@ extern String input;
 void loop();
 void parseInput();
 
+void hardware(const String &command);
+
 void rail(double target);
 void turnTable(double target);
 void ballHitter(const String &command);

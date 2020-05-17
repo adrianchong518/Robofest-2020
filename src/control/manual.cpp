@@ -22,7 +22,9 @@ void control::manual::parseInput() {
     return;
   }
 
-  if (input.startsWith("r ")) {
+  if (input.startsWith("h ")) {
+    hardware(input.substring(2));
+  } else if (input.startsWith("r ")) {
     rail(input.substring(2).toDouble());
   } else if (input.startsWith("tt ")) {
     turnTable(input.substring(3).toDouble());
@@ -48,6 +50,20 @@ void control::manual::parseInput() {
     irDistanceSensor(input.substring(4));
   } else if (input.startsWith("lcd ")) {
     lcd(input.substring(4));
+  } else {
+    Serial.println("Invalid command: " + input);
+  }
+}
+
+void control::manual::hardware(const String &command) {
+  if (command.startsWith("c")) {
+    Serial.println("Hardware Calibrating...");
+    hardware::calibrate();
+    Serial.println("Done");
+  } else if (command.startsWith("h")) {
+    Serial.println("Hardware Homing...");
+    hardware::defaultPosition();
+    Serial.println("Done");
   } else {
     Serial.println("Invalid command: " + input);
   }
