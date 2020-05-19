@@ -8,8 +8,8 @@
 #define PIN_RAIL_HOME_L 47
 #define PIN_RAIL_HOME_R A0
 
-#define PIN_TURN_CW 52
-#define PIN_TURN_CCW 53
+#define PIN_TURN_CW 53
+#define PIN_TURN_CCW 52
 #define PIN_TURN_HOME A11
 
 #define PIN_IR_FL A12

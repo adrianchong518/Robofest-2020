@@ -4,7 +4,7 @@ hardware::TurnTable::TurnTable(const uint8_t pin_cw, const uint8_t pin_ccw,
                                const uint8_t pin_homeSensor,
                                const int sensorThreshold,
                                const double stepPerDeg)
-    : Stepper(pin_cw, pin_ccw, CW_CCW_PULSE),
+    : Stepper(pin_cw, pin_ccw, CW_CCW_PULSE, HIGH),
       m_pin_homeSensor(pin_homeSensor),
       m_sensorThreshold(sensorThreshold),
       m_stepPerDeg(stepPerDeg) {

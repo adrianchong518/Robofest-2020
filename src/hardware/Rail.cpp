@@ -43,8 +43,8 @@ void hardware::Rail::update() {
       }
     }
   } else {
-    digitalWrite(m_pin_control1, LOW);
-    digitalWrite(m_pin_control2, LOW);
+    digitalWrite(m_pin_control1, m_inactiveState);
+    digitalWrite(m_pin_control2, m_inactiveState);
     setPulseWidth(PULSE_WIDTH);
   }
 }
