@@ -13,8 +13,8 @@ void parseInput();
 
 void hardware(const String &command);
 
-void rail(double target);
-void turnTable(double target);
+void rail(const String &command);
+void turnTable(const String &command);
 void ballHitter(const String &command);
 void mecanum(const String &command);
 

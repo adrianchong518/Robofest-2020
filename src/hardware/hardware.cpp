@@ -66,15 +66,20 @@ void hardware::calibrate() {
 }
 
 void hardware::defaultPosition() {
+  // Servos
+  hardware::servos::defaultPosition();
+
+  // Turn Table
   turnTable.home(TURN_PULSE_WIDTH);
   turnTable.setTargetDeg(30);
   while (!turnTable.isTargetReached()) {
     turnTable.update();
   }
 
+  // Rail
   rail.home(RAIL_PULSE_WIDTH);
 
-  hardware::servos::defaultPosition();
+  // Encoders
   hardware::encoders::defaultPosition();
 }
 

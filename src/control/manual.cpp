@@ -25,9 +25,9 @@ void control::manual::parseInput() {
   if (input.startsWith("h ")) {
     hardware(input.substring(2));
   } else if (input.startsWith("r ")) {
-    rail(input.substring(2).toDouble());
+    rail(input.substring(2));
   } else if (input.startsWith("tt ")) {
-    turnTable(input.substring(3).toDouble());
+    turnTable(input.substring(3));
   } else if (input.startsWith("bh ")) {
     ballHitter(input.substring(3));
   } else if (input.startsWith("m ")) {
@@ -69,41 +69,95 @@ void control::manual::hardware(const String &command) {
   }
 }
 
-void control::manual::rail(double target) {
-  hardware::Rail::CODES returnCode = hardware::rail.setTargetMM(target);
+void control::manual::rail(const String &command) {
+  if (command.startsWith("d ")) {
+    double target = command.substring(2).toDouble();
+    hardware::Rail::CODES returnCode = hardware::rail.setTargetMM(target);
 
-  switch (returnCode) {
-    case hardware::Rail::NO_ERROR:
-      Serial.println("Rail Target (" + String(target) + ") Set");
-      break;
+    switch (returnCode) {
+      case hardware::Rail::NO_ERROR:
+        Serial.println("Rail Target (" + String(target) + " mm) Set");
+        break;
 
-    case hardware::Rail::ERROR_TARGET_EXCEEDS_LIMIT:
-      Serial.println("Rail Target (" + String(target) + ") Exceeds Limit");
-      break;
+      case hardware::Rail::ERROR_TARGET_EXCEEDS_LIMIT:
+        Serial.println("Rail Target (" + String(target) + " mm) Exceeds Limit");
+        break;
 
-    default:
-      Serial.println("Unknown Error");
-      break;
+      default:
+        Serial.println("Unknown Error");
+        break;
+    }
+  } else if (command.startsWith("s ")) {
+    long target = command.substring(2).toInt();
+    hardware::Rail::CODES returnCode = hardware::rail.setTarget(target);
+
+    switch (returnCode) {
+      case hardware::Rail::NO_ERROR:
+        Serial.println("Rail Target (" + String(target) + " steps) Set");
+        break;
+
+      case hardware::Rail::ERROR_TARGET_EXCEEDS_LIMIT:
+        Serial.println("Rail Target (" + String(target) +
+                       " steps) Exceeds Limit");
+        break;
+
+      default:
+        Serial.println("Unknown Error");
+        break;
+    }
+  } else if (command.startsWith("lr")) {
+    Serial.println("Rail Location: " + String(hardware::rail.getLocationMM()) +
+                   " mm (" + String(hardware::rail.getLocation()) + " steps)");
+  } else {
+    Serial.println("Invalid command: " + input);
   }
 }
 
-void control::manual::turnTable(double target) {
-  hardware::TurnTable::CODES returnCode =
-      hardware::turnTable.setTargetDeg(target);
+void control::manual::turnTable(const String &command) {
+  if (command.startsWith("d ")) {
+    double target = command.substring(2).toDouble();
+    hardware::TurnTable::CODES returnCode =
+        hardware::turnTable.setTargetDeg(target);
 
-  switch (returnCode) {
-    case hardware::TurnTable::NO_ERROR:
-      Serial.println("Turn Table Target (" + String(target) + ") Set");
-      break;
+    switch (returnCode) {
+      case hardware::TurnTable::NO_ERROR:
+        Serial.println("Turn Table Target (" + String(target) + " deg) Set");
+        break;
 
-    case hardware::TurnTable::ERROR_TARGET_EXCEEDS_LIMIT:
-      Serial.println("Turn Table Target (" + String(target) +
-                     ") Exceeds Limit");
-      break;
+      case hardware::TurnTable::ERROR_TARGET_EXCEEDS_LIMIT:
+        Serial.println("Turn Table Target (" + String(target) +
+                       " deg) Exceeds Limit");
+        break;
 
-    default:
-      Serial.println("Unknown Error");
-      break;
+      default:
+        Serial.println("Unknown Error");
+        break;
+    }
+  } else if (command.startsWith("s ")) {
+    long target = command.substring(2).toInt();
+    hardware::TurnTable::CODES returnCode =
+        hardware::turnTable.setTarget(target);
+
+    switch (returnCode) {
+      case hardware::TurnTable::NO_ERROR:
+        Serial.println("Turn Table Target (" + String(target) + " steps) Set");
+        break;
+
+      case hardware::TurnTable::ERROR_TARGET_EXCEEDS_LIMIT:
+        Serial.println("Turn Table Target (" + String(target) +
+                       " steps) Exceeds Limit");
+        break;
+
+      default:
+        Serial.println("Unknown Error");
+        break;
+    }
+  } else if (command.startsWith("lr")) {
+    Serial.println(
+        "Turn Table Location: " + String(hardware::turnTable.getLocationDeg()) +
+        " deg (" + String(hardware::turnTable.getLocation()) + " steps)");
+  } else {
+    Serial.println("Invalid command: " + input);
   }
 }
 
@@ -145,10 +199,11 @@ void control::manual::ballHitter(const String &command) {
       default:
         break;
     }
-  } else if (command.startsWith("dr")) {
+  } else if (command.startsWith("lr")) {
     Serial.println("Ball Hitter Encoder Reading: " +
                    String(hardware::encoders::hitterEncoderLocation /
-                          (double)HITTER_ENCODER_STEP_PER_DEG));
+                          (double)HITTER_ENCODER_STEP_PER_DEG) +
+                   " (" + hardware::encoders::hitterEncoderLocation + ")");
   } else if (command.startsWith("rst")) {
     hardware::encoders::resetLocation(PIN_HITTER_ENCODER_RST);
     Serial.println("Ball Hitter Encoder Reset");
@@ -188,13 +243,14 @@ void control::manual::mecanum(const String &command) {
 }
 
 void control::manual::measureDistance(const String &command) {
-  if (command.startsWith("s")) {
+  if (command.startsWith("servo")) {
     hardware::servos::setMeasureServo(
         !hardware::servos::isMeasureServoExtented);
-  } else if (command.startsWith("dr")) {
+  } else if (command.startsWith("lr")) {
     Serial.println("Measuring Encoder Reading: " +
                    String(hardware::encoders::measureEncoderLocation /
-                          (double)MEASURE_ENCODER_STEP_PER_MM));
+                          (double)MEASURE_ENCODER_STEP_PER_MM) +
+                   " (" + hardware::encoders::measureEncoderLocation + ")");
   } else if (command.startsWith("rst")) {
     hardware::encoders::resetLocation(PIN_MEASURE_ENCODER_RST);
     Serial.println("Measure Encoder Reset");
