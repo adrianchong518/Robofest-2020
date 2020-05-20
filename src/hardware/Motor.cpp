@@ -14,11 +14,11 @@ hardware::Motor::~Motor() {}
 
 void hardware::Motor::setSpeed(const int speed) {
   if (speed > 0) {
-    digitalWrite(m_pin_inA, HIGH);
-    digitalWrite(m_pin_inB, LOW);
-  } else if (speed < 0) {
     digitalWrite(m_pin_inA, LOW);
     digitalWrite(m_pin_inB, HIGH);
+  } else if (speed < 0) {
+    digitalWrite(m_pin_inA, HIGH);
+    digitalWrite(m_pin_inB, LOW);
   } else {
     digitalWrite(m_pin_inA, HIGH);
     digitalWrite(m_pin_inB, HIGH);
