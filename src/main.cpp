@@ -12,56 +12,57 @@ void setup() {
   Serial.begin(115200);
 
   // Hardware Initialisation
-  LOG("Initialisation Start...");
+  LOG("<Hardware> Init Start...");
   hardware::init();
-  LOG("Complete");
+  LOG("<Hardware> Init Complete");
 
   // Read operation mode
   operationMode = hardware::readDIPSwitches();
-  LOG("Operatoin Mode: " + String(operationMode, BIN));
+  LOG("<Hardware> Operatoin Mode: " + String(operationMode, BIN));
   hardware::lcd.print("Mode:" +
                       String(bitRead(operationMode, 0) ? "Manual" : "Auto"));
   hardware::lcd.setCursor(0, 1);
   hardware::lcd.print("Init...     Done");
 
   // Hardware Calibration
-  while (digitalRead(PIN_BUTTON_1))
+  while (digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
     ;
   hardware::lcd.setCursor(0, 1);
   hardware::lcd.print("Calibrate...    ");
-  LOG("Calibration Start...");
+  LOG("<Hardware> Calibration Start...");
 
   hardware::calibrate();
 
-  LOG("Complete");
+  LOG("<Hardware> Calibration Complete");
   hardware::lcd.setCursor(12, 1);
   hardware::lcd.print("Done");
 
   // Setting hardware default position (home)
-  while (digitalRead(PIN_BUTTON_1))
+  while (digitalRead(PIN_BUTTON_1) || Serial.read() != '\n')
     ;
   hardware::lcd.setCursor(0, 1);
   hardware::lcd.print("Homing...       ");
-  LOG("Setting to default positions...");
 
   if (bitRead(operationMode, 1)) {
+    LOG("<Hardware> Homing Start...");
+
     hardware::defaultPosition();
 
-    LOG("Complete");
+    LOG("<Hardware> Homing Complete");
     hardware::lcd.setCursor(12, 1);
     hardware::lcd.print("Done");
   } else {
-    LOG("Skipped");
+    LOG("<Hardware> Homing Skipped");
     hardware::lcd.setCursor(9, 1);
     hardware::lcd.print("Skipped");
   }
 
   // Start main loop
-  while (digitalRead(PIN_BUTTON_1))
+  while (digitalRead(PIN_BUTTON_1) || Serial.read() != '\n')
     ;
   hardware::lcd.setCursor(0, 1);
   hardware::lcd.print("Loop Running... ");
-  LOG("Main loop starts...");
+  LOG("Main Loop: Starts...");
 }
 
 void loop() {

@@ -1,6 +1,7 @@
 #include "hardware/hardware.h"
 
 #include "constants.h"
+#include "utils.h"
 
 hardware::Rail hardware::rail(PIN_RAIL_PUL, PIN_RAIL_DIR, PIN_RAIL_HOME_L,
                               PIN_RAIL_HOME_R, RAIL_STEP_PER_MM);
@@ -59,17 +60,21 @@ void hardware::init() {
 
 void hardware::calibrate() {
   // Sensors
+  LOG("<Sensors> Calibrating");
   hardware::sensors::calibrate();
 
   // Mecanum (Gyroscope)
+  LOG("<Mecanum> Finding rotation offset");
   mecanum.findRotationOffset();
 }
 
 void hardware::defaultPosition() {
   // Servos
+  LOG("<Servos> Setting default positions");
   hardware::servos::defaultPosition();
 
   // Turn Table
+  LOG("<Turn Table> Homing");
   turnTable.home(TURN_PULSE_WIDTH);
   turnTable.setTargetDeg(30);
   while (!turnTable.isTargetReached()) {
@@ -77,9 +82,11 @@ void hardware::defaultPosition() {
   }
 
   // Rail
+  LOG("<Rail> Homing");
   rail.home(RAIL_PULSE_WIDTH);
 
   // Encoders
+  LOG("<Encoders> Resetting");
   hardware::encoders::defaultPosition();
 }
 
@@ -92,4 +99,4 @@ void hardware::loop() {
   hardware::sensors::loop();
 }
 
-byte hardware::readDIPSwitches() { return ~PIN_SW_BTN >> BITS_DIP_SW; }
+byte hardware::readDIPSwitches() { return (~PIN_SW_BTN >> BITS_DIP_SW) & 0x0F; }
