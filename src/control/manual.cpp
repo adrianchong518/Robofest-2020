@@ -235,10 +235,13 @@ void control::manual::mecanum(const String &command) {
     Serial.println("<Mecanum> Wheels Speeds: " + String(wheelFLSpeed) + " | " +
                    String(wheelFRSpeed) + " | " + String(wheelBLSpeed) + " | " +
                    String(wheelBRSpeed));
+  } else if (command.startsWith("rr")) {
+    Serial.println("<Mecanum> Rotation: " +
+                   String(degrees(hardware::mecanum.getRotation())));
   } else if (command.startsWith("gt")) {
     hardware::mecanum.m_isGyroEnabled = !hardware::mecanum.m_isGyroEnabled;
     Serial.println(
-        "<Meacanum> Gyroscope " +
+        "<Mecanum> Gyroscope " +
         String(hardware::mecanum.m_isGyroEnabled ? "Enabled" : "Disabled"));
   } else {
     Serial.println("Invalid command: " + input);

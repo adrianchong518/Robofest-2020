@@ -38,7 +38,7 @@ void setup() {
   hardware::lcd.print("Done");
 
   // Setting hardware default position (home)
-  while (digitalRead(PIN_BUTTON_1) || Serial.read() != '\n')
+  while (digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
     ;
   hardware::lcd.setCursor(0, 1);
   hardware::lcd.print("Homing...       ");
@@ -58,7 +58,7 @@ void setup() {
   }
 
   // Start main loop
-  while (digitalRead(PIN_BUTTON_1) || Serial.read() != '\n')
+  while (digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
     ;
   hardware::lcd.setCursor(0, 1);
   hardware::lcd.print("Loop Running... ");
