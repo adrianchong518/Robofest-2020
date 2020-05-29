@@ -33,13 +33,13 @@ void control::manual::parseInput() {
   } else if (input.startsWith("m ")) {
     mecanum(input.substring(2));
   } else if (input.startsWith("hl")) {
-    hardware::servos::setGuideLeft(!hardware::servos::isGuideLeftExtented);
-  } else if (input.startsWith("hr")) {
-    hardware::servos::setGuideRight(!hardware::servos::isGuideRightExtented);
-  } else if (input.startsWith("gl")) {
     hardware::servos::setHolderLeft(!hardware::servos::isHolderLeftExtented);
-  } else if (input.startsWith("gr")) {
+  } else if (input.startsWith("hr")) {
     hardware::servos::setHolderRight(!hardware::servos::isHolderRightExtented);
+  } else if (input.startsWith("gl")) {
+    hardware::servos::setGuideLeft(!hardware::servos::isGuideLeftExtented);
+  } else if (input.startsWith("gr")) {
+    hardware::servos::setGuideRight(!hardware::servos::isGuideRightExtented);
   } else if (input.startsWith("md ")) {
     measureDistance(input.substring(3));
   } else if (input.startsWith("ir ")) {
@@ -237,7 +237,7 @@ void control::manual::mecanum(const String &command) {
                    String(wheelBRSpeed));
   } else if (command.startsWith("rr")) {
     Serial.println("<Mecanum> Rotation: " +
-                   String(degrees(hardware::mecanum.getRotation())));
+                   String(hardware::mecanum.getRotation()));
   } else if (command.startsWith("gt")) {
     hardware::mecanum.m_isGyroEnabled = !hardware::mecanum.m_isGyroEnabled;
     Serial.println(
