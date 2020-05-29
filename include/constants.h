@@ -80,8 +80,8 @@
 
 // Parameters
 
-#define RAIL_STEP_PER_MM 6.25
-#define RAIL_PULSE_WIDTH 1000
+#define RAIL_STEP_PER_MM 100
+#define RAIL_PULSE_WIDTH 70
 
 #define TURN_STEP_PER_DEG 50
 #define TURN_HOME_THRESHOLD 800
