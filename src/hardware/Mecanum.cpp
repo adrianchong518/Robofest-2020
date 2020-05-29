@@ -1,5 +1,7 @@
 #include "hardware/Mecanum.h"
 
+#include "utils.h"
+
 hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
                            Motor *const wheelBL, Motor *const wheelBR)
     : m_wheelFL(wheelFL),
@@ -22,7 +24,8 @@ void hardware::Mecanum::update() {
       JY901.CopeSerialData(SERIAL_GYROSCOPE.read());
     }
 
-    m_rotation = radians(JY901.stcAngle.Angle[2] - m_rotationOffset);
+    m_rotation =
+        (double)-JY901.stcAngle.Angle[2] / 32768 * PI - m_rotationOffset;
     m_rotationSpeedDiff = round(m_rotationPID.calculatePID(m_rotation));
   } else {
     m_rotation = 0;
@@ -41,15 +44,16 @@ void hardware::Mecanum::findRotationOffset() {
     }
 
     unsigned long currTime = millis();
-    if (currTime - prevReadingTime >= 10) {
+    if (currTime - prevReadingTime >= 100) {
       prevReadingTime = currTime;
 
-      rotationalOffset = (double)JY901.stcAngle.Angle[2] / 10.0;
+      rotationalOffset += (double)-JY901.stcAngle.Angle[2] / 10.0;
       numReadings++;
     }
   }
 
-  m_rotationOffset = rotationalOffset;
+  m_rotationOffset = rotationalOffset / 32768 * PI;
+  LOG("<Mecanum> Rotational Offset Set: " + String(degrees(m_rotationOffset)));
 }
 
 void hardware::Mecanum::setSpeed(const unsigned int speed) { m_speed = speed; }
@@ -66,7 +70,7 @@ void hardware::Mecanum::setDirection(const double direction) {
   }
 }
 
-double hardware::Mecanum::getRotation() { return m_rotation; }
+double hardware::Mecanum::getRotation() { return degrees(m_rotation); }
 
 void hardware::Mecanum::setRotationSpeedDiff(const int rotationSpeedDiff) {
   m_rotationSpeedDiff =
@@ -114,9 +118,9 @@ void hardware::Mecanum::setMotorsSpeeds() {
   m_wheelFRSpeed = round(p2 + m_rotationSpeedDiff / 2.0);
   m_wheelFR->setSpeed(m_wheelFRSpeed);
 
-  m_wheelBLSpeed = round(-p2 - m_rotationSpeedDiff / 2.0);
+  m_wheelBLSpeed = round(-p2 + m_rotationSpeedDiff / 2.0);
   m_wheelBL->setSpeed(m_wheelBLSpeed);
 
-  m_wheelBRSpeed = round(p1 - m_rotationSpeedDiff / 2.0);
+  m_wheelBRSpeed = round(p1 + m_rotationSpeedDiff / 2.0);
   m_wheelBR->setSpeed(m_wheelBRSpeed);
 }
