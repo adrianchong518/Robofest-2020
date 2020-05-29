@@ -5,7 +5,7 @@
 #include "constants.h"
 
 int16_t hardware::encoders::hitterEncoderLocation = 0;
-int16_t hardware::encoders::measureEncoderLocation = 0;
+uint16_t hardware::encoders::measureEncoderLocation = 0;
 
 void hardware::encoders::init() {
   // Pins
@@ -41,12 +41,12 @@ void hardware::encoders::defaultPosition() {
 }
 
 void hardware::encoders::loop() {
-  hitterEncoderLocation = readLocation(PIN_HITTER_ENCODER_OE);
+  hitterEncoderLocation = (int16_t)readLocation(PIN_HITTER_ENCODER_OE);
   measureEncoderLocation = readLocation(PIN_MEASURE_ENCODER_OE);
 }
 
-int16_t hardware::encoders::readLocation(uint8_t pin_encoderOE) {
-  int16_t location;
+uint16_t hardware::encoders::readLocation(uint8_t pin_encoderOE) {
+  uint16_t location;
 
   digitalWrite(pin_encoderOE, LOW);
 

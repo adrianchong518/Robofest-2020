@@ -7,13 +7,13 @@ namespace hardware {
 namespace encoders {
 
 extern int16_t hitterEncoderLocation;
-extern int16_t measureEncoderLocation;
+extern uint16_t measureEncoderLocation;
 
 void init();
 void defaultPosition();
 void loop();
 
-int16_t readLocation(uint8_t pin_encoderOE);
+uint16_t readLocation(uint8_t pin_encoderOE);
 void resetLocation(uint8_t pin_encoderRST);
 
 }  // namespace encoders
