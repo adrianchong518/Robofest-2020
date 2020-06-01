@@ -16,37 +16,6 @@ hardware::Rail::Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
 
 hardware::Rail::~Rail() {}
 
-void hardware::Rail::update() {
-  m_isTargetReached = m_location == m_target;
-  if (!m_isTargetReached) {
-    int dir = m_target - m_location > 0 ? 1 : -1;
-
-    if (digitalRead(m_pin_leftLimitSwitch) == LOW && dir == 1) {
-      setStepLimit(m_stepLowerLimit, m_location);
-      return;
-    }
-    if (digitalRead(m_pin_rightLimitSwitch) == LOW && dir == -1) {
-      setStepLimit(m_location, m_stepUpperLimit);
-      return;
-    }
-
-    if (genPulse(dir)) {
-      m_location += dir;
-
-      unsigned long currDiff = abs(m_target - m_location);
-      if (currDiff % 10 == 0) {
-        if (currDiff < 3000) {
-          setPulseWidth(m_pulseWidth + 1);
-        } else if (currDiff > m_targetDiff / 2) {
-          setPulseWidth(m_pulseWidth - 1);
-        }
-      }
-    }
-  } else {
-    digitalWrite(m_pin_control1, m_inactiveState);
-    digitalWrite(m_pin_control2, m_inactiveState);
-    setPulseWidth(PULSE_WIDTH);
-  }
 }
 
 void hardware::Rail::home(const unsigned long pulseWidth) {
