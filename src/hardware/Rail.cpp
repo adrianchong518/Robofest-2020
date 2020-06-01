@@ -16,6 +16,9 @@ hardware::Rail::Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
 
 hardware::Rail::~Rail() {}
 
+void hardware::Rail::stop() {
+  digitalWrite(m_pin_control1, m_inactiveState);
+  digitalWrite(m_pin_control2, m_inactiveState);
 }
 
 void hardware::Rail::home(const unsigned long pulseWidth) {

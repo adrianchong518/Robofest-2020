@@ -11,6 +11,9 @@ void control::manual::loop() {
     if (inChar == '\n' || inChar == '\r') {
       parseInput();
       input = "";
+    } else if (inChar == 'x') {
+      hardware::stopAll();
+      Serial.println("\n<Hardware> Stopped All");
     } else {
       input.concat(inChar);
     }
@@ -56,14 +59,17 @@ void control::manual::parseInput() {
 }
 
 void control::manual::hardware(const String &command) {
-  if (command.startsWith("c")) {
+  if (command == "c") {
     Serial.println("<Hardware> Calibrating...");
     hardware::calibrate();
     Serial.println("<Hardware> Calibration Done");
-  } else if (command.startsWith("h")) {
+  } else if (command == "h") {
     Serial.println("<Hardware> Homing...");
     hardware::defaultPosition();
     Serial.println("<Hardware> Homing Done");
+  } else if (command == "cont") {
+    hardware::isHardwareLoopUpdating = true;
+    Serial.println("<Hardware> Loop Updating Continued");
   } else {
     Serial.println("Invalid command: " + input);
   }

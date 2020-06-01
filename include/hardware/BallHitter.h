@@ -27,6 +27,8 @@ class BallHitter {
 
   void update(const uint16_t encoderLocation);
 
+  void stop();
+
   PID::CODES hit(const double highPos, const double lowPos);
 
   PID::CODES setTarget(const double degree);

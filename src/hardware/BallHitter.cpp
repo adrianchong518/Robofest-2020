@@ -34,6 +34,8 @@ void hardware::BallHitter::update(const uint16_t encoderLocation) {
   m_motor->setSpeed(speed);
 }
 
+void hardware::BallHitter::stop() { m_motor->setSpeed(0); }
+
 PID::CODES hardware::BallHitter::hit(const double highPos,
                                      const double lowPos) {
   if ((highPos < HITTER_TARGET_DEG_MIN || highPos > HITTER_TARGET_DEG_MAX) ||

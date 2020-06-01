@@ -39,6 +39,8 @@ class Mecanum {
 
   void update();
 
+  void stop();
+
   void findRotationOffset();
 
   void setSpeed(const unsigned int speed);

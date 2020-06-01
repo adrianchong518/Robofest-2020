@@ -30,11 +30,15 @@ extern Mecanum mecanum;
 
 extern hd44780_I2Cexp lcd;
 
+extern bool isHardwareLoopUpdating;
+
 void init();
 
 void calibrate();
 
 void defaultPosition();
+
+void stopAll();
 
 void loop();
 

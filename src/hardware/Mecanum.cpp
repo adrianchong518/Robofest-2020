@@ -33,6 +33,12 @@ void hardware::Mecanum::update() {
   setMotorsSpeeds();
 }
 
+void hardware::Mecanum::stop() {
+  setSpeed(0);
+  setRotationSpeedDiff(0);
+  setMotorsSpeeds();
+}
+
 void hardware::Mecanum::findRotationOffset() {
   double rotationalOffset = 0;
 

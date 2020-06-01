@@ -26,12 +26,14 @@ hardware::Mecanum hardware::mecanum(&wheelFL, &wheelFR, &wheelBL, &wheelBR);
 
 hd44780_I2Cexp hardware::lcd;  //(I2C_LCD_ADDR);
 
+bool hardware::isHardwareLoopUpdating = true;
+
 void hardware::init() {
   // Sensors
-  hardware::sensors::init();
+  sensors::init();
 
   // Encoder
-  hardware::encoders::init();
+  encoders::init();
 
   // Rail
   rail.setPulseWidth(RAIL_PULSE_WIDTH);
@@ -42,7 +44,7 @@ void hardware::init() {
   turnTable.setStepLimitDeg(TURN_LOWER_LIMIT_DEG, TURN_UPPER_LIMIT_DEG);
 
   // Servos
-  hardware::servos::init();
+  servos::init();
 
   // LCD
   int lcdBeginStatus = lcd.begin(LCD_NUM_COLS, LCD_NUM_ROWS);
@@ -61,7 +63,7 @@ void hardware::init() {
 void hardware::calibrate() {
   // Sensors
   LOG("<Sensors> Calibrating");
-  hardware::sensors::calibrate();
+  sensors::calibrate();
 
   // Mecanum (Gyroscope)
   LOG("<Mecanum> Finding rotation offset");
@@ -71,7 +73,7 @@ void hardware::calibrate() {
 void hardware::defaultPosition() {
   // Servos
   LOG("<Servos> Setting default positions");
-  hardware::servos::defaultPosition();
+  servos::defaultPosition();
 
   // Turn Table
   LOG("<Turn Table> Homing");
@@ -87,16 +89,27 @@ void hardware::defaultPosition() {
 
   // Encoders
   LOG("<Encoders> Resetting");
-  hardware::encoders::defaultPosition();
+  encoders::defaultPosition();
+}
+
+void hardware::stopAll() {
+  mecanum.stop();
+  rail.stop();
+  turnTable.stop();
+  ballHitter.stop();
+
+  isHardwareLoopUpdating = false;
 }
 
 void hardware::loop() {
-  rail.update();
-  turnTable.update();
-  ballHitter.update(hardware::encoders::hitterEncoderLocation);
-  mecanum.update();
-  hardware::encoders::loop();
-  hardware::sensors::loop();
+  if (isHardwareLoopUpdating) {
+    rail.update();
+    turnTable.update();
+    ballHitter.update(hardware::encoders::hitterEncoderLocation);
+    mecanum.update();
+  }
+  encoders::loop();
+  sensors::loop();
 }
 
 byte hardware::readDIPSwitches() { return (~PIN_SW_BTN >> BITS_DIP_SW) & 0x0F; }

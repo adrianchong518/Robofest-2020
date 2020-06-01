@@ -13,6 +13,11 @@ hardware::TurnTable::TurnTable(const uint8_t pin_cw, const uint8_t pin_ccw,
 
 hardware::TurnTable::~TurnTable() {}
 
+void hardware::TurnTable::stop() {
+  digitalWrite(m_pin_control1, m_inactiveState);
+  digitalWrite(m_pin_control2, m_inactiveState);
+}
+
 void hardware::TurnTable::home(const unsigned long pulseWidth) {
   unsigned int prevPulseWidth = m_pulseWidth;
   setPulseWidth(pulseWidth);

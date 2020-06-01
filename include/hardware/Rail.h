@@ -19,6 +19,7 @@ class Rail : public Stepper {
        const double stepPerMM);
   ~Rail();
 
+  void stop();
 
   void home(const unsigned long pulseWidth);
 
