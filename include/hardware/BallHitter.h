@@ -9,10 +9,9 @@
 
 namespace hardware {
 
-class BallHitter {
+class BallHitter : public PID {
  private:
   Motor *const m_motor;
-  PID m_pid;
 
   bool m_isHeldWhenTargetReached = true;
   bool m_hasTargetBeenReached = true;
@@ -25,7 +24,7 @@ class BallHitter {
   BallHitter(Motor *const motor);
   ~BallHitter();
 
-  void update(const uint16_t encoderLocation);
+  void update(const int16_t encoderLocation);
 
   void stop();
 

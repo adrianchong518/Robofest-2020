@@ -216,6 +216,23 @@ void control::manual::ballHitter(const String &command) {
   } else if (command.startsWith("rst")) {
     hardware::encoders::resetLocation(PIN_HITTER_ENCODER_RST);
     Serial.println("<Ball Hitter> Encoder Reset");
+  } else if (command.startsWith("pid")) {
+    Serial.println(
+        "<Ball Hitter> PID Constants: " + String(hardware::ballHitter.Kp) +
+        " | " + String(hardware::ballHitter.Ki) + " | " +
+        String(hardware::ballHitter.Kd));
+  } else if (command.startsWith("kp ")) {
+    double Kp = command.substring(3).toDouble();
+    hardware::ballHitter.Kp = Kp;
+    Serial.println("<Ball Hitter> PID Kp (" + String(Kp) + ") Set");
+  } else if (command.startsWith("ki ")) {
+    double Ki = command.substring(3).toDouble();
+    hardware::ballHitter.Ki = Ki;
+    Serial.println("<Ball Hitter> PID Ki (" + String(Ki) + ") Set");
+  } else if (command.startsWith("kd ")) {
+    double Kd = command.substring(3).toDouble();
+    hardware::ballHitter.Kd = Kd;
+    Serial.println("<Ball Hitter> PID Kd (" + String(Kd) + ") Set");
   } else {
     Serial.println("Invalid command: " + input);
   }

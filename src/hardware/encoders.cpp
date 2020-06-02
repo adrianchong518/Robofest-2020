@@ -41,7 +41,7 @@ void hardware::encoders::defaultPosition() {
 }
 
 void hardware::encoders::loop() {
-  hitterEncoderLocation = (int16_t)readLocation(PIN_HITTER_ENCODER_OE);
+  hitterEncoderLocation = -(int16_t)readLocation(PIN_HITTER_ENCODER_OE);
   measureEncoderLocation = readLocation(PIN_MEASURE_ENCODER_OE);
 }
 

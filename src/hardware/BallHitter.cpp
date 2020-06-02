@@ -1,26 +1,29 @@
 #include "hardware/BallHitter.h"
 
+#include "utils.h"
+
 hardware::BallHitter::BallHitter(hardware::Motor *const motor)
-    : m_motor(motor),
-      m_pid(HITTER_PID_KP, HITTER_PID_KI, HITTER_PID_KD, HITTER_PID_MIN,
-            HITTER_PID_MAX) {
-  m_pid.setTargetLimitEnabled(true);
-  m_pid.setTargetLimit(HITTER_TARGET_DEG_MIN * HITTER_ENCODER_STEP_PER_DEG,
-                       HITTER_TARGET_DEG_MAX * HITTER_ENCODER_STEP_PER_DEG);
-  m_pid.setAllowedError(HITTER_DEG_ALLOWED_ERROR * HITTER_ENCODER_STEP_PER_DEG);
+    : PID(HITTER_PID_KP, HITTER_PID_KI, HITTER_PID_KD, HITTER_PID_MIN,
+          HITTER_PID_MAX),
+      m_motor(motor) {
+  m_isTargetLimitEnabled = true;
+  m_targetLowerLimit = HITTER_TARGET_DEG_MIN * HITTER_ENCODER_STEP_PER_DEG;
+  m_targetUpperLimit = HITTER_TARGET_DEG_MAX * HITTER_ENCODER_STEP_PER_DEG;
+
+  m_allowedError = HITTER_DEG_ALLOWED_ERROR;
 }
 
 hardware::BallHitter::~BallHitter() {}
 
-void hardware::BallHitter::update(const uint16_t encoderLocation) {
-  if (m_pid.isTargetReached()) {
+void hardware::BallHitter::update(const int16_t encoderLocation) {
+  if (m_isTargetReached) {
     m_hasTargetBeenReached = true;
   }
 
-  if (m_hitStage == 1 && m_pid.isTargetReached()) {
+  if (m_hitStage == 1 && m_isTargetReached) {
     setTarget(m_hitLowPos);
     m_hitStage = 2;
-  } else if (m_hitStage == 2 && m_pid.isTargetReached()) {
+  } else if (m_hitStage == 2 && m_isTargetReached) {
     m_hitStage = 3;
   }
 
@@ -28,9 +31,10 @@ void hardware::BallHitter::update(const uint16_t encoderLocation) {
   if (m_hasTargetBeenReached && !m_isHeldWhenTargetReached) {
     speed = 0;
   } else {
-    speed = m_pid.calculatePID(encoderLocation);
+    speed = calculatePID(encoderLocation);
   }
 
+  // LOG("<Ball Hitter> Motor Speed: " + String(speed));
   m_motor->setSpeed(speed);
 }
 
@@ -53,10 +57,10 @@ PID::CODES hardware::BallHitter::hit(const double highPos,
 
 PID::CODES hardware::BallHitter::setTarget(const double degree) {
   m_hasTargetBeenReached = false;
-  return m_pid.setTarget(degree * HITTER_ENCODER_STEP_PER_DEG);
+  return PID::setTarget(degree * HITTER_ENCODER_STEP_PER_DEG);
 }
 
-bool hardware::BallHitter::isTargetReached() { return m_pid.isTargetReached(); }
+bool hardware::BallHitter::isTargetReached() { return m_isTargetReached; }
 
 void hardware::BallHitter::setIsHeldWhenTargetReached(
     const bool isHeldWhenTargetReached) {
