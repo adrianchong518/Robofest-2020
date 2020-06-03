@@ -32,8 +32,6 @@ class BallHitter : public PID {
 
   PID::CODES setTarget(const double degree);
 
-  bool isTargetReached();
-
   void setIsHeldWhenTargetReached(const bool isHeldWhenTargetReached);
 
   byte getHitStage();

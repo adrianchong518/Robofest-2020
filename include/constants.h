@@ -89,15 +89,15 @@
 #define TURN_LOWER_LIMIT_DEG -30
 #define TURN_UPPER_LIMIT_DEG 30
 
-#define HITTER_PID_KP 1  // TODO Need Testing
-#define HITTER_PID_KI 0  // TODO Need Testing
-#define HITTER_PID_KD 0  // TODO Need Testing
-#define HITTER_PID_MIN -255
-#define HITTER_PID_MAX 255
+#define HITTER_PID_KP 0.5
+#define HITTER_PID_KI 0.001
+#define HITTER_PID_KD 3.5
+#define HITTER_PID_MIN -70
+#define HITTER_PID_MAX 70
 
-#define HITTER_TARGET_DEG_MIN 0  // TODO Need Data
-#define HITTER_TARGET_DEG_MAX 0  // TODO Need Data
-#define HITTER_DEG_ALLOWED_ERROR 1
+#define HITTER_TARGET_DEG_MIN -20  // TODO Need Data
+#define HITTER_TARGET_DEG_MAX 100  // TODO Need Data
+#define HITTER_DEG_ALLOWED_ERROR 3
 
 #define MECANUM_ROT_PID_KP 1  // TODO Need Testing
 #define MECANUM_ROT_PID_KI 0  // TODO Need Testing
@@ -121,7 +121,7 @@
 #define MEASURE_RETRACTED_POS 120
 #define MEASURE_EXTENDED_POS 95
 
-#define HITTER_ENCODER_STEP_PER_DEG 16.66
+#define HITTER_ENCODER_STEP_PER_DEG 7.5
 
 #define MEASURE_ENCODER_STEP_PER_MM 91.76
 
