@@ -9,7 +9,7 @@
 
 namespace hardware {
 
-class Mecanum {
+class Mecanum : public PID {
  public:
   bool m_isGyroEnabled = true;
 
@@ -18,8 +18,6 @@ class Mecanum {
   Motor *const m_wheelFR;
   Motor *const m_wheelBL;
   Motor *const m_wheelBR;
-
-  PID m_rotationPID;
 
   unsigned int m_speed;
   double m_direction;
@@ -51,10 +49,7 @@ class Mecanum {
 
   void setRotationSpeedDiff(const int rotationSpeedDiff);
 
-  double getRotationTarget();
-  void setRotationTarget(double rotationTarget);
-
-  bool isRotationTargetReached();
+  void setTarget(double rotationTarget);
 
   void getMotorsSpeeds(int &wheelFLSpeed, int &wheelFRSpeed, int &wheelBLSpeed,
                        int &wheelBRSpeed);

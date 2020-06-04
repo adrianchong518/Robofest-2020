@@ -249,7 +249,7 @@ void control::manual::mecanum(const String &command) {
     Serial.println("<Mecanum> Direction (" + String(direction) + ") Set");
   } else if (command.startsWith("r ")) {
     double rotation = command.substring(2).toDouble();
-    hardware::mecanum.setRotationTarget(radians(rotation));
+    hardware::mecanum.setTarget(radians(rotation));
     Serial.println("<Mecanum> Rotation Target (" + String(rotation) + ") Set");
   } else if (command.startsWith("ms")) {
     int wheelFLSpeed, wheelFRSpeed, wheelBLSpeed, wheelBRSpeed;
@@ -266,6 +266,22 @@ void control::manual::mecanum(const String &command) {
     Serial.println(
         "<Mecanum> Gyroscope " +
         String(hardware::mecanum.m_isGyroEnabled ? "Enabled" : "Disabled"));
+  } else if (command.startsWith("pid")) {
+    Serial.println("<Mecanum> PID Constants: " + String(hardware::mecanum.Kp) +
+                   " | " + String(hardware::mecanum.Ki) + " | " +
+                   String(hardware::mecanum.Kd));
+  } else if (command.startsWith("kp ")) {
+    double Kp = command.substring(3).toDouble();
+    hardware::mecanum.Kp = Kp;
+    Serial.println("<Mecanum> PID Kp (" + String(Kp) + ") Set");
+  } else if (command.startsWith("ki ")) {
+    double Ki = command.substring(3).toDouble();
+    hardware::mecanum.Ki = Ki;
+    Serial.println("<Mecanum> PID Ki (" + String(Ki) + ") Set");
+  } else if (command.startsWith("kd ")) {
+    double Kd = command.substring(3).toDouble();
+    hardware::mecanum.Kd = Kd;
+    Serial.println("<Mecanum> PID Kd (" + String(Kd) + ") Set");
   } else {
     Serial.println("Invalid command: " + input);
   }

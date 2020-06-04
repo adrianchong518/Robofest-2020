@@ -99,9 +99,9 @@
 #define HITTER_TARGET_DEG_MAX 100  // TODO Need Data
 #define HITTER_DEG_ALLOWED_ERROR 3
 
-#define MECANUM_ROT_PID_KP 1  // TODO Need Testing
-#define MECANUM_ROT_PID_KI 0  // TODO Need Testing
-#define MECANUM_ROT_PID_KD 0  // TODO Need Testing
+#define MECANUM_ROT_PID_KP 800
+#define MECANUM_ROT_PID_KI 0.1
+#define MECANUM_ROT_PID_KD 5000
 
 #define MECANUM_ROT_DIFF_MIN -510  // -255*2
 #define MECANUM_ROT_DIFF_MAX 510   // 255*2

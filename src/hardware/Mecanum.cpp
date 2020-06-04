@@ -4,14 +4,15 @@
 
 hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
                            Motor *const wheelBL, Motor *const wheelBR)
-    : m_wheelFL(wheelFL),
+    : PID(MECANUM_ROT_PID_KP, MECANUM_ROT_PID_KI, MECANUM_ROT_PID_KD,
+          MECANUM_ROT_DIFF_MIN, MECANUM_ROT_DIFF_MAX),
+      m_wheelFL(wheelFL),
       m_wheelFR(wheelFR),
       m_wheelBL(wheelBL),
-      m_wheelBR(wheelBR),
-      m_rotationPID(MECANUM_ROT_PID_KP, MECANUM_ROT_PID_KI, MECANUM_ROT_PID_KD,
-                    MECANUM_ROT_DIFF_MIN, MECANUM_ROT_DIFF_MAX) {
-  m_rotationPID.setTargetLimitEnabled(true);
-  m_rotationPID.setTargetLimit(-180, 180);
+      m_wheelBR(wheelBR) {
+  m_isTargetLimitEnabled = true;
+  m_targetLowerLimit = -180;
+  m_targetUpperLimit = 180;
 
   SERIAL_GYROSCOPE.begin(SERIAL_GYROSCOPE_BAUDRATE);
 }
@@ -26,7 +27,13 @@ void hardware::Mecanum::update() {
 
     m_rotation =
         (double)-JY901.stcAngle.Angle[2] / 32768 * PI - m_rotationOffset;
-    m_rotationSpeedDiff = round(m_rotationPID.calculatePID(m_rotation));
+    if (m_rotation > 180) {
+      m_rotation -= 360;
+    } else if (m_rotation < -180) {
+      m_rotation += 360;
+    }
+
+    m_rotationSpeedDiff = round(calculatePID(m_rotation));
   } else {
     m_rotation = 0;
   }
@@ -83,11 +90,7 @@ void hardware::Mecanum::setRotationSpeedDiff(const int rotationSpeedDiff) {
       constrain(rotationSpeedDiff, MECANUM_ROT_DIFF_MIN, MECANUM_ROT_DIFF_MAX);
 }
 
-double hardware::Mecanum::getRotationTarget() {
-  return m_rotationPID.getTarget();
-}
-
-void hardware::Mecanum::setRotationTarget(double rotationTarget) {
+void hardware::Mecanum::setTarget(double rotationTarget) {
   while (rotationTarget > PI) {
     rotationTarget -= 2 * PI;
   }
@@ -96,11 +99,7 @@ void hardware::Mecanum::setRotationTarget(double rotationTarget) {
     rotationTarget += 2 * PI;
   }
 
-  m_rotationPID.setTarget(rotationTarget);
-}
-
-bool hardware::Mecanum::isRotationTargetReached() {
-  return m_rotationPID.isTargetReached();
+  PID::setTarget(rotationTarget);
 }
 
 void hardware::Mecanum::getMotorsSpeeds(int &wheelFLSpeed, int &wheelFRSpeed,
@@ -118,15 +117,15 @@ void hardware::Mecanum::setMotorsSpeeds() {
   double p1 = scaledSpeed * sin(PI / 4 + theta);
   double p2 = scaledSpeed * sin(PI / 4 - theta);
 
-  m_wheelFLSpeed = round(-p1 + m_rotationSpeedDiff / 2.0);
+  m_wheelFLSpeed = round(-p1 - m_rotationSpeedDiff / 2.0);
   m_wheelFL->setSpeed(m_wheelFLSpeed);
 
-  m_wheelFRSpeed = round(p2 + m_rotationSpeedDiff / 2.0);
+  m_wheelFRSpeed = round(p2 - m_rotationSpeedDiff / 2.0);
   m_wheelFR->setSpeed(m_wheelFRSpeed);
 
-  m_wheelBLSpeed = round(-p2 + m_rotationSpeedDiff / 2.0);
+  m_wheelBLSpeed = round(-p2 - m_rotationSpeedDiff / 2.0);
   m_wheelBL->setSpeed(m_wheelBLSpeed);
 
-  m_wheelBRSpeed = round(p1 + m_rotationSpeedDiff / 2.0);
+  m_wheelBRSpeed = round(p1 - m_rotationSpeedDiff / 2.0);
   m_wheelBR->setSpeed(m_wheelBRSpeed);
 }
