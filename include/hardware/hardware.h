@@ -12,7 +12,7 @@
 #include "hardware/TurnTable.h"
 #include "hardware/encoders.h"
 #include "hardware/sensors.h"
-#include "hardware/servos.h"
+#include "hardware/servos/servos.h"
 
 namespace hardware {
 

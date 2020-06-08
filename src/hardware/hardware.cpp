@@ -43,9 +43,6 @@ void hardware::init() {
   turnTable.setStepLimitEnabled(true);
   turnTable.setStepLimitDeg(TURN_LOWER_LIMIT_DEG, TURN_UPPER_LIMIT_DEG);
 
-  // Servos
-  servos::init();
-
   // LCD
   int lcdBeginStatus = lcd.begin(LCD_NUM_COLS, LCD_NUM_ROWS);
   if (lcdBeginStatus) {
@@ -107,6 +104,7 @@ void hardware::loop() {
     turnTable.update();
     ballHitter.update(hardware::encoders::hitterEncoderLocation);
     mecanum.update();
+    servos::loop();
   }
   encoders::loop();
   sensors::loop();

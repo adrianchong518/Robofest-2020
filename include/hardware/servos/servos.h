@@ -1,16 +1,16 @@
 #ifndef HARDWARE_SERVOS_H
 #define HARDWARE_SERVOS_H
 
-#include <Servo.h>
+#include <hardware/servos/CustomServo.h>
 
 namespace hardware {
 namespace servos {
 
-extern Servo guideLeft;
-extern Servo guideRight;
-extern Servo holderLeft;
-extern Servo holderRight;
-extern Servo measureServo;
+extern CustomServo guideLeft;
+extern CustomServo guideRight;
+extern CustomServo holderLeft;
+extern CustomServo holderRight;
+extern CustomServo measureServo;
 
 extern bool isGuideLeftExtented;
 extern bool isGuideRightExtented;
@@ -18,8 +18,8 @@ extern bool isHolderLeftExtented;
 extern bool isHolderRightExtented;
 extern bool isMeasureServoExtented;
 
-void init();
 void defaultPosition();
+void loop();
 
 void setGuideLeft(bool isExtended);
 void setGuideRight(bool isExtended);
