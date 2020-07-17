@@ -1,0 +1,35 @@
+#+TITLE: Robofest 2020
+
+This [[https://platformio.org/][PlatformIO]] project contains the code for the robot participating in the Game event in Robofest 2020.
+
+* Table of Contents :TOC@3:
+- [[#about][About]]
+  - [[#competition][Competition]]
+  - [[#robot][Robot]]
+    - [[#mecanum-wheels][Mecanum Wheels]]
+    - [[#ball-hitting-mechanism][Ball Hitting Mechanism]]
+    - [[#servo-controlled-guide-and-holders][Servo-controlled Guide and Holders]]
+    - [[#electronic-components][Electronic Components]]
+- [[#compilation][Compilation]]
+- [[#known-errors][Known Errors]]
+
+* About
+** Competition
+The main goal for the competition is to hit a total of five golf balls at different positions into a hole. There is a heavy bottle blocking the hole. Another four light bottles are beside the hole, which gives extra points if hit.
+
+The major challenge is that the position of the golf balls are not predefined completely. The robot must be able to dynamically detect and calculate the positions and the hitting parameters.
+
+** Robot
+The robot has mecanum wheels for movement and a frame for other components, which include the ball hitting mechanism, servo-controlled guides and holders, sensors, and electronic components.
+
+*** Mecanum Wheels
+
+*** Ball Hitting Mechanism
+
+*** Servo-controlled Guide and Holders
+
+*** Electronic Components
+
+* Compilation
+
+* Known Errors
