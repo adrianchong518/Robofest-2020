@@ -262,10 +262,10 @@ void control::manual::mecanum(const String &command) {
     Serial.println("<Mecanum> Rotation: " +
                    String(hardware::mecanum.getRotation()));
   } else if (command.startsWith("gt")) {
-    hardware::mecanum.m_isGyroEnabled = !hardware::mecanum.m_isGyroEnabled;
+    hardware::mecanum.isGyroEnabled = !hardware::mecanum.isGyroEnabled;
     Serial.println(
         "<Mecanum> Gyroscope " +
-        String(hardware::mecanum.m_isGyroEnabled ? "Enabled" : "Disabled"));
+        String(hardware::mecanum.isGyroEnabled ? "Enabled" : "Disabled"));
   } else if (command.startsWith("pid")) {
     Serial.println("<Mecanum> PID Constants: " + String(hardware::mecanum.Kp) +
                    " | " + String(hardware::mecanum.Ki) + " | " +
@@ -282,6 +282,11 @@ void control::manual::mecanum(const String &command) {
     double Kd = command.substring(3).toDouble();
     hardware::mecanum.Kd = Kd;
     Serial.println("<Mecanum> PID Kd (" + String(Kd) + ") Set");
+  } else if (command.startsWith("enable")) {
+    hardware::mecanum.isEnabled = !hardware::mecanum.isEnabled;
+    Serial.println("<Mecanum> " + String(hardware::mecanum.isEnabled
+                                             ? "Enabled"
+                                             : "Disabled"));
   } else {
     Serial.println("Invalid command: " + input);
   }

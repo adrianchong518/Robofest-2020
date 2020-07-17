@@ -19,6 +19,9 @@ void setup() {
   // Read operation mode
   operationMode = hardware::readDIPSwitches();
   LOG("<Hardware> Operatoin Mode: " + String(operationMode, BIN));
+
+  hardware::mecanum.isEnabled = bitRead(operationMode, 2);
+
   hardware::lcd.print("Mode:" +
                       String(bitRead(operationMode, 0) ? "Manual" : "Auto"));
   hardware::lcd.setCursor(0, 1);

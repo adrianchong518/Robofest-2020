@@ -20,24 +20,26 @@ hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
 hardware::Mecanum::~Mecanum() {}
 
 void hardware::Mecanum::update() {
-  if (m_isGyroEnabled) {
-    while (SERIAL_GYROSCOPE.available()) {
-      JY901.CopeSerialData(SERIAL_GYROSCOPE.read());
-    }
+  if (isEnabled) {
+    if (isGyroEnabled) {
+      while (SERIAL_GYROSCOPE.available()) {
+        JY901.CopeSerialData(SERIAL_GYROSCOPE.read());
+      }
 
-    m_rotation =
-        (double)-JY901.stcAngle.Angle[2] / 32768 * PI - m_rotationOffset;
-    if (m_rotation > 180) {
-      m_rotation -= 360;
-    } else if (m_rotation < -180) {
-      m_rotation += 360;
-    }
+      m_rotation =
+          (double)-JY901.stcAngle.Angle[2] / 32768 * PI - m_rotationOffset;
+      if (m_rotation > 180) {
+        m_rotation -= 360;
+      } else if (m_rotation < -180) {
+        m_rotation += 360;
+      }
 
-    m_rotationSpeedDiff = round(calculatePID(m_rotation));
-  } else {
-    m_rotation = 0;
+      m_rotationSpeedDiff = round(calculatePID(m_rotation));
+    } else {
+      m_rotation = 0;
+    }
+    setMotorsSpeeds();
   }
-  setMotorsSpeeds();
 }
 
 void hardware::Mecanum::stop() {

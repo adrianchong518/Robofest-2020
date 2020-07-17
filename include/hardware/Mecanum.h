@@ -11,7 +11,8 @@ namespace hardware {
 
 class Mecanum : public PID {
  public:
-  bool m_isGyroEnabled = true;
+  bool isEnabled = true;
+  bool isGyroEnabled = true;
 
  private:
   Motor *const m_wheelFL;
@@ -55,7 +56,6 @@ class Mecanum : public PID {
                        int &wheelBRSpeed);
   void setMotorsSpeeds();
 
-  bool isGyroEnabled();
   void setIsGyroEnabled(bool isGyroEnabled);
 };
 
