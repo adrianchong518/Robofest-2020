@@ -3,11 +3,14 @@
 #include <Arduino.h>
 
 #include "constants.h"
+#include "hardware/interface.h"
 
 int16_t hardware::encoders::hitterEncoderLocation = 0;
 uint16_t hardware::encoders::measureEncoderLocation = 0;
 
 void hardware::encoders::init() {
+  LOG_DEBUG("<Encoders> Initialising...");
+
   // Pins
   pinMode(PIN_ENCODER_SEL, OUTPUT);
   digitalWrite(PIN_ENCODER_SEL, LOW);
@@ -36,6 +39,7 @@ void hardware::encoders::init() {
 }
 
 void hardware::encoders::defaultPosition() {
+  LOG_DEBUG("<Encoders> Resetting...");
   resetLocation(PIN_HITTER_ENCODER_RST);
   resetLocation(PIN_MEASURE_ENCODER_RST);
 }

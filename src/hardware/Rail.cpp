@@ -1,5 +1,7 @@
 #include "hardware/Rail.h"
 
+#include "hardware/interface.h"
+
 hardware::Rail::Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
                      const uint8_t pin_leftLimitSwitch,
                      const uint8_t pin_rightLimitSwitch, const double stepPerMM)
@@ -22,6 +24,8 @@ void hardware::Rail::stop() {
 }
 
 void hardware::Rail::home(const unsigned long pulseWidth) {
+  LOG_DEBUG("<Rail> Homing...");
+
   unsigned int prevPulseWidth = m_pulseWidth;
   setPulseWidth(pulseWidth);
 
@@ -41,5 +45,41 @@ void hardware::Rail::setStepLimitMM(const double stepLowerLimitMM,
 }
 
 Stepper::CODES hardware::Rail::setTargetMM(const double targetMM) {
-  return setTarget(targetMM * m_stepPerMM);
+  Stepper::CODES returnCode = Stepper::setTarget(targetMM * m_stepPerMM);
+
+  switch (returnCode) {
+    case Stepper::NO_ERROR:
+      LOG_DEBUG("<Rail> Target (" + String(targetMM) + " mm) Set");
+      break;
+
+    case Stepper::ERROR_TARGET_EXCEEDS_LIMIT:
+      LOG_ERROR("<Rail> Target (" + String(targetMM) + " mm) Exceeds Limit");
+      break;
+
+    default:
+      LOG_ERROR("<Rail> Set Target Unknown Error");
+      break;
+  }
+
+  return returnCode;
+}
+
+Stepper::CODES hardware::Rail::setTarget(long target) {
+  Stepper::CODES returnCode = Stepper::setTarget(target);
+
+  switch (returnCode) {
+    case Stepper::NO_ERROR:
+      LOG_DEBUG("<Rail> Target (" + String(target) + " steps) Set");
+      break;
+
+    case Stepper::ERROR_TARGET_EXCEEDS_LIMIT:
+      LOG_ERROR("<Rail> Target (" + String(target) + " steps) Exceeds Limit");
+      break;
+
+    default:
+      LOG_ERROR("<Rail> Set Target Unknown Error");
+      break;
+  }
+
+  return returnCode;
 }

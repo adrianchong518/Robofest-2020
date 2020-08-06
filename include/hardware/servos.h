@@ -12,11 +12,11 @@ extern Servo holderLeft;
 extern Servo holderRight;
 extern Servo measureServo;
 
-extern bool isGuideLeftExtented;
-extern bool isGuideRightExtented;
-extern bool isHolderLeftExtented;
-extern bool isHolderRightExtented;
-extern bool isMeasureServoExtented;
+extern bool isGuideLeftExtended;
+extern bool isGuideRightExtended;
+extern bool isHolderLeftExtended;
+extern bool isHolderRightExtended;
+extern bool isMeasureServoExtended;
 
 void init();
 void defaultPosition();

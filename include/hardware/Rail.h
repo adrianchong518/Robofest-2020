@@ -29,6 +29,7 @@ class Rail : public Stepper {
                       const double stepUpperLimitMM);
 
   CODES setTargetMM(const double targetMM);
+  CODES setTarget(long target);
 };
 
 }  // namespace hardware

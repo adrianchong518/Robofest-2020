@@ -1,5 +1,7 @@
 #include "hardware/TurnTable.h"
 
+#include "hardware/interface.h"
+
 hardware::TurnTable::TurnTable(const uint8_t pin_cw, const uint8_t pin_ccw,
                                const uint8_t pin_homeSensor,
                                const int sensorThreshold,
@@ -19,6 +21,8 @@ void hardware::TurnTable::stop() {
 }
 
 void hardware::TurnTable::home(const unsigned long pulseWidth) {
+  LOG_DEBUG("<Turn Table> Homing...");
+
   unsigned int prevPulseWidth = m_pulseWidth;
   setPulseWidth(pulseWidth);
 
@@ -28,6 +32,11 @@ void hardware::TurnTable::home(const unsigned long pulseWidth) {
 
   setHomePosition();
   setPulseWidth(prevPulseWidth);
+
+  setTargetDeg(30);
+  while (!isTargetReached()) {
+    update();
+  }
 }
 
 double hardware::TurnTable::getLocationDeg() {
@@ -40,7 +49,44 @@ void hardware::TurnTable::setStepLimitDeg(const double stepLowerLimitDeg,
                stepUpperLimitDeg * m_stepPerDeg);
 }
 
-hardware::TurnTable::CODES hardware::TurnTable::setTargetDeg(
-    const double targetDeg) {
-  return setTarget(targetDeg * m_stepPerDeg);
+Stepper::CODES hardware::TurnTable::setTargetDeg(const double targetDeg) {
+  Stepper::CODES returnCode = Stepper::setTarget(targetDeg * m_stepPerDeg);
+
+  switch (returnCode) {
+    case hardware::TurnTable::NO_ERROR:
+      LOG_DEBUG("<Turn Table> Target (" + String(targetDeg) + " deg) Set");
+      break;
+
+    case hardware::TurnTable::ERROR_TARGET_EXCEEDS_LIMIT:
+      LOG_ERROR("<Turn Table> Target (" + String(targetDeg) +
+                " deg) Exceeds Limit");
+      break;
+
+    default:
+      LOG_ERROR("<Turn Table> Unknown Error");
+      break;
+  }
+
+  return returnCode;
+}
+
+Stepper::CODES hardware::TurnTable::setTarget(long target) {
+  Stepper::CODES returnCode = Stepper::setTarget(target);
+
+  switch (returnCode) {
+    case hardware::TurnTable::NO_ERROR:
+      LOG_DEBUG("<Turn Table> Target (" + String(target) + " steps) Set");
+      break;
+
+    case hardware::TurnTable::ERROR_TARGET_EXCEEDS_LIMIT:
+      LOG_ERROR("<Turn Table> Target (" + String(target) +
+                " steps) Exceeds Limit");
+      break;
+
+    default:
+      LOG_ERROR("<Turn Table> Unknown Error");
+      break;
+  }
+
+  return returnCode;
 }

@@ -29,6 +29,7 @@ class TurnTable : public Stepper {
                        const double stepUpperLimitDeg);
 
   CODES setTargetDeg(const double targetDeg);
+  CODES setTarget(long target);
 };
 
 }  // namespace hardware

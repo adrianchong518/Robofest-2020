@@ -1,6 +1,6 @@
 #include "hardware/Mecanum.h"
 
-#include "utils.h"
+#include "hardware/interface.h"
 
 hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
                            Motor *const wheelBL, Motor *const wheelBR)
@@ -49,6 +49,8 @@ void hardware::Mecanum::stop() {
 }
 
 void hardware::Mecanum::findRotationOffset() {
+  LOG_DEBUG("<Mecanum> Finding Rotation Offset...");
+
   double rotationalOffset = 0;
 
   unsigned long prevReadingTime = 0;
@@ -68,10 +70,13 @@ void hardware::Mecanum::findRotationOffset() {
   }
 
   m_rotationOffset = rotationalOffset / 32768 * PI;
-  LOG("<Mecanum> Rotational Offset Set: " + String(degrees(m_rotationOffset)));
+  LOG_DEBUG("<Mecanum> Rotation Offset: " + String(degrees(m_rotationOffset)));
 }
 
-void hardware::Mecanum::setSpeed(const unsigned int speed) { m_speed = speed; }
+void hardware::Mecanum::setSpeed(const unsigned int speed) {
+  m_speed = constrain(speed, 0, 255);
+  LOG_DEBUG("<Mecanum> Speed (" + String(m_speed) + ") Set");
+}
 
 void hardware::Mecanum::setDirection(const double direction) {
   m_direction = direction;
@@ -83,6 +88,8 @@ void hardware::Mecanum::setDirection(const double direction) {
   while (m_direction < -PI) {
     m_direction += 2 * PI;
   }
+
+  LOG_DEBUG("<Mecanum> Direction (" + String(degrees(m_direction)) + ") Set");
 }
 
 double hardware::Mecanum::getRotation() { return degrees(m_rotation); }
@@ -102,6 +109,8 @@ void hardware::Mecanum::setTarget(double rotationTarget) {
   }
 
   PID::setTarget(rotationTarget);
+  LOG_DEBUG("<Mecanum> Rotation Target (" + String(degrees(rotationTarget)) +
+            ") Set");
 }
 
 void hardware::Mecanum::getMotorsSpeeds(int &wheelFLSpeed, int &wheelFRSpeed,

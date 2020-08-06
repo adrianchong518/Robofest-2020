@@ -1,10 +1,6 @@
 #ifndef HARDWARE_HARDWARE_H
 #define HARDWARE_HARDWARE_H
 
-#include <Wire.h>
-#include <hd44780.h>
-#include <hd44780ioClass/hd44780_I2Cexp.h>
-
 #include "hardware/BallHitter.h"
 #include "hardware/Mecanum.h"
 #include "hardware/Motor.h"
@@ -13,6 +9,7 @@
 #include "hardware/encoders.h"
 #include "hardware/sensors.h"
 #include "hardware/servos.h"
+#include "hardware/interface.h"
 
 namespace hardware {
 
@@ -28,8 +25,6 @@ extern Motor wheelBL;
 extern Motor wheelBR;
 extern Mecanum mecanum;
 
-extern hd44780_I2Cexp lcd;
-
 extern bool isHardwareLoopUpdating;
 
 void init();
@@ -41,8 +36,6 @@ void defaultPosition();
 void stopAll();
 
 void loop();
-
-byte readDIPSwitches();
 
 }  // namespace hardware
 
