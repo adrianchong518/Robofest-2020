@@ -1,105 +1,111 @@
-#include "control/manual.h"
+#include "control/commands.h"
 
 #include "hardware/hardware.h"
+#include "control/routines/routines.h"
 
-String control::manual::input = "";
+int hardwareCommands(const String &command);
+int railCommands(const String &command);
+int turnTableCommands(const String &command);
+int ballHitterCommands(const String &command);
+int mecanumCommands(const String &command);
+int measureDistanceCommands(const String &command);
+int irSensorsCommands(const String &command);
+int laserPhotoresistorCommands(const String &command);
+int irDistanceSensorCommands(const String &command);
+int lcdCommands(const String &command);
+int run(const String &command);
 
-void control::manual::loop() {
-  while (Serial.available()) {
-    char inChar = Serial.read();
-
-    if (inChar == '\n' || inChar == '\r') {
-      parseInput();
-      input = "";
-    } else if (inChar == '\b') {
-      input.remove(input.length() - 1);
-    } else if (inChar == 'x') {
-      hardware::stopAll();
-    } else {
-      input.concat(inChar);
-    }
-  }
-}
-
-void control::manual::parseInput() {
-  if (input.length() == 0) {
-    return;
+int control::commands::parseInput(const String &command) {
+  if (command.length() == 0) {
+    return -1;
   }
 
-  if (input.startsWith("h ")) {
-    hardware(input.substring(2));
-  } else if (input.startsWith("r ")) {
-    rail(input.substring(2));
-  } else if (input.startsWith("tt ")) {
-    turnTable(input.substring(3));
-  } else if (input.startsWith("bh ")) {
-    ballHitter(input.substring(3));
-  } else if (input.startsWith("m ")) {
-    mecanum(input.substring(2));
-  } else if (input.startsWith("hl")) {
+  if (command.startsWith("h ")) {
+    return hardwareCommands(command.substring(2));
+  } else if (command.startsWith("r ")) {
+    return railCommands(command.substring(2));
+  } else if (command.startsWith("tt ")) {
+    return turnTableCommands(command.substring(3));
+  } else if (command.startsWith("bh ")) {
+    return ballHitterCommands(command.substring(3));
+  } else if (command.startsWith("m ")) {
+    return mecanumCommands(command.substring(2));
+  } else if (command.startsWith("hl")) {
     hardware::servos::setHolderLeft(!hardware::servos::isHolderLeftExtended);
-  } else if (input.startsWith("hr")) {
+    return 0;
+  } else if (command.startsWith("hr")) {
     hardware::servos::setHolderRight(!hardware::servos::isHolderRightExtended);
-  } else if (input.startsWith("gl")) {
+    return 0;
+  } else if (command.startsWith("gl")) {
     hardware::servos::setGuideLeft(!hardware::servos::isGuideLeftExtended);
-  } else if (input.startsWith("gr")) {
+    return 0;
+  } else if (command.startsWith("gr")) {
     hardware::servos::setGuideRight(!hardware::servos::isGuideRightExtended);
-  } else if (input.startsWith("md ")) {
-    measureDistance(input.substring(3));
-  } else if (input.startsWith("ir ")) {
-    irSensors(input.substring(3));
-  } else if (input.startsWith("lr ")) {
-    laserPhotoresistor(input.substring(3));
-  } else if (input.startsWith("ird ")) {
-    irDistanceSensor(input.substring(4));
-  } else if (input.startsWith("lcd ")) {
-    lcd(input.substring(4));
-  } else {
-    LOG_ERROR("Invalid command: " + input);
+    return 0;
+  } else if (command.startsWith("md ")) {
+    return measureDistanceCommands(command.substring(3));
+  } else if (command.startsWith("ir ")) {
+    return irSensorsCommands(command.substring(3));
+  } else if (command.startsWith("lr ")) {
+    return laserPhotoresistorCommands(command.substring(3));
+  } else if (command.startsWith("ird ")) {
+    return irDistanceSensorCommands(command.substring(4));
+  } else if (command.startsWith("lcd ")) {
+    return lcdCommands(command.substring(4));
+  } else if (command.startsWith("run ")) {
+    return run(command.substring(4));
   }
+
+  return -1;
 }
 
-void control::manual::hardware(const String &command) {
+int hardwareCommands(const String &command) {
   if (command == "c") {
     hardware::calibrate();
   } else if (command == "h") {
     hardware::defaultPosition();
   } else if (command == "cont") {
     hardware::isHardwareLoopUpdating = true;
-    LOG_INFO("<Hardware> Loop Continued");
+    LOG_INFO("<Hardware>\tLoop Continued");
   } else {
-    LOG_ERROR("Invalid command: " + input);
+    return -1;
   }
+
+  return 0;
 }
 
-void control::manual::rail(const String &command) {
+int railCommands(const String &command) {
   if (command.startsWith("d ")) {
     hardware::rail.setTargetMM(command.substring(2).toDouble());
   } else if (command.startsWith("s ")) {
     hardware::rail.setTarget(command.substring(2).toInt());
   } else if (command.startsWith("lr")) {
-    LOG_INFO("<Rail> Location: " + String(hardware::rail.getLocationMM()) +
+    LOG_INFO("<Rail>\tLocation: " + String(hardware::rail.getLocationMM()) +
              " mm (" + String(hardware::rail.getLocation()) + " steps)");
   } else {
-    LOG_ERROR("Invalid command: " + input);
+    return -1;
   }
+
+  return 0;
 }
 
-void control::manual::turnTable(const String &command) {
+int turnTableCommands(const String &command) {
   if (command.startsWith("d ")) {
     hardware::turnTable.setTargetDeg(command.substring(2).toDouble());
   } else if (command.startsWith("s ")) {
     hardware::turnTable.setTarget(command.substring(2).toInt());
   } else if (command.startsWith("lr")) {
-    LOG_INFO("<Turn Table> Location: " +
+    LOG_INFO("<Turn Table>\tLocation: " +
              String(hardware::turnTable.getLocationDeg()) + " deg (" +
              String(hardware::turnTable.getLocation()) + " steps)");
   } else {
-    LOG_ERROR("Invalid command: " + input);
+    return -1;
   }
+
+  return 0;
 }
 
-void control::manual::ballHitter(const String &command) {
+int ballHitterCommands(const String &command) {
   if (command.startsWith("set ")) {
     hardware::ballHitter.setTarget(command.substring(4).toDouble());
   } else if (command.startsWith("hit ")) {
@@ -107,35 +113,37 @@ void control::manual::ballHitter(const String &command) {
     double lowPos = command.substring(command.indexOf(' ', 4)).toDouble();
     hardware::ballHitter.hit(highPos, lowPos);
   } else if (command.startsWith("lr")) {
-    LOG_INFO("<Ball Hitter> Encoder Reading: " +
+    LOG_INFO("<Ball Hitter>\tEncoder Reading: " +
              String(hardware::encoders::hitterEncoderLocation /
                     (double)HITTER_ENCODER_STEP_PER_DEG) +
              " (" + hardware::encoders::hitterEncoderLocation + ")");
   } else if (command.startsWith("rst")) {
     hardware::encoders::resetLocation(PIN_HITTER_ENCODER_RST);
-    LOG_INFO("<Ball Hitter> Encoder Reset");
+    LOG_INFO("<Ball Hitter>\tEncoder Reset");
   } else if (command.startsWith("pid")) {
-    LOG_INFO("<Ball Hitter> PID Constants: " + String(hardware::ballHitter.Kp) +
+    LOG_INFO("<Ball Hitter>\tPID Constants: " + String(hardware::ballHitter.Kp) +
              " | " + String(hardware::ballHitter.Ki) + " | " +
              String(hardware::ballHitter.Kd));
   } else if (command.startsWith("kp ")) {
     double Kp = command.substring(3).toDouble();
     hardware::ballHitter.Kp = Kp;
-    LOG_DEBUG("<Ball Hitter> PID Kp (" + String(Kp) + ") Set");
+    LOG_DEBUG("<Ball Hitter>\tPID Kp (" + String(Kp) + ") Set");
   } else if (command.startsWith("ki ")) {
     double Ki = command.substring(3).toDouble();
     hardware::ballHitter.Ki = Ki;
-    LOG_DEBUG("<Ball Hitter> PID Ki (" + String(Ki) + ") Set");
+    LOG_DEBUG("<Ball Hitter>\tPID Ki (" + String(Ki) + ") Set");
   } else if (command.startsWith("kd ")) {
     double Kd = command.substring(3).toDouble();
     hardware::ballHitter.Kd = Kd;
-    LOG_DEBUG("<Ball Hitter> PID Kd (" + String(Kd) + ") Set");
+    LOG_DEBUG("<Ball Hitter>\tPID Kd (" + String(Kd) + ") Set");
   } else {
-    LOG_ERROR("Invalid command: " + input);
+    return -1;
   }
+
+  return 0;
 }
 
-void control::manual::mecanum(const String &command) {
+int mecanumCommands(const String &command) {
   if (command.startsWith("s ")) {
     hardware::mecanum.setSpeed(command.substring(2).toInt());
   } else if (command.startsWith("d ")) {
@@ -146,113 +154,123 @@ void control::manual::mecanum(const String &command) {
     int wheelFLSpeed, wheelFRSpeed, wheelBLSpeed, wheelBRSpeed;
     hardware::mecanum.getMotorsSpeeds(wheelFLSpeed, wheelFRSpeed, wheelBLSpeed,
                                       wheelBRSpeed);
-    LOG_INFO("<Mecanum> Wheels Speeds: " + String(wheelFLSpeed) + " | " +
+    LOG_INFO("<Mecanum>\tWheels Speeds: " + String(wheelFLSpeed) + " | " +
              String(wheelFRSpeed) + " | " + String(wheelBLSpeed) + " | " +
              String(wheelBRSpeed));
   } else if (command.startsWith("rr")) {
-    LOG_INFO("<Mecanum> Rotation: " + String(hardware::mecanum.getRotation()));
+    LOG_INFO("<Mecanum>\tRotation: " + String(hardware::mecanum.getRotation()));
   } else if (command.startsWith("gt")) {
     hardware::mecanum.isGyroEnabled = !hardware::mecanum.isGyroEnabled;
-    LOG_INFO("<Mecanum> Gyroscope " +
+    LOG_INFO("<Mecanum>\tGyroscope " +
              String(hardware::mecanum.isGyroEnabled ? "Enabled" : "Disabled"));
   } else if (command.startsWith("pid")) {
-    LOG_INFO("<Mecanum> PID Constants: " + String(hardware::mecanum.Kp) +
+    LOG_INFO("<Mecanum>\tPID Constants: " + String(hardware::mecanum.Kp) +
              " | " + String(hardware::mecanum.Ki) + " | " +
              String(hardware::mecanum.Kd));
   } else if (command.startsWith("kp ")) {
     double Kp = command.substring(3).toDouble();
     hardware::mecanum.Kp = Kp;
-    LOG_DEBUG("<Mecanum> PID Kp (" + String(Kp) + ") Set");
+    LOG_DEBUG("<Mecanum>\tPID Kp (" + String(Kp) + ") Set");
   } else if (command.startsWith("ki ")) {
     double Ki = command.substring(3).toDouble();
     hardware::mecanum.Ki = Ki;
-    LOG_DEBUG("<Mecanum> PID Ki (" + String(Ki) + ") Set");
+    LOG_DEBUG("<Mecanum>\tPID Ki (" + String(Ki) + ") Set");
   } else if (command.startsWith("kd ")) {
     double Kd = command.substring(3).toDouble();
     hardware::mecanum.Kd = Kd;
-    LOG_DEBUG("<Mecanum> PID Kd (" + String(Kd) + ") Set");
+    LOG_DEBUG("<Mecanum>\tPID Kd (" + String(Kd) + ") Set");
   } else if (command.startsWith("enable")) {
     hardware::mecanum.isEnabled = !hardware::mecanum.isEnabled;
-    LOG_INFO("<Mecanum> " +
+    LOG_INFO("<Mecanum>\t" +
              String(hardware::mecanum.isEnabled ? "Enabled" : "Disabled"));
   } else {
-    LOG_ERROR("Invalid command: " + input);
+    return -1;
   }
+
+  return 0;
 }
 
-void control::manual::measureDistance(const String &command) {
+int measureDistanceCommands(const String &command) {
   if (command.startsWith("servo")) {
     hardware::servos::setMeasureServo(
         !hardware::servos::isMeasureServoExtended);
   } else if (command.startsWith("lr")) {
-    LOG_INFO("<Measuring Encoder> Reading: " +
+    LOG_INFO("<Measuring Encoder>\tReading: " +
              String(hardware::encoders::measureEncoderLocation /
                     (double)MEASURE_ENCODER_STEP_PER_MM) +
              " (" + hardware::encoders::measureEncoderLocation + ")");
   } else if (command.startsWith("rst")) {
     hardware::encoders::resetLocation(PIN_MEASURE_ENCODER_RST);
-    LOG_INFO("<Measuring Encoder> Reset");
+    LOG_INFO("<Measuring Encoder>\tReset");
   } else {
-    LOG_ERROR("Invalid command: " + input);
+    return -1;
   }
+
+  return 0;
 }
 
-void control::manual::irSensors(const String &command) {
+int irSensorsCommands(const String &command) {
   if (command.startsWith("fl")) {
-    LOG_INFO("<IR Sensor> FL: " + String(analogRead(PIN_IR_FL)) + " | " +
+    LOG_INFO("<IR Sensor>\tFL: " + String(analogRead(PIN_IR_FL)) + " | " +
              String(hardware::sensors::isBlackDetected(PIN_IR_FL)));
   } else if (command.startsWith("fr")) {
-    LOG_INFO("<IR Sensor> FR: " + String(analogRead(PIN_IR_FR)) + " | " +
+    LOG_INFO("<IR Sensor>\tFR: " + String(analogRead(PIN_IR_FR)) + " | " +
              String(hardware::sensors::isBlackDetected(PIN_IR_FR)));
   } else if (command.startsWith("bl")) {
-    LOG_INFO("<IR Sensor> BL: " + String(analogRead(PIN_IR_BL)) + " | " +
+    LOG_INFO("<IR Sensor>\tBL: " + String(analogRead(PIN_IR_BL)) + " | " +
              String(hardware::sensors::isBlackDetected(PIN_IR_BL)));
   } else if (command.startsWith("br")) {
-    LOG_INFO("<IR Sensor> BR: " + String(analogRead(PIN_IR_BR)) + " | " +
+    LOG_INFO("<IR Sensor>\tBR: " + String(analogRead(PIN_IR_BR)) + " | " +
              String(hardware::sensors::isBlackDetected(PIN_IR_BR)));
   } else if (command.startsWith("tr")) {
-    LOG_INFO("<IR Sensor> Threshold: " +
+    LOG_INFO("<IR Sensor>\tThreshold: " +
              String(hardware::sensors::irThreshold));
   } else if (command.startsWith("ts ")) {
     hardware::sensors::irThreshold = command.substring(3).toInt();
-    LOG_INFO("<IR Sensor> Threshold Set (" +
+    LOG_INFO("<IR Sensor>\tThreshold Set (" +
              String(hardware::sensors::irThreshold) + ")");
   } else {
-    LOG_ERROR("Invalid command: " + input);
+    return -1;
   }
+
+  return 0;
 }
 
-void control::manual::laserPhotoresistor(const String &command) {
+int laserPhotoresistorCommands(const String &command) {
   if (command.startsWith("r")) {
-    LOG_INFO("<Laser Photoresistor> Reading: " +
+    LOG_INFO("<Laser Photoresistor>\tReading: " +
              String(analogRead(PIN_LASER_PHOTORESISTOR)) + " | " +
              String(hardware::sensors::isLaserBlocked()) + "(" +
              String(hardware::sensors::laserPOTThreshold) + ")");
   } else if (command.startsWith("ts ")) {
     hardware::sensors::laserPOTThreshold = command.substring(3).toInt();
-    LOG_INFO("<Laser Photoresistor> Threshold Set (" +
+    LOG_INFO("<Laser Photoresistor>\tThreshold Set (" +
              String(hardware::sensors::laserPOTThreshold) + ")");
   } else {
-    LOG_ERROR("Invalid command: " + input);
+    return -1;
   }
+
+  return 0;
 }
 
-void control::manual::irDistanceSensor(const String &command) {
+int irDistanceSensorCommands(const String &command) {
   if (command.startsWith("dr")) {
-    LOG_INFO("<IR Distance> Reading: " +
+    LOG_INFO("<IR Distance>\tReading: " +
              String(hardware::sensors::irDistance.getDistance()));
   } else if (command.startsWith("mr")) {
-    LOG_INFO("<IR Distance> Mode :" +
+    LOG_INFO("<IR Distance>\tMode :" +
              String(hardware::sensors::irDistance.getMode()));
   } else if (command.startsWith("ms ")) {
     hardware::sensors::irDistance.setMode((byte)command.substring(3).toInt());
-    LOG_INFO("<IR Distance> Mode Set (" + command.substring(3) + ")");
+    LOG_INFO("<IR Distance>\tMode Set (" + command.substring(3) + ")");
   } else {
-    LOG_ERROR("Invalid command: " + input);
+    return -1;
   }
+
+  return 0;
 }
 
-void control::manual::lcd(const String &command) {
+int lcdCommands(const String &command) {
   if (command.startsWith("print ")) {
     hardware::interface::lcd.print(command.substring(6));
   } else if (command.startsWith("nl")) {
@@ -260,6 +278,21 @@ void control::manual::lcd(const String &command) {
   } else if (command.startsWith("clr")) {
     hardware::interface::lcd.clear();
   } else {
-    LOG_ERROR("Invalid command: " + input);
+    return -1;
   }
+
+  return 0;
+}
+
+int run(const String &command) {
+  if (command.startsWith("routine ")) {
+    control::routines::runRoutine(
+        control::routines::getRoutineIDByName(command.substring(8)));
+  } else if (command.startsWith("seq ")) {
+    control::routines::runSeq(command.substring(4).toInt());
+  } else {
+    return -1;
+  }
+
+  return 0;
 }

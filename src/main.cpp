@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 #include "constants.h"
-#include "control/manual.h"
+#include "control/control.h"
 #include "hardware/hardware.h"
 
 void setup() {
@@ -37,8 +37,8 @@ void setup() {
     hardware::interface::lcd.print("Skipped");
   }
 
-  while (digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
-    ;
+  control::init();
+
   hardware::interface::lcd.setCursor(0, 1);
   hardware::interface::lcd.print("Loop Running... ");
   LOG_INFO("Main Loop Starts...");
