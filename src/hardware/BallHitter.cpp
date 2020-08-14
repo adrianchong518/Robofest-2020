@@ -30,11 +30,11 @@ void hardware::BallHitter::update(const int16_t encoderLocation) {
   }
 
   if (m_hitStage == 1 && m_isTargetReached) {
-    LOG_DEBUG("<Ball Hitter> High Position Reached");
+    LOG_DEBUG("<Ball Hitter>\tHigh Position Reached");
     speed = -255;
     m_hitStage = 2;
   } else if (m_hitStage == 2 && encoderLocation <= m_hitLowPos) {
-    LOG_DEBUG("<Ball Hitter> Low Position Reached");
+    LOG_DEBUG("<Ball Hitter>\tLow Position Reached");
     setTarget(0);
     m_hitStage = 0;
   }
@@ -48,7 +48,7 @@ PID::CODES hardware::BallHitter::hit(const double highPos,
                                      const double lowPos) {
   if ((highPos < HITTER_TARGET_DEG_MIN || highPos > HITTER_TARGET_DEG_MAX) ||
       (lowPos < HITTER_TARGET_DEG_MIN || lowPos > HITTER_TARGET_DEG_MAX)) {
-    LOG_ERROR("<Ball Hitter> Hit Targets (" + String(highPos) + "," +
+    LOG_ERROR("<Ball Hitter>\tHit Targets (" + String(highPos) + "," +
               String(lowPos) + ") Exceeds Limit");
     return PID::ERROR_TARGET_EXCEEDS_LIMIT;
   }
@@ -60,7 +60,7 @@ PID::CODES hardware::BallHitter::hit(const double highPos,
   m_hasTargetBeenReached = false;
   PID::setTarget(m_hitHighPos);
 
-  LOG_DEBUG("<Ball Hitter> Hit Targets (" + String(highPos) + "," +
+  LOG_DEBUG("<Ball Hitter>\tHit Targets (" + String(highPos) + "," +
             String(lowPos) + ") Set");
   return PID::NO_ERROR;
 }
@@ -72,15 +72,15 @@ PID::CODES hardware::BallHitter::setTarget(const double degree) {
 
   switch (returnCode) {
     case PID::NO_ERROR:
-      LOG_DEBUG("<Ball Hitter> Target (" + String(degree) + ") Set");
+      LOG_DEBUG("<Ball Hitter>\tTarget (" + String(degree) + ") Set");
       break;
 
     case PID::ERROR_TARGET_EXCEEDS_LIMIT:
-      LOG_ERROR("<Ball Hitter> Target (" + String(degree) + ") Exceeds Limit");
+      LOG_ERROR("<Ball Hitter>\tTarget (" + String(degree) + ") Exceeds Limit");
       break;
 
     default:
-      LOG_ERROR("<Ball Hitter> Set Target Unknown Error");
+      LOG_ERROR("<Ball Hitter>\tSet Target Unknown Error");
       break;
   }
 

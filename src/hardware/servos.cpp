@@ -16,7 +16,7 @@ bool hardware::servos::isHolderRightExtended = false;
 bool hardware::servos::isMeasureServoExtended = false;
 
 void hardware::servos::init() {
-  LOG_DEBUG("<Servos> Initialising...");
+  LOG_DEBUG("<Servos>\tInitialising...");
 
   guideLeft.attach(PIN_GUIDE_LEFT);
   guideRight.attach(PIN_GUIDE_RIGHT);
@@ -26,7 +26,7 @@ void hardware::servos::init() {
 }
 
 void hardware::servos::defaultPosition() {
-  LOG_INFO("<Servos> Setting default positions");
+  LOG_INFO("<Servos>\tSetting default positions");
 
   setGuideLeft(false);
   setGuideRight(false);
@@ -42,8 +42,8 @@ void hardware::servos::setGuideLeft(bool isExtended) {
     guideLeft.write(GUIDE_LEFT_RETRACTED_POS);
   }
   isGuideLeftExtended = isExtended;
-  LOG_DEBUG("<Servos> Guide Left " + isGuideLeftExtended ? "Extended"
-                                                         : "Retracted");
+  LOG_DEBUG("<Servos>\tGuide Left " +
+            String(isGuideLeftExtended ? "Extended" : "Retracted"));
 }
 
 void hardware::servos::setGuideRight(bool isExtended) {
@@ -53,8 +53,8 @@ void hardware::servos::setGuideRight(bool isExtended) {
     guideRight.write(GUIDE_RIGHT_RETRACTED_POS);
   }
   isGuideRightExtended = isExtended;
-  LOG_DEBUG("<Servos> Guide Right " + isGuideRightExtended ? "Extended"
-                                                           : "Retracted");
+  LOG_DEBUG("<Servos>\tGuide Right " +
+            String(isGuideRightExtended ? "Extended" : "Retracted"));
 }
 
 void hardware::servos::setHolderLeft(bool isExtended) {
@@ -64,8 +64,8 @@ void hardware::servos::setHolderLeft(bool isExtended) {
     holderLeft.write(HOLDER_LEFT_RETRACTED_POS);
   }
   isHolderLeftExtended = isExtended;
-  LOG_DEBUG("<Servos> Holder Left " + isHolderLeftExtended ? "Extended"
-                                                           : "Retracted");
+  LOG_DEBUG("<Servos>\tHolder Left " +
+            String(isHolderLeftExtended ? "Extended" : "Retracted"));
 }
 
 void hardware::servos::setHolderRight(bool isExtended) {
@@ -75,8 +75,8 @@ void hardware::servos::setHolderRight(bool isExtended) {
     holderRight.write(HOLDER_RIGHT_RETRACTED_POS);
   }
   isHolderRightExtended = isExtended;
-  LOG_DEBUG("<Servos> Holder Right " + isHolderRightExtended ? "Extended"
-                                                             : "Retracted");
+  LOG_DEBUG("<Servos>\tHolder Right " +
+            String(isHolderRightExtended ? "Extended" : "Retracted"));
 }
 
 void hardware::servos::setMeasureServo(bool isExtended) {
@@ -86,6 +86,6 @@ void hardware::servos::setMeasureServo(bool isExtended) {
     measureServo.write(MEASURE_RETRACTED_POS);
   }
   isMeasureServoExtended = isExtended;
-  LOG_DEBUG("<Servos> Measure Servo " + isMeasureServoExtended ? "Extended"
-                                                               : "Retracted");
+  LOG_DEBUG("<Servos>\tMeasure Servo " +
+            String(isMeasureServoExtended ? "Extended" : "Retracted"));
 }

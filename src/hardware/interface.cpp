@@ -7,11 +7,12 @@ hd44780_I2Cexp hardware::interface::lcd;
 byte hardware::interface::operationMode = 0;
 
 void hardware::interface::init() {
-  LOG_DEBUG("<Interface> Initialising...");
+  LOG_DEBUG("<Interface>\tInitialising...");
   int lcdBeginStatus = lcd.begin(LCD_NUM_COLS, LCD_NUM_ROWS);
   if (lcdBeginStatus) {
     hd44780::fatalError(lcdBeginStatus);
   }
+  lcd.clear();
 
   pinMode(PIN_BUZZER, OUTPUT);
 
@@ -19,7 +20,7 @@ void hardware::interface::init() {
   PORT_SW_BTN = 0x00 | (PORT_SW_BTN & 0x01);
 
   operationMode = readDIPSwitches();
-  LOG_INFO("Operation Mode: " + String(operationMode, BIN));
+  LOG_INFO("<Interface>\tOperation Mode: " + String(operationMode, BIN));
 }
 
 byte hardware::interface::readDIPSwitches() {

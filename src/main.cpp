@@ -9,9 +9,6 @@ void setup() {
 
   hardware::init();
 
-  hardware::interface::lcd.print(
-      String(bitRead(hardware::interface::operationMode, 0) ? "Mode: Manual"
-                                                            : "Mode: Auto"));
   hardware::interface::lcd.setCursor(0, 1);
   hardware::interface::lcd.print("Init...     Done");
 
@@ -35,7 +32,7 @@ void setup() {
     hardware::interface::lcd.setCursor(12, 1);
     hardware::interface::lcd.print("Done");
   } else {
-    LOG_INFO("<Hardware> Homing Skipped");
+    LOG_INFO("<Hardware>\tHoming Skipped");
     hardware::interface::lcd.setCursor(9, 1);
     hardware::interface::lcd.print("Skipped");
   }
@@ -45,14 +42,9 @@ void setup() {
   hardware::interface::lcd.setCursor(0, 1);
   hardware::interface::lcd.print("Loop Running... ");
   LOG_INFO("Main Loop Starts...");
-
-  hardware::rail.setTargetMM(250);
 }
 
 void loop() {
-  unsigned long time = micros();
   hardware::loop();
   control::manual::loop();
-  unsigned long end = micros();
-  Serial.println(end - time);
 }

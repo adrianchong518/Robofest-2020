@@ -21,7 +21,7 @@ void hardware::TurnTable::stop() {
 }
 
 void hardware::TurnTable::home(const unsigned long pulseWidth) {
-  LOG_DEBUG("<Turn Table> Homing...");
+  LOG_DEBUG("<Turn Table>\tHoming...");
 
   unsigned int prevPulseWidth = m_pulseWidth;
   setPulseWidth(pulseWidth);
@@ -54,16 +54,16 @@ Stepper::CODES hardware::TurnTable::setTargetDeg(const double targetDeg) {
 
   switch (returnCode) {
     case hardware::TurnTable::NO_ERROR:
-      LOG_DEBUG("<Turn Table> Target (" + String(targetDeg) + " deg) Set");
+      LOG_DEBUG("<Turn Table>\tTarget (" + String(targetDeg) + " deg) Set");
       break;
 
     case hardware::TurnTable::ERROR_TARGET_EXCEEDS_LIMIT:
-      LOG_ERROR("<Turn Table> Target (" + String(targetDeg) +
+      LOG_ERROR("<Turn Table>\tTarget (" + String(targetDeg) +
                 " deg) Exceeds Limit");
       break;
 
     default:
-      LOG_ERROR("<Turn Table> Unknown Error");
+      LOG_ERROR("<Turn Table>\tUnknown Error");
       break;
   }
 
@@ -75,16 +75,16 @@ Stepper::CODES hardware::TurnTable::setTarget(long target) {
 
   switch (returnCode) {
     case hardware::TurnTable::NO_ERROR:
-      LOG_DEBUG("<Turn Table> Target (" + String(target) + " steps) Set");
+      LOG_DEBUG("<Turn Table>\tTarget (" + String(target) + " steps) Set");
       break;
 
     case hardware::TurnTable::ERROR_TARGET_EXCEEDS_LIMIT:
-      LOG_ERROR("<Turn Table> Target (" + String(target) +
+      LOG_ERROR("<Turn Table>\tTarget (" + String(target) +
                 " steps) Exceeds Limit");
       break;
 
     default:
-      LOG_ERROR("<Turn Table> Unknown Error");
+      LOG_ERROR("<Turn Table>\tUnknown Error");
       break;
   }
 

@@ -10,7 +10,7 @@ int hardware::sensors::irThreshold = 0;
 int hardware::sensors::laserPOTThreshold = 0;
 
 void hardware::sensors::init() {
-  LOG_DEBUG("<Sensors> Initialising...");
+  LOG_DEBUG("<Sensors>\tInitialising...");
 
   pinMode(PIN_IR_FL, INPUT);
   pinMode(PIN_IR_FR, INPUT);
@@ -21,7 +21,7 @@ void hardware::sensors::init() {
 }
 
 // TODO Find calibration method and process
-void hardware::sensors::calibrate() { LOG_INFO("<Sensors> Calibrating..."); }
+void hardware::sensors::calibrate() { LOG_INFO("<Sensors>\tCalibrating..."); }
 
 void hardware::sensors::loop() { irDistance.update(); }
 

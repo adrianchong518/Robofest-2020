@@ -26,7 +26,7 @@ hardware::Mecanum hardware::mecanum(&wheelFL, &wheelFR, &wheelBL, &wheelBR);
 bool hardware::isHardwareLoopUpdating = true;
 
 void hardware::init() {
-  LOG_INFO("<Hardware> Init Start...");
+  LOG_INFO("<Hardware>\tInit Start...");
 
   interface::init();
   sensors::init();
@@ -41,27 +41,27 @@ void hardware::init() {
 
   mecanum.isEnabled = bitRead(interface::operationMode, 2);
 
-  LOG_INFO("<Hardware> Init Complete");
+  LOG_INFO("<Hardware>\tInit Complete");
 }
 
 void hardware::calibrate() {
-  LOG_INFO("<Hardware> Calibration Start...");
+  LOG_INFO("<Hardware>\tCalibration Start...");
 
   sensors::calibrate();
   mecanum.findRotationOffset();
 
-  LOG_INFO("<Hardware> Calibration Complete");
+  LOG_INFO("<Hardware>\tCalibration Complete");
 }
 
 void hardware::defaultPosition() {
-  LOG_INFO("<Hardware> Homing Start...");
+  LOG_INFO("<Hardware>\tHoming Start...");
 
   servos::defaultPosition();
   turnTable.home(TURN_PULSE_WIDTH);
   rail.home(RAIL_PULSE_WIDTH);
   encoders::defaultPosition();
 
-  LOG_INFO("<Hardware> Homing Complete");
+  LOG_INFO("<Hardware>\tHoming Complete");
 }
 
 void hardware::stopAll() {
@@ -71,7 +71,7 @@ void hardware::stopAll() {
   ballHitter.stop();
 
   isHardwareLoopUpdating = false;
-  LOG_INFO("<Hardware> Stopped Loop");
+  LOG_INFO("<Hardware>\tStopped Loop");
 }
 
 void hardware::loop() {

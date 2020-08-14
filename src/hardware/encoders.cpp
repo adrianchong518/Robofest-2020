@@ -9,7 +9,7 @@ int16_t hardware::encoders::hitterEncoderLocation = 0;
 uint16_t hardware::encoders::measureEncoderLocation = 0;
 
 void hardware::encoders::init() {
-  LOG_DEBUG("<Encoders> Initialising...");
+  LOG_DEBUG("<Encoders>\tInitialising...");
 
   // Pins
   pinMode(PIN_ENCODER_SEL, OUTPUT);
@@ -39,7 +39,7 @@ void hardware::encoders::init() {
 }
 
 void hardware::encoders::defaultPosition() {
-  LOG_DEBUG("<Encoders> Resetting...");
+  LOG_DEBUG("<Encoders>\tResetting...");
   resetLocation(PIN_HITTER_ENCODER_RST);
   resetLocation(PIN_MEASURE_ENCODER_RST);
 }

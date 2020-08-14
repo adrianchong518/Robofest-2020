@@ -24,7 +24,7 @@ void hardware::Rail::stop() {
 }
 
 void hardware::Rail::home(const unsigned long pulseWidth) {
-  LOG_DEBUG("<Rail> Homing...");
+  LOG_DEBUG("<Rail>\tHoming...");
 
   unsigned int prevPulseWidth = m_pulseWidth;
   setPulseWidth(pulseWidth);
@@ -49,15 +49,15 @@ Stepper::CODES hardware::Rail::setTargetMM(const double targetMM) {
 
   switch (returnCode) {
     case Stepper::NO_ERROR:
-      LOG_DEBUG("<Rail> Target (" + String(targetMM) + " mm) Set");
+      LOG_DEBUG("<Rail>\tTarget (" + String(targetMM) + " mm) Set");
       break;
 
     case Stepper::ERROR_TARGET_EXCEEDS_LIMIT:
-      LOG_ERROR("<Rail> Target (" + String(targetMM) + " mm) Exceeds Limit");
+      LOG_ERROR("<Rail>\tTarget (" + String(targetMM) + " mm) Exceeds Limit");
       break;
 
     default:
-      LOG_ERROR("<Rail> Set Target Unknown Error");
+      LOG_ERROR("<Rail>\tSet Target Unknown Error");
       break;
   }
 
@@ -69,15 +69,15 @@ Stepper::CODES hardware::Rail::setTarget(long target) {
 
   switch (returnCode) {
     case Stepper::NO_ERROR:
-      LOG_DEBUG("<Rail> Target (" + String(target) + " steps) Set");
+      LOG_DEBUG("<Rail>\tTarget (" + String(target) + " steps) Set");
       break;
 
     case Stepper::ERROR_TARGET_EXCEEDS_LIMIT:
-      LOG_ERROR("<Rail> Target (" + String(target) + " steps) Exceeds Limit");
+      LOG_ERROR("<Rail>\tTarget (" + String(target) + " steps) Exceeds Limit");
       break;
 
     default:
-      LOG_ERROR("<Rail> Set Target Unknown Error");
+      LOG_ERROR("<Rail>\tSet Target Unknown Error");
       break;
   }
 
