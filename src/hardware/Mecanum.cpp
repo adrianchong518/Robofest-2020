@@ -28,10 +28,10 @@ void hardware::Mecanum::update() {
 
       m_rotation =
           (double)-JY901.stcAngle.Angle[2] / 32768 * PI - m_rotationOffset;
-      if (m_rotation > 180) {
-        m_rotation -= 360;
-      } else if (m_rotation < -180) {
-        m_rotation += 360;
+      if (m_rotation > PI) {
+        m_rotation -= 2 * PI;
+      } else if (m_rotation < PI) {
+        m_rotation += 2 * PI;
       }
 
       m_rotationSpeedDiff = round(calculatePID(m_rotation));
@@ -139,4 +139,16 @@ void hardware::Mecanum::setMotorsSpeeds() {
 
   m_wheelBRSpeed = round(p1 - m_rotationSpeedDiff / 2.0);
   m_wheelBR->setSpeed(m_wheelBRSpeed);
+}
+
+double hardware::Mecanum::calculateError(double reading) {
+  double error = m_target - reading;
+
+  if (error > PI) {
+    error -= 2 * PI;
+  } else if (error < PI) {
+    error += 2 * PI;
+  }
+
+  return error;
 }

@@ -46,5 +46,5 @@ void setup() {
 
 void loop() {
   hardware::loop();
-  control::manual::loop();
+  control::loop();
 }

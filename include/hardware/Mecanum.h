@@ -57,6 +57,9 @@ class Mecanum : public PID {
   void setMotorsSpeeds();
 
   void setIsGyroEnabled(bool isGyroEnabled);
+
+ protected:
+  double calculateError(double reading);
 };
 
 }  // namespace hardware
