@@ -3,62 +3,6 @@
 #include "hardware/hardware.h"
 #include "control/routines/routines.h"
 
-int hardwareCommands(const String &command);
-int railCommands(const String &command);
-int turnTableCommands(const String &command);
-int ballHitterCommands(const String &command);
-int mecanumCommands(const String &command);
-int measureDistanceCommands(const String &command);
-int irSensorsCommands(const String &command);
-int laserPhotoresistorCommands(const String &command);
-int irDistanceSensorCommands(const String &command);
-int lcdCommands(const String &command);
-int run(const String &command);
-
-int control::commands::parseInput(const String &command) {
-  if (command.length() == 0) {
-    return -1;
-  }
-
-  if (command.startsWith("h ")) {
-    return hardwareCommands(command.substring(2));
-  } else if (command.startsWith("r ")) {
-    return railCommands(command.substring(2));
-  } else if (command.startsWith("tt ")) {
-    return turnTableCommands(command.substring(3));
-  } else if (command.startsWith("bh ")) {
-    return ballHitterCommands(command.substring(3));
-  } else if (command.startsWith("m ")) {
-    return mecanumCommands(command.substring(2));
-  } else if (command.startsWith("hl")) {
-    hardware::servos::setHolderLeft(!hardware::servos::isHolderLeftExtended);
-    return 0;
-  } else if (command.startsWith("hr")) {
-    hardware::servos::setHolderRight(!hardware::servos::isHolderRightExtended);
-    return 0;
-  } else if (command.startsWith("gl")) {
-    hardware::servos::setGuideLeft(!hardware::servos::isGuideLeftExtended);
-    return 0;
-  } else if (command.startsWith("gr")) {
-    hardware::servos::setGuideRight(!hardware::servos::isGuideRightExtended);
-    return 0;
-  } else if (command.startsWith("md ")) {
-    return measureDistanceCommands(command.substring(3));
-  } else if (command.startsWith("ir ")) {
-    return irSensorsCommands(command.substring(3));
-  } else if (command.startsWith("lr ")) {
-    return laserPhotoresistorCommands(command.substring(3));
-  } else if (command.startsWith("ird ")) {
-    return irDistanceSensorCommands(command.substring(4));
-  } else if (command.startsWith("lcd ")) {
-    return lcdCommands(command.substring(4));
-  } else if (command.startsWith("run ")) {
-    return run(command.substring(4));
-  }
-
-  return -1;
-}
-
 int hardwareCommands(const String &command) {
   if (command == "c") {
     hardware::calibrate();
@@ -79,9 +23,11 @@ int railCommands(const String &command) {
     hardware::rail.setTargetMM(command.substring(2).toDouble());
   } else if (command.startsWith("s ")) {
     hardware::rail.setTarget(command.substring(2).toInt());
-  } else if (command.startsWith("lr")) {
+  } else if (command == "lr") {
     LOG_INFO("<Rail>\tLocation: " + String(hardware::rail.getLocationMM()) +
              " mm (" + String(hardware::rail.getLocation()) + " steps)");
+  } else if (command == "home") {
+    hardware::rail.home(RAIL_PULSE_WIDTH);
   } else {
     return -1;
   }
@@ -94,10 +40,12 @@ int turnTableCommands(const String &command) {
     hardware::turnTable.setTargetDeg(command.substring(2).toDouble());
   } else if (command.startsWith("s ")) {
     hardware::turnTable.setTarget(command.substring(2).toInt());
-  } else if (command.startsWith("lr")) {
+  } else if (command == "lr") {
     LOG_INFO("<Turn Table>\tLocation: " +
              String(hardware::turnTable.getLocationDeg()) + " deg (" +
              String(hardware::turnTable.getLocation()) + " steps)");
+  } else if (command == "home") {
+    hardware::turnTable.home(TURN_PULSE_WIDTH);
   } else {
     return -1;
   }
@@ -112,18 +60,19 @@ int ballHitterCommands(const String &command) {
     double highPos = command.substring(4, command.indexOf(' ', 4)).toDouble();
     double lowPos = command.substring(command.indexOf(' ', 4)).toDouble();
     hardware::ballHitter.hit(highPos, lowPos);
-  } else if (command.startsWith("lr")) {
+  } else if (command == "lr") {
     LOG_INFO("<Ball Hitter>\tEncoder Reading: " +
              String(hardware::encoders::hitterEncoderLocation /
                     (double)HITTER_ENCODER_STEP_PER_DEG) +
              " (" + hardware::encoders::hitterEncoderLocation + ")");
-  } else if (command.startsWith("rst")) {
+  } else if (command == "rst") {
     hardware::encoders::resetLocation(PIN_HITTER_ENCODER_RST);
     LOG_INFO("<Ball Hitter>\tEncoder Reset");
-  } else if (command.startsWith("pid")) {
-    LOG_INFO("<Ball Hitter>\tPID Constants: " + String(hardware::ballHitter.Kp) +
-             " | " + String(hardware::ballHitter.Ki) + " | " +
-             String(hardware::ballHitter.Kd));
+  } else if (command == "pid") {
+    LOG_INFO(
+        "<Ball Hitter>\tPID Constants: " + String(hardware::ballHitter.Kp) +
+        " | " + String(hardware::ballHitter.Ki) + " | " +
+        String(hardware::ballHitter.Kd));
   } else if (command.startsWith("kp ")) {
     double Kp = command.substring(3).toDouble();
     hardware::ballHitter.Kp = Kp;
@@ -150,20 +99,22 @@ int mecanumCommands(const String &command) {
     hardware::mecanum.setDirection(radians(command.substring(2).toDouble()));
   } else if (command.startsWith("r ")) {
     hardware::mecanum.setTarget(radians(command.substring(2).toDouble()));
-  } else if (command.startsWith("ms")) {
+  } else if (command == "ms") {
     int wheelFLSpeed, wheelFRSpeed, wheelBLSpeed, wheelBRSpeed;
     hardware::mecanum.getMotorsSpeeds(wheelFLSpeed, wheelFRSpeed, wheelBLSpeed,
                                       wheelBRSpeed);
     LOG_INFO("<Mecanum>\tWheels Speeds: " + String(wheelFLSpeed) + " | " +
              String(wheelFRSpeed) + " | " + String(wheelBLSpeed) + " | " +
              String(wheelBRSpeed));
-  } else if (command.startsWith("rr")) {
+  } else if (command == "rr") {
     LOG_INFO("<Mecanum>\tRotation: " + String(hardware::mecanum.getRotation()));
-  } else if (command.startsWith("gt")) {
+  } else if (command == "gt") {
     hardware::mecanum.isGyroEnabled = !hardware::mecanum.isGyroEnabled;
     LOG_INFO("<Mecanum>\tGyroscope " +
              String(hardware::mecanum.isGyroEnabled ? "Enabled" : "Disabled"));
-  } else if (command.startsWith("pid")) {
+  } else if (command == "c") {
+    hardware::mecanum.findRotationOffset();
+  } else if (command == "pid") {
     LOG_INFO("<Mecanum>\tPID Constants: " + String(hardware::mecanum.Kp) +
              " | " + String(hardware::mecanum.Ki) + " | " +
              String(hardware::mecanum.Kd));
@@ -179,7 +130,7 @@ int mecanumCommands(const String &command) {
     double Kd = command.substring(3).toDouble();
     hardware::mecanum.Kd = Kd;
     LOG_DEBUG("<Mecanum>\tPID Kd (" + String(Kd) + ") Set");
-  } else if (command.startsWith("enable")) {
+  } else if (command == "t") {
     hardware::mecanum.isEnabled = !hardware::mecanum.isEnabled;
     LOG_INFO("<Mecanum>\t" +
              String(hardware::mecanum.isEnabled ? "Enabled" : "Disabled"));
@@ -190,16 +141,34 @@ int mecanumCommands(const String &command) {
   return 0;
 }
 
-int measureDistanceCommands(const String &command) {
-  if (command.startsWith("servo")) {
+int servosCommands(const String &command) {
+  if (command == "hl") {
+    hardware::servos::setHolderLeft(!hardware::servos::isHolderLeftExtended);
+  } else if (command == "hr") {
+    hardware::servos::setHolderRight(!hardware::servos::isHolderRightExtended);
+  } else if (command == "gl") {
+    hardware::servos::setGuideLeft(!hardware::servos::isGuideLeftExtended);
+  } else if (command == "gr") {
+    hardware::servos::setGuideRight(!hardware::servos::isGuideRightExtended);
+  } else if (command == "md") {
     hardware::servos::setMeasureServo(
         !hardware::servos::isMeasureServoExtended);
-  } else if (command.startsWith("lr")) {
+  } else if (command == "home") {
+    hardware::servos::defaultPosition();
+  } else {
+    return -1;
+  }
+
+  return 0;
+}
+
+int measureDistanceCommands(const String &command) {
+  if (command == "lr") {
     LOG_INFO("<Measuring Encoder>\tReading: " +
              String(hardware::encoders::measureEncoderLocation /
                     (double)MEASURE_ENCODER_STEP_PER_MM) +
              " (" + hardware::encoders::measureEncoderLocation + ")");
-  } else if (command.startsWith("rst")) {
+  } else if (command == "rst") {
     hardware::encoders::resetLocation(PIN_MEASURE_ENCODER_RST);
     LOG_INFO("<Measuring Encoder>\tReset");
   } else {
@@ -210,25 +179,33 @@ int measureDistanceCommands(const String &command) {
 }
 
 int irSensorsCommands(const String &command) {
-  if (command.startsWith("fl")) {
+  if (command == "fl") {
     LOG_INFO("<IR Sensor>\tFL: " + String(analogRead(PIN_IR_FL)) + " | " +
-             String(hardware::sensors::isBlackDetected(PIN_IR_FL)));
-  } else if (command.startsWith("fr")) {
+             String(hardware::sensors::isLineDetected(PIN_IR_FL)) + " | " +
+             String(hardware::sensors::isEdgeDetected(PIN_IR_FL)));
+  } else if (command == "fr") {
     LOG_INFO("<IR Sensor>\tFR: " + String(analogRead(PIN_IR_FR)) + " | " +
-             String(hardware::sensors::isBlackDetected(PIN_IR_FR)));
-  } else if (command.startsWith("bl")) {
+             String(hardware::sensors::isLineDetected(PIN_IR_FR)) + " | " +
+             String(hardware::sensors::isEdgeDetected(PIN_IR_FR)));
+  } else if (command == "bl") {
     LOG_INFO("<IR Sensor>\tBL: " + String(analogRead(PIN_IR_BL)) + " | " +
-             String(hardware::sensors::isBlackDetected(PIN_IR_BL)));
-  } else if (command.startsWith("br")) {
+             String(hardware::sensors::isLineDetected(PIN_IR_BL)) + " | " +
+             String(hardware::sensors::isEdgeDetected(PIN_IR_BL)));
+  } else if (command == "br") {
     LOG_INFO("<IR Sensor>\tBR: " + String(analogRead(PIN_IR_BR)) + " | " +
-             String(hardware::sensors::isBlackDetected(PIN_IR_BR)));
-  } else if (command.startsWith("tr")) {
-    LOG_INFO("<IR Sensor>\tThreshold: " +
-             String(hardware::sensors::irThreshold));
-  } else if (command.startsWith("ts ")) {
-    hardware::sensors::irThreshold = command.substring(3).toInt();
-    LOG_INFO("<IR Sensor>\tThreshold Set (" +
-             String(hardware::sensors::irThreshold) + ")");
+             String(hardware::sensors::isLineDetected(PIN_IR_BR)) + " | " +
+             String(hardware::sensors::isEdgeDetected(PIN_IR_BR)));
+  } else if (command == "tr") {
+    LOG_INFO("<IR Sensor>\tThresholds: " +
+             String(hardware::sensors::irLineThreshold));
+  } else if (command.startsWith("lts ")) {
+    hardware::sensors::irLineThreshold = command.substring(4).toInt();
+    LOG_INFO("<IR Sensor>\tLine Threshold Set (" +
+             String(hardware::sensors::irLineThreshold) + ")");
+  } else if (command.startsWith("ets ")) {
+    hardware::sensors::irEdgeThreshold = command.substring(4).toInt();
+    LOG_INFO("<IR Sensor>\tEdge Threshold Set (" +
+             String(hardware::sensors::irEdgeThreshold) + ")");
   } else {
     return -1;
   }
@@ -237,15 +214,15 @@ int irSensorsCommands(const String &command) {
 }
 
 int laserPhotoresistorCommands(const String &command) {
-  if (command.startsWith("r")) {
+  if (command == "r") {
     LOG_INFO("<Laser Photoresistor>\tReading: " +
              String(analogRead(PIN_LASER_PHOTORESISTOR)) + " | " +
              String(hardware::sensors::isLaserBlocked()) + "(" +
-             String(hardware::sensors::laserPOTThreshold) + ")");
+             String(hardware::sensors::photoresistorThreshold) + ")");
   } else if (command.startsWith("ts ")) {
-    hardware::sensors::laserPOTThreshold = command.substring(3).toInt();
+    hardware::sensors::photoresistorThreshold = command.substring(3).toInt();
     LOG_INFO("<Laser Photoresistor>\tThreshold Set (" +
-             String(hardware::sensors::laserPOTThreshold) + ")");
+             String(hardware::sensors::photoresistorThreshold) + ")");
   } else {
     return -1;
   }
@@ -254,10 +231,10 @@ int laserPhotoresistorCommands(const String &command) {
 }
 
 int irDistanceSensorCommands(const String &command) {
-  if (command.startsWith("dr")) {
+  if (command == "dr") {
     LOG_INFO("<IR Distance>\tReading: " +
              String(hardware::sensors::irDistance.getDistance()));
-  } else if (command.startsWith("mr")) {
+  } else if (command == "mr") {
     LOG_INFO("<IR Distance>\tMode :" +
              String(hardware::sensors::irDistance.getMode()));
   } else if (command.startsWith("ms ")) {
@@ -273,9 +250,9 @@ int irDistanceSensorCommands(const String &command) {
 int lcdCommands(const String &command) {
   if (command.startsWith("print ")) {
     hardware::interface::lcd.print(command.substring(6));
-  } else if (command.startsWith("nl")) {
+  } else if (command == "nl") {
     hardware::interface::lcd.setCursor(0, 1);
-  } else if (command.startsWith("clr")) {
+  } else if (command == "clr") {
     hardware::interface::lcd.clear();
   } else {
     return -1;
@@ -284,7 +261,7 @@ int lcdCommands(const String &command) {
   return 0;
 }
 
-int run(const String &command) {
+int runCommands(const String &command) {
   if (command.startsWith("routine ")) {
     control::routines::runRoutine(
         control::routines::getRoutineIDByName(command.substring(8)));
@@ -295,4 +272,38 @@ int run(const String &command) {
   }
 
   return 0;
+}
+
+int control::commands::parseInput(const String &command) {
+  if (command.length() == 0) {
+    return -1;
+  }
+
+  if (command.startsWith("h ")) {
+    return hardwareCommands(command.substring(2));
+  } else if (command.startsWith("r ")) {
+    return railCommands(command.substring(2));
+  } else if (command.startsWith("tt ")) {
+    return turnTableCommands(command.substring(3));
+  } else if (command.startsWith("bh ")) {
+    return ballHitterCommands(command.substring(3));
+  } else if (command.startsWith("m ")) {
+    return mecanumCommands(command.substring(2));
+  } else if (command.startsWith("servos ")) {
+    return servosCommands(command.substring(7));
+  } else if (command.startsWith("md ")) {
+    return measureDistanceCommands(command.substring(3));
+  } else if (command.startsWith("ir ")) {
+    return irSensorsCommands(command.substring(3));
+  } else if (command.startsWith("lr ")) {
+    return laserPhotoresistorCommands(command.substring(3));
+  } else if (command.startsWith("ird ")) {
+    return irDistanceSensorCommands(command.substring(4));
+  } else if (command.startsWith("lcd ")) {
+    return lcdCommands(command.substring(4));
+  } else if (command.startsWith("run ")) {
+    return runCommands(command.substring(4));
+  }
+
+  return -1;
 }

@@ -49,7 +49,7 @@ void hardware::Mecanum::stop() {
 }
 
 void hardware::Mecanum::findRotationOffset() {
-  LOG_DEBUG("<Mecanum>\tFinding Rotation Offset...");
+  LOG_INFO("<Mecanum>\tFinding Rotation Offset...");
 
   double rotationalOffset = 0;
 
@@ -70,7 +70,7 @@ void hardware::Mecanum::findRotationOffset() {
   }
 
   m_rotationOffset = rotationalOffset / 32768 * PI;
-  LOG_DEBUG("<Mecanum>\tRotation Offset: " + String(degrees(m_rotationOffset)));
+  LOG_INFO("<Mecanum>\tRotation Offset: " + String(degrees(m_rotationOffset)));
 }
 
 void hardware::Mecanum::setSpeed(const unsigned int speed) {

@@ -6,8 +6,9 @@
 GY53 hardware::sensors::irDistance(&SERIAL_IR_DISTANCE,
                                    SERIAL_IR_DISTANCE_BAUDRATE);
 
-int hardware::sensors::irThreshold = 0;
-int hardware::sensors::laserPOTThreshold = 0;
+int hardware::sensors::irLineThreshold = 0;
+int hardware::sensors::irEdgeThreshold = 0;
+int hardware::sensors::photoresistorThreshold = 0;
 
 void hardware::sensors::init() {
   LOG_DEBUG("<Sensors>\tInitialising...");
@@ -25,10 +26,14 @@ void hardware::sensors::calibrate() { LOG_INFO("<Sensors>\tCalibrating..."); }
 
 void hardware::sensors::loop() { irDistance.update(); }
 
-bool hardware::sensors::isBlackDetected(const uint8_t pin_ir) {
-  return analogRead(pin_ir) < irThreshold;
+bool hardware::sensors::isLineDetected(const uint8_t pin_ir) {
+  return analogRead(pin_ir) < irLineThreshold;
+}
+
+bool hardware::sensors::isEdgeDetected(const uint8_t pin_ir) {
+  return analogRead(pin_ir) < irEdgeThreshold;
 }
 
 bool hardware::sensors::isLaserBlocked() {
-  return analogRead(PIN_LASER_PHOTORESISTOR) < laserPOTThreshold;
+  return analogRead(PIN_LASER_PHOTORESISTOR) < photoresistorThreshold;
 }
