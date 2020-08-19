@@ -3,25 +3,26 @@
 
 #include <GY53.h>
 
+#include "hardware/sensors/IRSensor.h"
+
 namespace hardware {
 namespace sensors {
 
+extern IRSensor IRSensorFL;
+extern IRSensor IRSensorFR;
+extern IRSensor IRSensorBL;
+extern IRSensor IRSensorBR;
+
 extern GY53 irDistance;
 
-extern int irLineThreshold;
-extern int irEdgeThreshold;
-extern int photoresistorThreshold;
+extern int laserThreshold;
+extern bool isLaserBlocked;
 
 void init();
 
 void calibrate();
 
 void loop();
-
-bool isLineDetected(const uint8_t pin_ir);
-bool isEdgeDetected(const uint8_t pin_ir);
-
-bool isLaserBlocked();
 
 }  // namespace sensors
 }  // namespace hardware

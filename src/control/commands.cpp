@@ -180,32 +180,33 @@ int measureDistanceCommands(const String &command) {
 
 int irSensorsCommands(const String &command) {
   if (command == "fl") {
-    LOG_INFO("<IR Sensor>\tFL: " + String(analogRead(PIN_IR_FL)) + " | " +
-             String(hardware::sensors::isLineDetected(PIN_IR_FL)) + " | " +
-             String(hardware::sensors::isEdgeDetected(PIN_IR_FL)));
+    LOG_INFO(
+        "<IR Sensor>\tFL: " + String(hardware::sensors::IRSensorFL.getValue()) +
+        " | " + String(hardware::sensors::IRSensorFL.isLineDetected()) + " | " +
+        String(hardware::sensors::IRSensorFL.isEdgeDetected()));
   } else if (command == "fr") {
-    LOG_INFO("<IR Sensor>\tFR: " + String(analogRead(PIN_IR_FR)) + " | " +
-             String(hardware::sensors::isLineDetected(PIN_IR_FR)) + " | " +
-             String(hardware::sensors::isEdgeDetected(PIN_IR_FR)));
+    LOG_INFO(
+        "<IR Sensor>\tFR: " + String(hardware::sensors::IRSensorFR.getValue()) +
+        " | " + String(hardware::sensors::IRSensorFR.isLineDetected()) + " | " +
+        String(hardware::sensors::IRSensorFR.isEdgeDetected()));
   } else if (command == "bl") {
-    LOG_INFO("<IR Sensor>\tBL: " + String(analogRead(PIN_IR_BL)) + " | " +
-             String(hardware::sensors::isLineDetected(PIN_IR_BL)) + " | " +
-             String(hardware::sensors::isEdgeDetected(PIN_IR_BL)));
+    LOG_INFO(
+        "<IR Sensor>\tBL: " + String(hardware::sensors::IRSensorBL.getValue()) +
+        " | " + String(hardware::sensors::IRSensorBL.isLineDetected()) + " | " +
+        String(hardware::sensors::IRSensorBL.isEdgeDetected()));
   } else if (command == "br") {
-    LOG_INFO("<IR Sensor>\tBR: " + String(analogRead(PIN_IR_BR)) + " | " +
-             String(hardware::sensors::isLineDetected(PIN_IR_BR)) + " | " +
-             String(hardware::sensors::isEdgeDetected(PIN_IR_BR)));
+    LOG_INFO(
+        "<IR Sensor>\tBR: " + String(hardware::sensors::IRSensorBR.getValue()) +
+        " | " + String(hardware::sensors::IRSensorBR.isLineDetected()) + " | " +
+        String(hardware::sensors::IRSensorBR.isEdgeDetected()));
   } else if (command == "tr") {
     LOG_INFO("<IR Sensor>\tThresholds: " +
-             String(hardware::sensors::irLineThreshold));
+             String(hardware::sensors::IRSensor::getLineThreshold()) + " | " +
+             String(hardware::sensors::IRSensor::getEdgeThreshold()));
   } else if (command.startsWith("lts ")) {
-    hardware::sensors::irLineThreshold = command.substring(4).toInt();
-    LOG_INFO("<IR Sensor>\tLine Threshold Set (" +
-             String(hardware::sensors::irLineThreshold) + ")");
+    hardware::sensors::IRSensor::setLineThreshold(command.substring(4).toInt());
   } else if (command.startsWith("ets ")) {
-    hardware::sensors::irEdgeThreshold = command.substring(4).toInt();
-    LOG_INFO("<IR Sensor>\tEdge Threshold Set (" +
-             String(hardware::sensors::irEdgeThreshold) + ")");
+    hardware::sensors::IRSensor::setEdgeThreshold(command.substring(4).toInt());
   } else {
     return -1;
   }
@@ -217,12 +218,12 @@ int laserPhotoresistorCommands(const String &command) {
   if (command == "r") {
     LOG_INFO("<Laser Photoresistor>\tReading: " +
              String(analogRead(PIN_LASER_PHOTORESISTOR)) + " | " +
-             String(hardware::sensors::isLaserBlocked()) + "(" +
-             String(hardware::sensors::photoresistorThreshold) + ")");
+             String(hardware::sensors::isLaserBlocked) + "(" +
+             String(hardware::sensors::laserThreshold) + ")");
   } else if (command.startsWith("ts ")) {
-    hardware::sensors::photoresistorThreshold = command.substring(3).toInt();
+    hardware::sensors::laserThreshold = command.substring(3).toInt();
     LOG_INFO("<Laser Photoresistor>\tThreshold Set (" +
-             String(hardware::sensors::photoresistorThreshold) + ")");
+             String(hardware::sensors::laserThreshold) + ")");
   } else {
     return -1;
   }

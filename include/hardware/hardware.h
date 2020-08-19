@@ -7,7 +7,7 @@
 #include "hardware/Rail.h"
 #include "hardware/TurnTable.h"
 #include "hardware/encoders.h"
-#include "hardware/sensors.h"
+#include "hardware/sensors/sensors.h"
 #include "hardware/servos.h"
 #include "hardware/interface.h"
 
