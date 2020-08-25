@@ -30,7 +30,7 @@ void hardware::Mecanum::update() {
           (double)-JY901.stcAngle.Angle[2] / 32768 * PI - m_rotationOffset;
       if (m_rotation > PI) {
         m_rotation -= 2 * PI;
-      } else if (m_rotation < PI) {
+      } else if (m_rotation < -PI) {
         m_rotation += 2 * PI;
       }
 
@@ -46,6 +46,8 @@ void hardware::Mecanum::stop() {
   setSpeed(0);
   setRotationSpeedDiff(0);
   setMotorsSpeeds();
+
+  isEnabled = false;
 }
 
 void hardware::Mecanum::findRotationOffset() {
@@ -146,7 +148,7 @@ double hardware::Mecanum::calculateError(double reading) {
 
   if (error > PI) {
     error -= 2 * PI;
-  } else if (error < PI) {
+  } else if (error < -PI) {
     error += 2 * PI;
   }
 
