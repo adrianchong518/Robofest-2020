@@ -8,23 +8,25 @@ namespace sensors {
 
 class IRSensor {
  private:
-  static int sm_lineThreshold;
-  static int sm_edgeThreshold;
-
   uint8_t m_pin;
 
   int m_value;
+
+  int m_deadzoneWidth;
+  int m_lineThreshold;
+  int m_edgeThreshold;
+
   bool m_isLineDetected;
   bool m_isEdgeDetected;
 
  public:
-  IRSensor(const uint8_t pin);
+  IRSensor(const uint8_t pin, const int deadzoneWidth = 0);
 
-  static int getLineThreshold();
-  static void setLineThreshold(const int lineThreshold);
+  int getLineThreshold();
+  void setLineThreshold(const int lineThreshold);
 
-  static int getEdgeThreshold();
-  static void setEdgeThreshold(const int edgeThreshold);
+  int getEdgeThreshold();
+  void setEdgeThreshold(const int edgeThreshold);
 
   void update();
 

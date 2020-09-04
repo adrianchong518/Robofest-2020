@@ -8,10 +8,8 @@
 namespace hardware {
 namespace sensors {
 
-extern IRSensor IRSensorFL;
-extern IRSensor IRSensorFR;
-extern IRSensor IRSensorBL;
-extern IRSensor IRSensorBR;
+extern IRSensor irSensors[4];
+static const String irSensorsNames[4] = {"FL", "FR", "BL", "BR"};
 
 extern GY53 irDistance;
 
@@ -20,6 +18,8 @@ extern bool isLaserBlocked;
 
 void init();
 
+void calibrateIRSensors();
+void calibrateLaser();
 void calibrate();
 
 void loop();

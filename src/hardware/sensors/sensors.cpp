@@ -3,10 +3,9 @@
 #include "constants.h"
 #include "hardware/interface.h"
 
-hardware::sensors::IRSensor hardware::sensors::IRSensorFL(PIN_IR_FL);
-hardware::sensors::IRSensor hardware::sensors::IRSensorFR(PIN_IR_FR);
-hardware::sensors::IRSensor hardware::sensors::IRSensorBL(PIN_IR_BL);
-hardware::sensors::IRSensor hardware::sensors::IRSensorBR(PIN_IR_BR);
+hardware::sensors::IRSensor hardware::sensors::irSensors[4] = {
+    IRSensor(PIN_IR_FL), IRSensor(PIN_IR_FR), IRSensor(PIN_IR_BL),
+    IRSensor(PIN_IR_BR)};
 
 GY53 hardware::sensors::irDistance(&SERIAL_IR_DISTANCE,
                                    SERIAL_IR_DISTANCE_BAUDRATE);
@@ -20,14 +19,121 @@ void hardware::sensors::init() {
   pinMode(PIN_LASER_PHOTORESISTOR, INPUT);
 }
 
-// TODO Find calibration method and process
-void hardware::sensors::calibrate() { LOG_INFO("<Sensors>\tCalibrating..."); }
+void hardware::sensors::calibrateIRSensors() {
+  LOG_INFO("<IR Sensors>\tCalibrating...");
+
+  int tableValues[4];
+  int lineValues[4];
+  int edgeValues[4];
+
+  // Table Value
+  LOG_INFO("<IR Sensors>\tALL on TABLE");
+  interface::lcd.setCursor(0, 0);
+  interface::lcd.print("IR ALL on TABLE ");
+  while (digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
+    ;
+
+  for (int i = 0; i < 10; i++) {
+    tableValues[0] += analogRead(PIN_IR_FL);
+    tableValues[1] += analogRead(PIN_IR_FR);
+    tableValues[2] += analogRead(PIN_IR_BL);
+    tableValues[3] += analogRead(PIN_IR_BR);
+
+    delay(100);
+  }
+  tableValues[0] /= 10;
+  tableValues[1] /= 10;
+  tableValues[2] /= 10;
+  tableValues[3] /= 10;
+
+  // Line Value F
+  LOG_INFO("<IR Sensors>\tF on LINE");
+  interface::lcd.setCursor(0, 0);
+  interface::lcd.print("IR F on LINE    ");
+  while (digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
+    ;
+
+  for (int i = 0; i < 10; i++) {
+    lineValues[0] += analogRead(PIN_IR_FL);
+    lineValues[1] += analogRead(PIN_IR_FR);
+
+    delay(100);
+  }
+  lineValues[0] /= 10;
+  lineValues[1] /= 10;
+
+  // Line Value B
+  LOG_INFO("<IR Sensors>\tB on LINE");
+  interface::lcd.setCursor(0, 0);
+  interface::lcd.print("IR B on LINE    ");
+  while (digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
+    ;
+  for (int i = 0; i < 10; i++) {
+    lineValues[2] += analogRead(PIN_IR_BL);
+    lineValues[3] += analogRead(PIN_IR_BR);
+
+    delay(100);
+  }
+  lineValues[2] /= 10;
+  lineValues[3] /= 10;
+
+  // Edge Value R
+  LOG_INFO("<IR Sensors>\tR on EDGE");
+  interface::lcd.setCursor(0, 0);
+  interface::lcd.print("IR R on EDGE    ");
+  while (digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
+    ;
+  for (int i = 0; i < 10; i++) {
+    edgeValues[1] += analogRead(PIN_IR_FR);
+    edgeValues[3] += analogRead(PIN_IR_BR);
+
+    delay(100);
+  }
+  edgeValues[1] /= 10;
+  edgeValues[3] /= 10;
+
+  // Edge Value L
+  LOG_INFO("<IR Sensors>\tL on EDGE");
+  interface::lcd.setCursor(0, 0);
+  interface::lcd.print("IR L on EDGE    ");
+  while (digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
+    ;
+  for (int i = 0; i < 10; i++) {
+    edgeValues[0] += analogRead(PIN_IR_FL);
+    edgeValues[2] += analogRead(PIN_IR_BL);
+
+    delay(100);
+  }
+  edgeValues[0] /= 10;
+  edgeValues[2] /= 10;
+
+  for (int i = 0; i < 4; i++) {
+    LOG_DEBUG("<IR Sensors>\t" + irSensorsNames[i]);
+    irSensors[i].setEdgeThreshold((lineValues[i] + edgeValues[i]) / 2);
+    irSensors[i].setLineThreshold((tableValues[i] + lineValues[i]) / 2);
+  }
+
+  interface::lcd.setCursor(0, 0);
+  interface::lcd.print("                ");
+}
+
+void hardware::sensors::calibrateLaser() {
+  LOG_INFO("<Laser>\t\tCalibrating...");
+  laserThreshold = 500;
+}
+
+void hardware::sensors::calibrate() {
+  LOG_INFO("<Sensors>\tCalibrating...");
+
+  calibrateIRSensors();
+  calibrateLaser();
+}
 
 void hardware::sensors::loop() {
-  IRSensorFL.update();
-  IRSensorFR.update();
-  IRSensorBL.update();
-  IRSensorBR.update();
+  irSensors[0].update();
+  irSensors[1].update();
+  irSensors[2].update();
+  irSensors[3].update();
 
   irDistance.update();
 
