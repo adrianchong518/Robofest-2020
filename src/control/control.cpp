@@ -47,6 +47,8 @@ void control::init() {
 
     routines::runSeq(seqID);
 
+    hardware::interface::lcd.setCursor(0, 0);
+    hardware::interface::lcd.print("                 ");
     hardware::interface::lcd.setCursor(12, 1);
     hardware::interface::lcd.print("Done");
 
@@ -62,6 +64,7 @@ void control::loop() {
     char inChar = Serial.read();
 
     if (inChar == '\n' || inChar == '\r') {
+      input.trim();
       if (commands::parseInput(input) == -1) {
         LOG_ERROR("Invalid Input: " + input);
       }

@@ -8,8 +8,8 @@
 namespace control {
 namespace routines {
 
-const RoutineID seq0[] = {TEST1, TEST2, NONE};
-const RoutineID seq1[] = {TEST2, TEST1, TEST2, NONE};
+const RoutineID seq0[] = {NONE};
+const RoutineID seq1[] = {NONE};
 const RoutineID *const seqList[10] = {seq0,    seq1,    nullptr, nullptr,
                                       nullptr, nullptr, nullptr, nullptr,
                                       nullptr, nullptr};

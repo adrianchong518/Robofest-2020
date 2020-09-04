@@ -10,10 +10,10 @@ const control::routines::RoutineID *control::routines::runningSeqPtr = nullptr;
 void control::routines::loop() {
   if (runningSeqPtr != nullptr) {
     if (runningRoutine == RoutineID::NONE) {
-      runRoutine(*(++runningSeqPtr));
-
-      if (runningRoutine == RoutineID::NONE) {
+      if (*runningSeqPtr == RoutineID::NONE) {
         runningSeqPtr = nullptr;
+      } else {
+        runRoutine(*(++runningSeqPtr));
       }
     }
   }
