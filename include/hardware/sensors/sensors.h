@@ -20,6 +20,8 @@ void init();
 
 void calibrateIRSensors();
 void calibrateLaser();
+
+void setDefaultThresholds();
 void calibrate();
 
 void loop();

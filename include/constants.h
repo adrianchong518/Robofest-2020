@@ -125,6 +125,18 @@
 
 #define MEASURE_ENCODER_STEP_PER_MM 91.76
 
+#define IR_FL_LINE_THRESHOLD 500  // TODO Need Data
+#define IR_FL_EDGE_THRESHOLD 500  // TODO Need Data
+
+#define IR_FR_LINE_THRESHOLD 500  // TODO Need Data
+#define IR_FR_EDGE_THRESHOLD 500  // TODO Need Data
+
+#define IR_BL_LINE_THRESHOLD 500  // TODO Need Data
+#define IR_BL_EDGE_THRESHOLD 500  // TODO Need Data
+
+#define IR_BR_LINE_THRESHOLD 500  // TODO Need Data
+#define IR_BR_EDGE_THRESHOLD 500  // TODO Need Data
+
 #define LASER_THRESHOLD 500  // TODO Need Data
 
 #define LCD_NUM_COLS 16

@@ -122,11 +122,31 @@ void hardware::sensors::calibrateLaser() {
   laserThreshold = 500;
 }
 
+void hardware::sensors::setDefaultThresholds() {
+  irSensors[0].setEdgeThreshold(IR_FL_EDGE_THRESHOLD);
+  irSensors[0].setLineThreshold(IR_FL_LINE_THRESHOLD);
+
+  irSensors[1].setEdgeThreshold(IR_FR_EDGE_THRESHOLD);
+  irSensors[1].setLineThreshold(IR_FR_LINE_THRESHOLD);
+
+  irSensors[2].setEdgeThreshold(IR_BL_EDGE_THRESHOLD);
+  irSensors[2].setLineThreshold(IR_BL_LINE_THRESHOLD);
+
+  irSensors[3].setEdgeThreshold(IR_BR_EDGE_THRESHOLD);
+  irSensors[3].setLineThreshold(IR_BR_LINE_THRESHOLD);
+
+  laserThreshold = LASER_THRESHOLD;
+}
+
 void hardware::sensors::calibrate() {
   LOG_INFO("<Sensors>\tCalibrating...");
 
-  calibrateIRSensors();
-  calibrateLaser();
+  if (bitRead(interface::operationMode, 3)) {
+    calibrateIRSensors();
+    calibrateLaser();
+  } else {
+    setDefaultThresholds();
+  }
 }
 
 void hardware::sensors::loop() {
