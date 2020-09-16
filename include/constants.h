@@ -38,7 +38,7 @@
 #define PIN_WHEEL_FR_PWM 8
 
 #define PIN_WHEEL_BL_INA 22
-#define PIN_WHEEL_BL_INB 19
+#define PIN_WHEEL_BL_INB 23
 #define PIN_WHEEL_BL_PWM 3
 
 #define PIN_WHEEL_BR_INA 7
@@ -103,8 +103,8 @@
 #define MECANUM_ROT_PID_KI 0.1
 #define MECANUM_ROT_PID_KD 5000
 
-#define MECANUM_ROT_DIFF_MIN -510  // -255*2
-#define MECANUM_ROT_DIFF_MAX 510   // 255*2
+#define MECANUM_ROT_DIFF_MIN -300  // -255*2
+#define MECANUM_ROT_DIFF_MAX 300   // 255*2
 
 #define GUIDE_LEFT_RETRACTED_POS 80
 #define GUIDE_LEFT_EXTENDED_POS 130
@@ -125,17 +125,17 @@
 
 #define MEASURE_ENCODER_STEP_PER_MM 91.76
 
-#define IR_FL_LINE_THRESHOLD 500  // TODO Need Data
-#define IR_FL_EDGE_THRESHOLD 500  // TODO Need Data
+#define IR_FL_LINE_THRESHOLD 400  // TODO Need Data
+#define IR_FL_EDGE_THRESHOLD 400  // TODO Need Data
 
-#define IR_FR_LINE_THRESHOLD 500  // TODO Need Data
-#define IR_FR_EDGE_THRESHOLD 500  // TODO Need Data
+#define IR_FR_LINE_THRESHOLD 300  // TODO Need Data
+#define IR_FR_EDGE_THRESHOLD 300  // TODO Need Data
 
-#define IR_BL_LINE_THRESHOLD 500  // TODO Need Data
-#define IR_BL_EDGE_THRESHOLD 500  // TODO Need Data
+#define IR_BL_LINE_THRESHOLD 300  // TODO Need Data
+#define IR_BL_EDGE_THRESHOLD 300  // TODO Need Data
 
-#define IR_BR_LINE_THRESHOLD 500  // TODO Need Data
-#define IR_BR_EDGE_THRESHOLD 500  // TODO Need Data
+#define IR_BR_LINE_THRESHOLD 300  // TODO Need Data
+#define IR_BR_EDGE_THRESHOLD 300  // TODO Need Data
 
 #define LASER_THRESHOLD 500  // TODO Need Data
 

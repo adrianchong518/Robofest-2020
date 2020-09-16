@@ -39,7 +39,7 @@ void hardware::init() {
   turnTable.setStepLimitEnabled(true);
   turnTable.setStepLimitDeg(TURN_LOWER_LIMIT_DEG, TURN_UPPER_LIMIT_DEG);
 
-  mecanum.isEnabled = bitRead(interface::operationMode, 2);
+  mecanum.setIsEnabled(bitRead(interface::operationMode, 2));
 
   LOG_INFO("<Hardware>\tInit Complete");
 }

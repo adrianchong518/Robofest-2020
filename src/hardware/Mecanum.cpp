@@ -1,5 +1,6 @@
 #include "hardware/Mecanum.h"
 
+#include "hardware/servos.h"
 #include "hardware/interface.h"
 
 hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
@@ -20,8 +21,8 @@ hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
 hardware::Mecanum::~Mecanum() {}
 
 void hardware::Mecanum::update() {
-  if (isEnabled) {
-    if (isGyroEnabled) {
+  if (m_isEnabled) {
+    if (m_isGyroEnabled) {
       while (SERIAL_GYROSCOPE.available()) {
         JY901.CopeSerialData(SERIAL_GYROSCOPE.read());
       }
@@ -42,12 +43,38 @@ void hardware::Mecanum::update() {
   }
 }
 
-void hardware::Mecanum::stop() {
-  setSpeed(0);
-  setRotationSpeedDiff(0);
-  setMotorsSpeeds();
+void hardware::Mecanum::stop() { setIsEnabled(false); }
 
-  isEnabled = false;
+void hardware::Mecanum::moveForward() {
+  if (hardware::servos::isGuideLeftExtended) {
+    setIsGyroEnabled(false);
+    setDirection(radians(10));
+    setSpeed(90);
+  } else if (hardware::servos::isGuideRightExtended) {
+    setIsGyroEnabled(false);
+    setDirection(radians(-10));
+    setSpeed(90);
+  } else {
+    setIsGyroEnabled(true);
+    setDirection(0);
+    setSpeed(90);
+  }
+}
+
+void hardware::Mecanum::moveBackward() {
+  if (hardware::servos::isGuideLeftExtended) {
+    setIsGyroEnabled(false);
+    setDirection(radians(170));
+    setSpeed(90);
+  } else if (hardware::servos::isGuideRightExtended) {
+    setIsGyroEnabled(false);
+    setDirection(radians(-170));
+    setSpeed(90);
+  } else {
+    setIsGyroEnabled(true);
+    setDirection(PI);
+    setSpeed(90);
+  }
 }
 
 void hardware::Mecanum::findRotationOffset() {
@@ -141,6 +168,34 @@ void hardware::Mecanum::setMotorsSpeeds() {
 
   m_wheelBRSpeed = round(p1 - m_rotationSpeedDiff / 2.0);
   m_wheelBR->setSpeed(m_wheelBRSpeed);
+}
+
+bool hardware::Mecanum::isEnabled() { return m_isEnabled; }
+
+void hardware::Mecanum::setIsEnabled(const bool isEnabled) {
+  LOG_DEBUG("<Mecanum>\t" + String(isEnabled ? "Enabled" : "Disabled"));
+
+  m_isEnabled = isEnabled;
+
+  if (!m_isEnabled) {
+    setSpeed(0);
+    setRotationSpeedDiff(0);
+    setMotorsSpeeds();
+  }
+}
+
+bool hardware::Mecanum::isGyroEnabled() { return m_isGyroEnabled; }
+
+void hardware::Mecanum::setIsGyroEnabled(const bool isGyroEnabled) {
+  LOG_DEBUG("<Mecanum>\tGyroscope " +
+            String(isGyroEnabled ? "Enabled" : "Disabled"));
+
+  m_isGyroEnabled = isGyroEnabled;
+
+  if (!m_isGyroEnabled) {
+    setRotationSpeedDiff(0);
+    setMotorsSpeeds();
+  }
 }
 
 double hardware::Mecanum::calculateError(double reading) {

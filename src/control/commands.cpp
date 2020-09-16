@@ -109,9 +109,7 @@ int mecanumCommands(const String &command) {
   } else if (command == "rr") {
     LOG_INFO("<Mecanum>\tRotation: " + String(hardware::mecanum.getRotation()));
   } else if (command == "gt") {
-    hardware::mecanum.isGyroEnabled = !hardware::mecanum.isGyroEnabled;
-    LOG_INFO("<Mecanum>\tGyroscope " +
-             String(hardware::mecanum.isGyroEnabled ? "Enabled" : "Disabled"));
+    hardware::mecanum.setIsGyroEnabled(!hardware::mecanum.isGyroEnabled());
   } else if (command == "c") {
     hardware::mecanum.findRotationOffset();
   } else if (command == "pid") {
@@ -131,9 +129,7 @@ int mecanumCommands(const String &command) {
     hardware::mecanum.Kd = Kd;
     LOG_DEBUG("<Mecanum>\tPID Kd (" + String(Kd) + ") Set");
   } else if (command == "t") {
-    hardware::mecanum.isEnabled = !hardware::mecanum.isEnabled;
-    LOG_INFO("<Mecanum>\t" +
-             String(hardware::mecanum.isEnabled ? "Enabled" : "Disabled"));
+    hardware::mecanum.setIsEnabled(!hardware::mecanum.isEnabled());
   } else {
     return -1;
   }

@@ -18,6 +18,15 @@ hardware::Rail::Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
 
 hardware::Rail::~Rail() {}
 
+void hardware::Rail::update() {
+  if (digitalRead(m_pin_leftLimitSwitch) == LOW) {
+    m_target = m_location;
+    m_stepUpperLimit = m_location;
+  }
+
+  Stepper::update();
+}
+
 void hardware::Rail::stop() {
   digitalWrite(m_pin_control1, m_inactiveState);
   digitalWrite(m_pin_control2, m_inactiveState);
@@ -45,7 +54,9 @@ void hardware::Rail::setStepLimitMM(const double stepLowerLimitMM,
 }
 
 Stepper::CODES hardware::Rail::setTargetMM(const double targetMM) {
-  Stepper::CODES returnCode = Stepper::setTarget(targetMM * m_stepPerMM);
+  double target = targetMM * m_stepPerMM;
+  long absoluteTarget = target < 0 ? m_stepUpperLimit - target : target;
+  Stepper::CODES returnCode = Stepper::setTarget(absoluteTarget);
 
   switch (returnCode) {
     case Stepper::NO_ERROR:
@@ -65,7 +76,8 @@ Stepper::CODES hardware::Rail::setTargetMM(const double targetMM) {
 }
 
 Stepper::CODES hardware::Rail::setTarget(long target) {
-  Stepper::CODES returnCode = Stepper::setTarget(target);
+  long absoluteTarget = target < 0 ? m_stepUpperLimit - target : target;
+  Stepper::CODES returnCode = Stepper::setTarget(absoluteTarget);
 
   switch (returnCode) {
     case Stepper::NO_ERROR:
