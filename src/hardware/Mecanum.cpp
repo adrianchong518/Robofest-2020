@@ -45,36 +45,32 @@ void hardware::Mecanum::update() {
 
 void hardware::Mecanum::stop() { setIsEnabled(false); }
 
-void hardware::Mecanum::moveForward() {
+void hardware::Mecanum::moveForward(const unsigned int speed) {
   if (hardware::servos::isGuideLeftExtended) {
     setIsGyroEnabled(false);
     setDirection(radians(10));
-    setSpeed(90);
   } else if (hardware::servos::isGuideRightExtended) {
     setIsGyroEnabled(false);
     setDirection(radians(-10));
-    setSpeed(90);
   } else {
     setIsGyroEnabled(true);
     setDirection(0);
-    setSpeed(90);
   }
+  setSpeed(speed);
 }
 
-void hardware::Mecanum::moveBackward() {
+void hardware::Mecanum::moveBackward(const unsigned int speed) {
   if (hardware::servos::isGuideLeftExtended) {
     setIsGyroEnabled(false);
     setDirection(radians(170));
-    setSpeed(90);
   } else if (hardware::servos::isGuideRightExtended) {
     setIsGyroEnabled(false);
     setDirection(radians(-170));
-    setSpeed(90);
   } else {
     setIsGyroEnabled(true);
     setDirection(PI);
-    setSpeed(90);
   }
+  setSpeed(speed);
 }
 
 void hardware::Mecanum::findRotationOffset() {
@@ -121,12 +117,12 @@ void hardware::Mecanum::setDirection(const double direction) {
   LOG_DEBUG("<Mecanum>\tDirection (" + String(degrees(m_direction)) + ") Set");
 }
 
-double hardware::Mecanum::getRotation() { return degrees(m_rotation); }
-
 void hardware::Mecanum::setRotationSpeedDiff(const int rotationSpeedDiff) {
   m_rotationSpeedDiff =
       constrain(rotationSpeedDiff, MECANUM_ROT_DIFF_MIN, MECANUM_ROT_DIFF_MAX);
 }
+
+double hardware::Mecanum::getRotation() { return degrees(m_rotation); }
 
 void hardware::Mecanum::setTarget(double rotationTarget) {
   while (rotationTarget > PI) {
@@ -167,6 +163,23 @@ void hardware::Mecanum::setMotorsSpeeds() {
   m_wheelBL->setSpeed(m_wheelBLSpeed);
 
   m_wheelBRSpeed = round(p1 - m_rotationSpeedDiff / 2.0);
+  m_wheelBR->setSpeed(m_wheelBRSpeed);
+}
+
+void hardware::Mecanum::setMotorsSpeeds(const int wheelFLSpeed,
+                                        const int wheelFRSpeed,
+                                        const int wheelBLSpeed,
+                                        const int wheelBRSpeed) {
+  m_wheelFLSpeed = wheelFLSpeed;
+  m_wheelFL->setSpeed(m_wheelFLSpeed);
+
+  m_wheelFRSpeed = wheelFRSpeed;
+  m_wheelFR->setSpeed(m_wheelFRSpeed);
+
+  m_wheelBLSpeed = wheelBLSpeed;
+  m_wheelBL->setSpeed(m_wheelBLSpeed);
+
+  m_wheelBRSpeed = wheelBRSpeed;
   m_wheelBR->setSpeed(m_wheelBRSpeed);
 }
 

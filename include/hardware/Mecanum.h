@@ -39,32 +39,29 @@ class Mecanum : public PID {
 
   void stop();
 
-  void moveForward();
-
-  void moveBackward();
+  void moveForward(const unsigned int speed);
+  void moveBackward(const unsigned int speed);
 
   void findRotationOffset();
 
   void setSpeed(const unsigned int speed);
-
   void setDirection(const double direction);
+  void setRotationSpeedDiff(const int rotationSpeedDiff);
 
   double getRotation();
-
-  void setRotationSpeedDiff(const int rotationSpeedDiff);
 
   void setTarget(double rotationTarget);
 
   void getMotorsSpeeds(int &wheelFLSpeed, int &wheelFRSpeed, int &wheelBLSpeed,
                        int &wheelBRSpeed);
   void setMotorsSpeeds();
+  void setMotorsSpeeds(const int wheelFLSpeed, const int wheelFRSpeed,
+                       const int wheelBLSpeed, const int wheelBRSpeed);
 
   bool isEnabled();
-
   void setIsEnabled(const bool isEnabled);
 
   bool isGyroEnabled();
-
   void setIsGyroEnabled(const bool isGyroEnabled);
 
  protected:
