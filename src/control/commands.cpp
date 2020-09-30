@@ -248,15 +248,48 @@ int laserPhotoresistorCommands(const String &command) {
 }
 
 int irDistanceSensorCommands(const String &command) {
-  if (command == "dr") {
-    LOG_INFO("<IR Distance>\tReading: " +
-             String(hardware::sensors::irDistance.getDistance()));
-  } else if (command == "mr") {
-    LOG_INFO("<IR Distance>\tMode :" +
-             String(hardware::sensors::irDistance.getMode()));
-  } else if (command.startsWith("ms ")) {
-    hardware::sensors::irDistance.setMode((byte)command.substring(3).toInt());
-    LOG_INFO("<IR Distance>\tMode Set (" + command.substring(3) + ")");
+  int irDistanceSensorIndex;
+  if (command.startsWith("l ")) {
+    irDistanceSensorIndex = 0;
+  } else if (command.startsWith("r ")) {
+    irDistanceSensorIndex = 1;
+  } else if (command == "vr") {
+    LOG_INFO("<IR Dist>\tL Reading: " +
+             String(hardware::sensors::irDistanceSensors[0].getDistance()) +
+             " | " + String(hardware::sensors::isBallDetected[0]));
+    LOG_INFO("<IR Dist>\tR Reading: " +
+             String(hardware::sensors::irDistanceSensors[1].getDistance()) +
+             " | " + String(hardware::sensors::isBallDetected[1]));
+    return 0;
+  } else if (command.startsWith("ts ")) {
+    hardware::sensors::irDistanceSensorThreshold = command.substring(3).toInt();
+    LOG_INFO("<IR Dist>\tThreshold Set (" +
+             String(hardware::sensors::irDistanceSensorThreshold) + ")");
+  } else {
+    return 1;
+  }
+
+  String subcommand = command.substring(2);
+  if (subcommand == "vr") {
+    LOG_INFO("<IR Distance>\t" +
+             hardware::sensors::irDistanceSensorNames[irDistanceSensorIndex] +
+             " Reading: " +
+             String(hardware::sensors::irDistanceSensors[irDistanceSensorIndex]
+                        .getDistance()) +
+             " | " +
+             String(hardware::sensors::isBallDetected[irDistanceSensorIndex]));
+  } else if (subcommand == "mr") {
+    LOG_INFO("<IR Distance>\t" +
+             hardware::sensors::irDistanceSensorNames[irDistanceSensorIndex] +
+             " Mode :" +
+             String(hardware::sensors::irDistanceSensors[irDistanceSensorIndex]
+                        .getMode()));
+  } else if (subcommand.startsWith("ms ")) {
+    hardware::sensors::irDistanceSensors[irDistanceSensorIndex].setMode(
+        (byte)subcommand.substring(3).toInt());
+    LOG_INFO("<IR Distance>\t" +
+             hardware::sensors::irDistanceSensorNames[irDistanceSensorIndex] +
+             " Mode Set (" + subcommand.substring(3) + ")");
   } else {
     return -1;
   }

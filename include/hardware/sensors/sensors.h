@@ -11,7 +11,11 @@ namespace sensors {
 extern IRSensor irSensors[4];
 static const String irSensorsNames[4] = {"FL", "FR", "BL", "BR"};
 
-extern GY53 irDistance;
+extern GY53 irDistanceSensors[2];
+static const String irDistanceSensorNames[2] = {"L", "R"};
+
+extern uint16_t irDistanceSensorThreshold;
+extern bool isBallDetected[2];
 
 extern int laserThreshold;
 extern bool isLaserBlocked;
