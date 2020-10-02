@@ -12,7 +12,7 @@ namespace hardware {
 class Mecanum : public PID {
  private:
   bool m_isEnabled = true;
-  bool m_isGyroEnabled = true;
+  bool m_isGyroEnabled = false;
 
   Motor *const m_wheelFL;
   Motor *const m_wheelFR;
@@ -41,6 +41,7 @@ class Mecanum : public PID {
 
   void moveForward(const unsigned int speed);
   void moveBackward(const unsigned int speed);
+  void moveStop();
 
   void findRotationOffset();
 

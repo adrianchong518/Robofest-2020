@@ -11,7 +11,8 @@ GY53 hardware::sensors::irDistanceSensors[2] = {
     GY53(&SERIAL_IR_DISTANCE_L, SERIAL_IR_DISTANCE_L_BAUDRATE),
     GY53(&SERIAL_IR_DISTANCE_R, SERIAL_IR_DISTANCE_R_BAUDRATE)};
 
-uint16_t hardware::sensors::irDistanceSensorThreshold = IR_DISTANCE_THRESHOLD;
+uint16_t hardware::sensors::irDistanceSensorThreshold[2] = {
+    IR_DISTANCE_L_THRESHOLD, IR_DISTANCE_R_THRESHOLD};
 bool hardware::sensors::isBallDetected[2] = {false, false};
 
 int hardware::sensors::laserThreshold = LASER_THRESHOLD;
@@ -19,6 +20,9 @@ bool hardware::sensors::isLaserBlocked = false;
 
 void hardware::sensors::init() {
   LOG_DEBUG("<Sensors>\tInitialising...");
+
+  irDistanceSensors[0].init();
+  irDistanceSensors[1].init();
 
   pinMode(PIN_LASER_PHOTORESISTOR, INPUT);
 }
@@ -163,9 +167,9 @@ void hardware::sensors::loop() {
   irDistanceSensors[1].update();
 
   isBallDetected[0] =
-      irDistanceSensors[0].getDistance() < irDistanceSensorThreshold;
+      irDistanceSensors[0].getDistance() < irDistanceSensorThreshold[0];
   isBallDetected[1] =
-      irDistanceSensors[1].getDistance() < irDistanceSensorThreshold;
+      irDistanceSensors[1].getDistance() < irDistanceSensorThreshold[1];
 
-  isLaserBlocked = analogRead(PIN_LASER_PHOTORESISTOR) < laserThreshold;
+  isLaserBlocked = analogRead(PIN_LASER_PHOTORESISTOR) > laserThreshold;
 }

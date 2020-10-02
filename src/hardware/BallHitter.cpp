@@ -11,6 +11,8 @@ hardware::BallHitter::BallHitter(hardware::Motor *const motor)
   m_targetUpperLimit = HITTER_TARGET_DEG_MAX * HITTER_ENCODER_STEP_PER_DEG;
 
   m_allowedError = HITTER_DEG_ALLOWED_ERROR * HITTER_ENCODER_STEP_PER_DEG;
+
+  setTarget(HITTER_REST_POS);
 }
 
 hardware::BallHitter::~BallHitter() {}
@@ -23,19 +25,21 @@ void hardware::BallHitter::update(const int16_t encoderLocation) {
   int speed;
   if (m_hasTargetBeenReached && !m_isHeldWhenTargetReached) {
     speed = 0;
+  } else if (m_hitStage == 1) {
+    speed = HITTER_PULL_SPEED;
   } else if (m_hitStage == 2) {
-    speed = -255;
+    speed = HITTER_HIT_SPEED;
   } else {
     speed = calculatePID(encoderLocation);
   }
 
-  if (m_hitStage == 1 && m_isTargetReached) {
+  if (m_hitStage == 1 && encoderLocation >= m_hitHighPos) {
     LOG_DEBUG("<Ball Hitter>\tHigh Position Reached");
     speed = -255;
     m_hitStage = 2;
   } else if (m_hitStage == 2 && encoderLocation <= m_hitLowPos) {
     LOG_DEBUG("<Ball Hitter>\tLow Position Reached");
-    setTarget(0);
+    setTarget(HITTER_REST_POS);
     m_hitStage = 0;
   }
 
@@ -56,9 +60,6 @@ PID::CODES hardware::BallHitter::hit(const double highPos,
   m_hitStage = 1;
   m_hitHighPos = highPos * HITTER_ENCODER_STEP_PER_DEG;
   m_hitLowPos = lowPos * HITTER_ENCODER_STEP_PER_DEG;
-
-  m_hasTargetBeenReached = false;
-  PID::setTarget(m_hitHighPos);
 
   LOG_DEBUG("<Ball Hitter>\tHit Targets (" + String(highPos) + "," +
             String(lowPos) + ") Set");

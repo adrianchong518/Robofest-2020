@@ -14,7 +14,7 @@ static const String irSensorsNames[4] = {"FL", "FR", "BL", "BR"};
 extern GY53 irDistanceSensors[2];
 static const String irDistanceSensorNames[2] = {"L", "R"};
 
-extern uint16_t irDistanceSensorThreshold;
+extern uint16_t irDistanceSensorThreshold[2];
 extern bool isBallDetected[2];
 
 extern int laserThreshold;

@@ -73,6 +73,22 @@ void hardware::Mecanum::moveBackward(const unsigned int speed) {
   setSpeed(speed);
 }
 
+void hardware::Mecanum::moveStop() {
+  if (hardware::servos::isGuideLeftExtended) {
+    setIsGyroEnabled(false);
+    setDirection(PI / 2);
+    setSpeed(MECANUM_STOP_PULL_SPEED);
+  } else if (hardware::servos::isGuideRightExtended) {
+    setIsGyroEnabled(false);
+    setDirection(-PI / 2);
+    setSpeed(MECANUM_STOP_PULL_SPEED);
+  } else {
+    setIsGyroEnabled(true);
+    setDirection(0);
+    setSpeed(0);
+  }
+}
+
 void hardware::Mecanum::findRotationOffset() {
   LOG_INFO("<Mecanum>\tFinding Rotation Offset...");
 
@@ -148,7 +164,7 @@ void hardware::Mecanum::getMotorsSpeeds(int &wheelFLSpeed, int &wheelFRSpeed,
 
 void hardware::Mecanum::setMotorsSpeeds() {
   double scaledSpeed = m_speed * (255 - m_rotationSpeedDiff / 2.0) / 255.0;
-  double theta = m_direction - m_rotation;
+  double theta = m_direction;
 
   double p1 = scaledSpeed * sin(PI / 4 + theta);
   double p2 = scaledSpeed * sin(PI / 4 - theta);

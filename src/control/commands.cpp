@@ -261,12 +261,8 @@ int irDistanceSensorCommands(const String &command) {
              String(hardware::sensors::irDistanceSensors[1].getDistance()) +
              " | " + String(hardware::sensors::isBallDetected[1]));
     return 0;
-  } else if (command.startsWith("ts ")) {
-    hardware::sensors::irDistanceSensorThreshold = command.substring(3).toInt();
-    LOG_INFO("<IR Dist>\tThreshold Set (" +
-             String(hardware::sensors::irDistanceSensorThreshold) + ")");
   } else {
-    return 1;
+    return -1;
   }
 
   String subcommand = command.substring(2);
@@ -281,7 +277,7 @@ int irDistanceSensorCommands(const String &command) {
   } else if (subcommand == "mr") {
     LOG_INFO("<IR Distance>\t" +
              hardware::sensors::irDistanceSensorNames[irDistanceSensorIndex] +
-             " Mode :" +
+             " Mode: " +
              String(hardware::sensors::irDistanceSensors[irDistanceSensorIndex]
                         .getMode()));
   } else if (subcommand.startsWith("ms ")) {
@@ -290,6 +286,15 @@ int irDistanceSensorCommands(const String &command) {
     LOG_INFO("<IR Distance>\t" +
              hardware::sensors::irDistanceSensorNames[irDistanceSensorIndex] +
              " Mode Set (" + subcommand.substring(3) + ")");
+  } else if (subcommand.startsWith("ts ")) {
+    hardware::sensors::irDistanceSensorThreshold[irDistanceSensorIndex] =
+        subcommand.substring(3).toInt();
+    LOG_INFO("<IR Dist>\t" +
+             hardware::sensors::irDistanceSensorNames[irDistanceSensorIndex] +
+             "Threshold Set (" +
+             String(hardware::sensors::irDistanceSensorThreshold
+                        [irDistanceSensorIndex]) +
+             ")");
   } else {
     return -1;
   }
