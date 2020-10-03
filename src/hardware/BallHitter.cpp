@@ -35,7 +35,7 @@ void hardware::BallHitter::update(const int16_t encoderLocation) {
 
   if (m_hitStage == 1 && encoderLocation >= m_hitHighPos) {
     LOG_DEBUG("<Ball Hitter>\tHigh Position Reached");
-    speed = -255;
+    speed = HITTER_HIT_SPEED;
     m_hitStage = 2;
   } else if (m_hitStage == 2 && encoderLocation <= m_hitLowPos) {
     LOG_DEBUG("<Ball Hitter>\tLow Position Reached");

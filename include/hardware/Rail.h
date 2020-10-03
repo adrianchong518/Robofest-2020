@@ -13,6 +13,8 @@ class Rail : public Stepper {
 
   double m_stepPerMM;
 
+  long m_relativeTarget;
+
  public:
   Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
        const uint8_t pin_leftLimitSwitch, const uint8_t pin_rightLimitSwitch,
