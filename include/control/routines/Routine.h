@@ -6,11 +6,35 @@
 namespace control {
 namespace routines {
 
-enum RoutineID { NONE, TEST1, TEST2 };
+enum RoutineID {
+  NONE,
+  LINE_FWD,
+  LINE_BACK,
+  EDGE_BACK,
+  EDGE_LEFT,
+  EDGE_RIGHT,
+  BALL_FWD,
+  BALL_SIDE,
+  HIT_1,
+  HIT_2,
+  HIT_3,
+  HIT_4,
+  HIT_5
+};
+
+struct {
+  bool isBallInHolderL = false;
+  bool isBallInHolderR = false;
+
+  byte positionState = 0;
+} data;
 
 struct Routine {
-  RoutineID id = RoutineID::NONE;
-  String name = "";
+  RoutineID id;
+  String name;
+
+  Routine(RoutineID id = RoutineID::NONE, const String &name = "")
+      : id(id), name(name) {}
 
   virtual void init() {}
   virtual bool loop() { return false; }
@@ -18,27 +42,111 @@ struct Routine {
 
 const RoutineID getRoutineIDByName(String name);
 
-struct Test1 : Routine {
-  RoutineID id = RoutineID::TEST1;
-  String name = "test1";
-
-  int counter = 0;
+struct FindLineForward : Routine {
+  FindLineForward() : Routine(RoutineID::LINE_FWD, "line-fwd") {}
 
   void init();
   bool loop();
 };
 
-struct Test2 : Routine {
-  RoutineID id = RoutineID::TEST2;
-  String name = "test2";
-
-  int counter = 0;
+struct FindLineBackward : Routine {
+  FindLineBackward() : Routine(RoutineID::LINE_BACK, "line-back") {}
 
   void init();
   bool loop();
 };
 
-Routine *const routineList[] = {new Routine, new Test1, new Test2};
+struct FindEdgeBackward : Routine {
+  FindEdgeBackward() : Routine(RoutineID::EDGE_BACK, "edge-back") {}
+
+  void init();
+  bool loop();
+};
+
+struct FindEdgeLeft : Routine {
+  FindEdgeLeft() : Routine(RoutineID::EDGE_LEFT, "edge-left") {}
+
+  void init();
+  bool loop();
+};
+
+struct FindEdgeRight : Routine {
+  FindEdgeRight() : Routine(RoutineID::EDGE_RIGHT, "edge-right") {}
+
+  void init();
+  bool loop();
+};
+
+struct FindBallForward : Routine {
+  FindBallForward() : Routine(RoutineID::BALL_FWD, "ball-fwd") {}
+
+  void init();
+  bool loop();
+};
+
+struct FindBallSideward : Routine {
+  FindBallSideward() : Routine(RoutineID::BALL_SIDE, "ball-side") {}
+
+  void init();
+  bool loop();
+};
+
+struct HitBall1 : Routine {
+  HitBall1() : Routine(RoutineID::HIT_1, "hit-1") {}
+
+  void init();
+  bool loop();
+
+ private:
+  byte m_stage = 0;
+};
+
+struct HitBall2 : Routine {
+  HitBall2() : Routine(RoutineID::HIT_2, "hit-2") {}
+
+  void init();
+  bool loop();
+
+ private:
+  byte m_stage = 0;
+};
+
+struct HitBall3 : Routine {
+  HitBall3() : Routine(RoutineID::HIT_3, "hit-3") {}
+
+  void init();
+  bool loop();
+
+ private:
+  byte m_stage = 0;
+};
+
+struct HitBall4 : Routine {
+  HitBall4() : Routine(RoutineID::HIT_4, "hit-4") {}
+
+  void init();
+  bool loop();
+
+ private:
+  byte m_stage = 0;
+};
+
+struct HitBall5 : Routine {
+  HitBall5() : Routine(RoutineID::HIT_5, "hit-5") {}
+
+  void init();
+  bool loop();
+
+ private:
+  byte m_stage = 0;
+};
+
+Routine *const routineList[] = {
+    new Routine,          new FindLineForward,  new FindLineBackward,
+    new FindEdgeBackward, new FindEdgeLeft,     new FindEdgeRight,
+    new FindBallForward,  new FindBallSideward, new HitBall1,
+    new HitBall2,         new HitBall3,         new HitBall4,
+    new HitBall5};
 
 }  // namespace routines
 }  // namespace control
