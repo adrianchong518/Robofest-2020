@@ -9,12 +9,13 @@ namespace routines {
 enum RoutineID {
   NONE,
   LINE_FWD,
-  LINE_BACK,
+  LINE_REVERSE,
   EDGE_BACK,
   EDGE_LEFT,
   EDGE_RIGHT,
   BALL_FWD,
   BALL_SIDE,
+  BALL_5,
   HIT_1,
   HIT_2,
   HIT_3,
@@ -49,8 +50,8 @@ struct FindLineForward : Routine {
   bool loop();
 };
 
-struct FindLineBackward : Routine {
-  FindLineBackward() : Routine(RoutineID::LINE_BACK, "line-back") {}
+struct FindLineReverse : Routine {
+  FindLineReverse() : Routine(RoutineID::LINE_REVERSE, "line-rev") {}
 
   void init();
   bool loop();
@@ -82,6 +83,10 @@ struct FindBallForward : Routine {
 
   void init();
   bool loop();
+
+ private:
+  byte m_stage = 0;
+  uint16_t m_measureStart = 0;
 };
 
 struct FindBallSideward : Routine {
@@ -89,6 +94,21 @@ struct FindBallSideward : Routine {
 
   void init();
   bool loop();
+
+ private:
+  byte m_stage = 0;
+};
+
+struct FindBall5 : Routine {
+  FindBall5() : Routine(RoutineID::BALL_5, "ball-5") {}
+
+  void init();
+  bool loop();
+
+ private:
+  Routine *m_runningSubroutine = nullptr;
+  byte m_stage = 0;
+  unsigned long timer;
 };
 
 struct HitBall1 : Routine {
@@ -142,11 +162,11 @@ struct HitBall5 : Routine {
 };
 
 Routine *const routineList[] = {
-    new Routine,          new FindLineForward,  new FindLineBackward,
+    new Routine,          new FindLineForward,  new FindLineReverse,
     new FindEdgeBackward, new FindEdgeLeft,     new FindEdgeRight,
-    new FindBallForward,  new FindBallSideward, new HitBall1,
-    new HitBall2,         new HitBall3,         new HitBall4,
-    new HitBall5};
+    new FindBallForward,  new FindBallSideward, new FindBall5,
+    new HitBall1,         new HitBall2,         new HitBall3,
+    new HitBall4,         new HitBall5};
 
 }  // namespace routines
 }  // namespace control

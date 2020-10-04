@@ -61,6 +61,12 @@ void hardware::servos::setHolderLeft(bool isExtended) {
   if (isExtended) {
     holderLeft.write(HOLDER_LEFT_EXTENDED_POS);
   } else {
+    holderLeft.write(HOLDER_LEFT_PUSH_POS);
+    delay(500);
+    holderLeft.write(HOLDER_LEFT_EXTENDED_POS);
+    delay(1000);
+    holderLeft.write(HOLDER_LEFT_RELEASE_POS);
+    delay(1000);
     holderLeft.write(HOLDER_LEFT_RETRACTED_POS);
   }
   isHolderLeftExtended = isExtended;
@@ -72,6 +78,12 @@ void hardware::servos::setHolderRight(bool isExtended) {
   if (isExtended) {
     holderRight.write(HOLDER_RIGHT_EXTENDED_POS);
   } else {
+    holderRight.write(HOLDER_RIGHT_PUSH_POS);
+    delay(500);
+    holderRight.write(HOLDER_RIGHT_EXTENDED_POS);
+    delay(1000);
+    holderRight.write(HOLDER_RIGHT_RELEASE_POS);
+    delay(1000);
     holderRight.write(HOLDER_RIGHT_RETRACTED_POS);
   }
   isHolderRightExtended = isExtended;

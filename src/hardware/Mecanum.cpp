@@ -15,6 +15,8 @@ hardware::Mecanum::Mecanum(Motor *const wheelFL, Motor *const wheelFR,
   m_targetLowerLimit = -180;
   m_targetUpperLimit = 180;
 
+  setAllowedError(MECANUM_ROT_ALLOWED_ERROR);
+
   SERIAL_GYROSCOPE.begin(SERIAL_GYROSCOPE_BAUDRATE);
 }
 
