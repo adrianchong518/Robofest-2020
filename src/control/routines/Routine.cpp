@@ -66,6 +66,9 @@ void control::routines::FindEdgeLeft::init() {
   hardware::mecanum.setIsGyroEnabled(true);
   hardware::mecanum.setDirection(-PI / 2);
   hardware::mecanum.setSpeed(MECANUM_MOVE_SPEED);
+
+  hardware::turnTable.setTargetDeg(-10);
+  hardware::rail.setTargetMM(-DISTANCE_C_RAIL_POS);
 }
 
 bool control::routines::FindEdgeLeft::loop() {
@@ -99,6 +102,9 @@ void control::routines::FindEdgeRight::init() {
   hardware::mecanum.setIsGyroEnabled(true);
   hardware::mecanum.setDirection(PI / 2);
   hardware::mecanum.setSpeed(MECANUM_MOVE_SPEED);
+
+  hardware::turnTable.setTargetDeg(10);
+  hardware::rail.setTargetMM(DISTANCE_C_RAIL_POS);
 }
 
 bool control::routines::FindEdgeRight::loop() {
@@ -136,7 +142,7 @@ void control::routines::FindBallForward::init() {
 bool control::routines::FindBallForward::loop() {
   if (m_stage == 0 && hardware::sensors::isLaserBlocked) {
     m_measureStart = hardware::encoders::readLocation(PIN_MEASURE_ENCODER_OE);
-    hardware::mecanum.moveForward(50);
+    hardware::mecanum.moveForward(MECANUM_COMPENSATE_SPEED);
     m_stage = 1;
   } else if (m_stage == 1 &&
              hardware::encoders::readLocation(PIN_MEASURE_ENCODER_OE) -
@@ -152,10 +158,10 @@ bool control::routines::FindBallForward::loop() {
 
 void control::routines::FindBallSideward::init() {
   if (data.positionState == 1) {
-    hardware::turnTable.setTargetDeg(20);
+    hardware::turnTable.setTargetDeg(10);
     hardware::rail.setTarget(0);
   } else {
-    hardware::turnTable.setTargetDeg(-20);
+    hardware::turnTable.setTargetDeg(-10);
     hardware::rail.setTarget(-1);
   }
 
@@ -193,6 +199,7 @@ bool control::routines::FindBallSideward::loop() {
     } else if (data.isBallInHolderR) {
       hardware::servos::setHolderRight(true);
     }
+    delay(500);
 
     return true;
   }
@@ -201,10 +208,9 @@ bool control::routines::FindBallSideward::loop() {
 }
 
 void control::routines::FindBall5::init() {
-  hardware::mecanum.moveForward(MECANUM_MOVE_SPEED);
+  hardware::mecanum.setIsGyroEnabled(true);
 
   m_stage = 0;
-  timer = millis();
 }
 
 bool control::routines::FindBall5::loop() {
@@ -214,23 +220,44 @@ bool control::routines::FindBall5::loop() {
     }
   }
 
-  if (m_stage == 0 && millis() - timer > BALL_5_OFFSET_TIME) {
-    hardware::servos::setGuideRight(false);
-    hardware::mecanum.moveStop();
-    hardware::mecanum.setTarget(-PI / 2);
+  if (m_stage == 0) {
+    hardware::mecanum.setDirection(PI / 2);
+    hardware::mecanum.setSpeed(MECANUM_MOVE_SPEED);
     m_stage = 1;
-  } else if (m_stage == 1 && hardware::mecanum.isTargetReached()) {
+  } else if (m_stage == 1 &&
+             (hardware::sensors::irSensors[1].isEdgeDetected() ||
+              hardware::sensors::irSensors[3].isEdgeDetected())) {
+    hardware::mecanum.setSpeed(0);
+    hardware::mecanum.setMotorsSpeeds();
+    delay(100);
+
+    hardware::mecanum.setDirection(-PI / 2);
+    hardware::mecanum.setSpeed(MECANUM_MOVE_SPEED);
+    hardware::mecanum.setMotorsSpeeds();
+    delay(200);
+
+    hardware::mecanum.setSpeed(0);
+    hardware::mecanum.setTarget(-PI / 2 - radians(STARTING_ORIENTATION));
+    m_stage = 2;
+  } else if (m_stage == 2 && hardware::mecanum.isTargetReached()) {
+    m_stage = 3;
+  } else if (m_stage == 3) {
     m_runningSubroutine = new FindBallForward;
     m_runningSubroutine->init();
-    m_stage = 2;
-  } else if (m_stage == 2 && m_runningSubroutine == nullptr) {
+    m_stage = 4;
+  } else if (m_stage == 4 && m_runningSubroutine == nullptr) {
     m_runningSubroutine = new FindBallSideward;
     m_runningSubroutine->init();
-    m_stage = 3;
-  } else if (m_stage == 3 && m_runningSubroutine == nullptr) {
-    hardware::mecanum.setTarget(0);
-    m_stage = 4;
-  } else if (m_stage == 4 && hardware::mecanum.isTargetReached()) {
+    m_stage = 5;
+  } else if (m_stage == 5 && m_runningSubroutine == nullptr) {
+    hardware::mecanum.setTarget(-STARTING_ORIENTATION);
+    m_stage = 6;
+  } else if (m_stage == 6 && hardware::mecanum.isTargetReached()) {
+    m_runningSubroutine = new FindEdgeLeft;
+    m_runningSubroutine->init();
+    m_stage = 7;
+  } else if (m_stage == 7 && m_runningSubroutine == nullptr) {
+    hardware::mecanum.findRotationOffset();
     return true;
   }
 
@@ -260,10 +287,10 @@ bool control::routines::HitBall1::loop() {
 
 void control::routines::HitBall2::init() {
   if (data.positionState == 1) {
-    hardware::turnTable.setTargetDeg(-20);
+    hardware::turnTable.setTargetDeg(-10);
     hardware::rail.setTarget(-1);
   } else if (data.positionState == 2) {
-    hardware::turnTable.setTargetDeg(20);
+    hardware::turnTable.setTargetDeg(10);
     hardware::rail.setTarget(0);
   }
 
@@ -274,9 +301,10 @@ bool control::routines::HitBall2::loop() {
   if (m_stage == 0 && hardware::rail.isTargetReached()) {
     if (data.positionState == 1) {
       hardware::servos::setHolderRight(false);
+      data.isBallInHolderR = false;
       delay(1000);
 
-      double delta = atan2(130, DISTANCE_D + 569);
+      double delta = atan2(135, DISTANCE_D + 569);
 
       hardware::turnTable.setTargetDeg(degrees(delta));
       hardware::rail.setTarget(-HOLDER_RIGHT_OFFSET);
@@ -284,7 +312,7 @@ bool control::routines::HitBall2::loop() {
       hardware::servos::setHolderLeft(false);
       delay(1000);
 
-      double delta = -atan2(130, DISTANCE_D + 569);
+      double delta = -atan2(135, DISTANCE_D + 569);
 
       hardware::turnTable.setTargetDeg(degrees(delta));
       hardware::rail.setTarget(HOLDER_LEFT_OFFSET);
@@ -346,18 +374,20 @@ bool control::routines::HitBall4::loop() {
 
 void control::routines::HitBall5::init() {
   if (data.positionState == 1) {
-    hardware::turnTable.setTargetDeg(-20);
+    hardware::turnTable.setTargetDeg(-10);
     if (data.isBallInHolderL) {
-      hardware::rail.setTargetMM(-DISTANCE_C_RAIL_POS - HOLDER_LEFT_OFFSET);
+      hardware::rail.setTarget(-DISTANCE_C_RAIL_POS * RAIL_STEP_PER_MM -
+                               HOLDER_LEFT_OFFSET);
     } else if (data.isBallInHolderR) {
       hardware::rail.setTarget(-1);
     }
   } else if (data.positionState == 2) {
-    hardware::turnTable.setTargetDeg(20);
+    hardware::turnTable.setTargetDeg(10);
     if (data.isBallInHolderL) {
       hardware::rail.setTarget(0);
     } else if (data.isBallInHolderR) {
-      hardware::rail.setTargetMM(DISTANCE_C_RAIL_POS + HOLDER_RIGHT_OFFSET);
+      hardware::rail.setTarget(DISTANCE_C_RAIL_POS * RAIL_STEP_PER_MM +
+                               HOLDER_RIGHT_OFFSET);
     }
   }
 
@@ -369,18 +399,34 @@ bool control::routines::HitBall5::loop() {
     double delta;
     if (data.positionState == 1) {
       if (data.isBallInHolderL) {
-        delta = -atan2(195, DISTANCE_D + 569);
+        hardware::servos::setHolderLeft(false);
+        data.isBallInHolderL = false;
+        delay(1000);
+
+        delta = atan2(195, DISTANCE_D + 569);
         hardware::rail.setTargetMM(-DISTANCE_C_RAIL_POS);
       } else if (data.isBallInHolderR) {
-        delta = -atan2(130, DISTANCE_D + 569);
+        hardware::servos::setHolderRight(false);
+        data.isBallInHolderR = false;
+        delay(1000);
+
+        delta = atan2(135, DISTANCE_D + 569);
         hardware::rail.setTarget(-HOLDER_RIGHT_OFFSET);
       }
     } else if (data.positionState == 2) {
       if (data.isBallInHolderL) {
-        delta = atan2(130, DISTANCE_D + 569);
+        hardware::servos::setHolderLeft(false);
+        data.isBallInHolderL = false;
+        delay(1000);
+
+        delta = -atan2(135, DISTANCE_D + 569);
         hardware::rail.setTarget(HOLDER_LEFT_OFFSET);
       } else if (data.isBallInHolderR) {
-        delta = atan2(195, DISTANCE_D + 569);
+        hardware::servos::setHolderRight(false);
+        data.isBallInHolderR = false;
+        delay(1000);
+
+        delta = -atan2(195, DISTANCE_D + 569);
         hardware::rail.setTargetMM(DISTANCE_C_RAIL_POS);
       }
     }
