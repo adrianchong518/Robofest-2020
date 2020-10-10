@@ -30,9 +30,12 @@ void hardware::servos::defaultPosition() {
 
   setGuideLeft(false);
   setGuideRight(false);
-  setHolderLeft(false);
-  setHolderRight(false);
   setMeasureServo(false);
+
+  holderLeft.write(HOLDER_LEFT_RETRACTED_POS);
+  isHolderLeftExtended = false;
+  holderRight.write(HOLDER_RIGHT_RETRACTED_POS);
+  isHolderRightExtended = false;
 }
 
 void hardware::servos::setGuideLeft(bool isExtended) {
