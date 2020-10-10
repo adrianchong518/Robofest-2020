@@ -149,12 +149,7 @@ void hardware::sensors::setDefaultThresholds() {
 void hardware::sensors::calibrate() {
   LOG_INFO("<Sensors>\tCalibrating...");
 
-  if (bitRead(interface::operationMode, 3)) {
-    calibrateIRSensors();
-    calibrateLaser();
-  } else {
-    setDefaultThresholds();
-  }
+  setDefaultThresholds();
 }
 
 void hardware::sensors::loop() {
@@ -166,10 +161,21 @@ void hardware::sensors::loop() {
   irDistanceSensors[0].update();
   irDistanceSensors[1].update();
 
-  isBallDetected[0] =
-      irDistanceSensors[0].getDistance() < irDistanceSensorThreshold[0];
-  isBallDetected[1] =
-      irDistanceSensors[1].getDistance() < irDistanceSensorThreshold[1];
+  if (irDistanceSensors[0].getDistance() <
+      irDistanceSensorThreshold[0] - IR_DISTANCE_THRESHOLD_DEADZONE) {
+    isBallDetected[0] = true;
+  } else if (irDistanceSensors[0].getDistance() >
+             irDistanceSensorThreshold[0] + IR_DISTANCE_THRESHOLD_DEADZONE) {
+    isBallDetected[0] = false;
+  }
+
+  if (irDistanceSensors[1].getDistance() <
+      irDistanceSensorThreshold[1] - IR_DISTANCE_THRESHOLD_DEADZONE) {
+    isBallDetected[1] = true;
+  } else if (irDistanceSensors[1].getDistance() >
+             irDistanceSensorThreshold[1] + IR_DISTANCE_THRESHOLD_DEADZONE) {
+    isBallDetected[1] = false;
+  }
 
   isLaserBlocked = analogRead(PIN_LASER_PHOTORESISTOR) > laserThreshold;
 }

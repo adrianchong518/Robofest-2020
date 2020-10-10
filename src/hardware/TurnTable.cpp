@@ -4,11 +4,12 @@
 
 hardware::TurnTable::TurnTable(const uint8_t pin_cw, const uint8_t pin_ccw,
                                const uint8_t pin_homeSensor,
-                               const int sensorThreshold,
+                               const int sensorThreshold, const long homeOffset,
                                const double stepPerDeg)
     : Stepper(pin_cw, pin_ccw, CW_CCW_PULSE, HIGH),
       m_pin_homeSensor(pin_homeSensor),
       m_sensorThreshold(sensorThreshold),
+      m_homeOffset(homeOffset),
       m_stepPerDeg(stepPerDeg) {
   pinMode(m_pin_homeSensor, INPUT);
 }
@@ -29,6 +30,14 @@ void hardware::TurnTable::home(const unsigned long pulseWidth) {
   while (analogRead(m_pin_homeSensor) <= m_sensorThreshold) {
     genPulse(1);
   }
+
+  int numSteps = 0;
+  while (numSteps < m_homeOffset) {
+    if (genPulse(1)) {
+      numSteps++;
+    }
+  }
+  LOG_DEBUG("<Turn Table>\tSet Offset: " + String(numSteps));
 
   setHomePosition();
   setPulseWidth(prevPulseWidth);

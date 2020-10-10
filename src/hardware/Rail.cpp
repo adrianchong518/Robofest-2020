@@ -13,7 +13,7 @@ hardware::Rail::Rail(const uint8_t pin_pulse, const uint8_t pin_dir,
   pinMode(m_pin_rightLimitSwitch, INPUT_PULLUP);
 
   setStepLimitEnabled(true);
-  setStepLimit(0, 2660);
+  setStepLimit(0, 2675);
 }
 
 hardware::Rail::~Rail() {}

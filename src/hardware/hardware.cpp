@@ -6,7 +6,7 @@ hardware::Rail hardware::rail(PIN_RAIL_PUL, PIN_RAIL_DIR, PIN_RAIL_HOME_L,
                               PIN_RAIL_HOME_R, RAIL_STEP_PER_MM);
 hardware::TurnTable hardware::turnTable(PIN_TURN_CW, PIN_TURN_CCW,
                                         PIN_TURN_HOME, TURN_HOME_THRESHOLD,
-                                        TURN_STEP_PER_DEG);
+                                        TURN_HOME_OFFSET, TURN_STEP_PER_DEG);
 
 hardware::Motor hardware::hitterMotor(PIN_HITTER_MOTOR_INA,
                                       PIN_HITTER_MOTOR_INB,
@@ -38,8 +38,6 @@ void hardware::init() {
   turnTable.setPulseWidth(TURN_PULSE_WIDTH);
   turnTable.setStepLimitEnabled(true);
   turnTable.setStepLimitDeg(TURN_LOWER_LIMIT_DEG, TURN_UPPER_LIMIT_DEG);
-
-  mecanum.setIsEnabled(bitRead(interface::operationMode, 2));
 
   LOG_INFO("<Hardware>\tInit Complete");
 }

@@ -12,7 +12,9 @@ void setup() {
   hardware::interface::lcd.setCursor(0, 1);
   hardware::interface::lcd.print("Init...     Done");
 
-  while (digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
+  bool isAutoInit = bitRead(hardware::interface::operationMode, 2);
+
+  while (!isAutoInit && digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
     ;
   hardware::interface::lcd.setCursor(0, 1);
   hardware::interface::lcd.print("Calibrate...    ");
@@ -22,7 +24,7 @@ void setup() {
   hardware::interface::lcd.setCursor(12, 1);
   hardware::interface::lcd.print("Done");
 
-  while (digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
+  while (!isAutoInit && digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
     ;
   hardware::interface::lcd.setCursor(0, 1);
   hardware::interface::lcd.print("Homing...       ");
@@ -39,6 +41,8 @@ void setup() {
 
   control::init();
 
+  while (!isAutoInit && digitalRead(PIN_BUTTON_1) && Serial.read() != '\n')
+    ;
   hardware::interface::lcd.setCursor(0, 1);
   hardware::interface::lcd.print("Loop Running... ");
   LOG_INFO("Main Loop Starts...");

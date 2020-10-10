@@ -40,6 +40,8 @@ void hardware::BallHitter::update(const int16_t encoderLocation) {
   } else if (m_hitStage == 2 && encoderLocation <= m_hitLowPos) {
     LOG_DEBUG("<Ball Hitter>\tLow Position Reached");
     setTarget(HITTER_REST_POS);
+    m_hitStage = 3;
+  } else if (m_hitStage == 3 && isTargetReached()) {
     m_hitStage = 0;
   }
 
